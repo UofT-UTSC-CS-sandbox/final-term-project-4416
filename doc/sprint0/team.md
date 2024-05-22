@@ -4,3 +4,4 @@
 | Xuchen Zhang  | zhan5248 | 1004402577 | xuchen.zhang@mail.utoronto.ca  | xuchen.zhang@mail.utoronto.ca  | Xuchen Zhang    |
 | Xinyu Li      | lixin164 | 1008838000 | nut.li@mail.utoronto.ca        |  nut.li@mail.utoronto.ca       | Xinyu Li        |
 | Changze Wu    | wuchangz | 1008837840 | changze.wu@mail.utoronto.ca    |   changze.wu@mail.utoronto.ca  | Changze Wu      |
+| Irene Cao     | caoiren2 | 1005629553 | ireneirene.cao@mail.utoronto.ca| Discord                        | Irene Cao       |
