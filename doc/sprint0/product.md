@@ -25,17 +25,13 @@ By using Notewiz, users can create and organize effective digital notes of multi
 Our focus is for Notewiz to be versatile, powerful, and simple to use. This would make it an attractive choice for all our users.
 
 
+### Definition of Done
+For us, a feature is considered done when it is functional.
+
+
 ### Key Decisions & Insights
-As students ourselves, taking notes is a big part of our life. We wanted to come up with a solution that would help us save time, that is to say, a better way to take notes. Since note-taking is a crucial part of modern school and work environments, so we felt like this would be extendable beyond just students like us, and the idea would have a wide target group. Pen and paper are becoming swiftly phased out, and existing digital note-taking apps are not much better than simple document editors.
+As students ourselves, taking notes is a big part of our life. We wanted to come up with a solution that would help us save time, that is to say, a better way to take notes. Since note-taking is a crucial part of modern school and work environments, so we felt like this would be extendable beyond just students like us, and the idea would have a wide target group. Pen and paper are becoming swiftly phased out, and existing digital note-taking apps are not much better than simple document editors. By writing our notes in markdown, it's possible to format and create our notes simply through typing and not having to use the mouse.
 
 First, we came up with a few groups of users that our app could target. Of course, students like ourselves. Another obvious group of people were working professionals, who would have to take meeting notes and organize tasks. We later came up with researchers, who need well-organized data, potentially numerical, and also software developers, that may want to write documentation including code blocks.
 
 We originally started on the idea of a web-based note-taking application, but there wasn't much that distinguished it from existing platforms like Google Docs, Notion, Overleaf etc. Then, we came up with the idea of unique note-taking formats. Traditional note-taking methods can be inefficient in terms of time spent writing, organizing, and reviewing. Methods like flashcards are proven to be effective studying tools for active memory recall, and are often used for learning definitions, facts, and short pieces of information. Looking into existing digital flashcard solutions yielded successful platforms like Quizlet, Brainscape, and ANKI; however they were all niche apps with a hyper-focus on flashcards only. We toyed with the idea of integrating both flashcards with a traditional document in our app, perhaps with features like converting between the two easily.
-
-Afterwards, we looked into various other note-taking methods that are commonly employed. A simple search gave us many unique note formats that we could potentially integrate into Notewiz, such as the Cornell method, flow-based notes, mind maps, the charting method, the boxing method, and a few more.
-
-
-**NOT INCLUDED/TO DO**:
-definition of done
-more key insights
-market analysis? ???
