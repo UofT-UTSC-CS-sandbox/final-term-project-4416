@@ -22,7 +22,42 @@ npm (Node Package Manager)
 
 
 Installation Steps:
-download latest release and “npm run”
+Install Node.js on Windows:
+1. Visit the official Node.js website, download and install the version suitable for your operating system.
+2. Follow the installation steps, accept the license agreement, and click "Next" until the installation is complete.
+3. To verify the installation, open the command line interface and enter the following commands to check the versions of Node.js and npm:
+
+node -v
+npm -v
+
+Install Node.js on macOS
+1. Visit the official Node.js website, download the macOS installer (PKG), and run the installer.
+2. Follow the installation steps, accept the license agreement, and click "Next" until the installation is complete.
+3. To verify the installation, open Terminal and enter the following commands:
+
+node -v
+npm -v
+
+Install Node.js on Linux (Ubuntu/Debian):
+
+1. Open Terminal.
+2. Update your package index and install prerequisites:
+
+sudo apt update
+sudo apt install -y curl software-properties-common
+
+3. Add the NodeSource APT repository for Node 14.x:
+
+curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+
+4. Install Node.js and npm:
+
+sudo apt install -y nodejs
+
+5. To verify the installation, enter the following commands:
+
+node -v
+npm -v
 
 
 ### Contribution
@@ -56,4 +91,3 @@ Pull requests are welcome. Please ensure your code passes the linting and test c
 
 ### Resources:
 
-    
