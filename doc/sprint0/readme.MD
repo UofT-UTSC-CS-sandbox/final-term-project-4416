@@ -33,7 +33,12 @@ By using Notewiz, users can create and organize effective digital notes of multi
 Our focus is for Notewiz to be versatile, powerful, and simple to use. This would make it an attractive choice for all our users.
 
 Installation
-
+To run Notewiz, you will need the following tools:
+Node.js
+npm (Node Package Manager)
+MongoDB
+Installation Steps:
+download latest release and “npm run”
 
 Contribution
 We welcome contributions to Notewiz! To contribute, follow these steps:
