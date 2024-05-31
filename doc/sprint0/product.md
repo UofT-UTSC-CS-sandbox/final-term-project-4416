@@ -16,6 +16,9 @@ We target the following user groups:
 
 See personas.pdf for specific personas.
 
+### Market Sizing Analysis
+The note-taking application market is substantial and growing. With the increasing shift towards digital solutions in education and professional settings, the potential market includes millions of students, researchers, and professionals globally. Initially, we will target university students and researchers in North America, expanding to educational institutions and corporate clients in subsequent phases.
+
 
 ### Why choose Notewiz?
 Certain types of information are best presented in certain formats. For example, code is best presented in a code block, research data in a chart, the meaning of a new word on a flashcard. As well, different people prefer taking notes in varying styles and formats that suit them the best. Notewiz supports the diverse note-taking styles and demands of our users, offering unique note formats that are lacking from other digital note-taking platforms. These include, but are not limited to, the traditional point-form blank document, flashcards, mind maps, and charts.
