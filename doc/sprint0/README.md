@@ -7,7 +7,7 @@ Table of Contents
 3. Installation
 4. Getting Started with NoteWiz
 5. Contribution
-6. Resources
+6. Licence
 
 ### Product Description
 Notewiz is a note-taking application that helps users record, organize, and review their notes. Users can sign in to the web application through a browser. Designed to improve organization and productivity, Notewiz supports many unique features such as search, flashcards, and multi-tab functionality. Notewiz also offers note-sharing and commenting tools in order to facilitate collaborative efforts.
