@@ -9,7 +9,7 @@ Table of Contents
 5. Resources
 
 ### Product Description
-Notewiz is a note-taking application that helps users record, organize, and review their notes. Users can sign in to the web application through a browser. Designed to improve organization and productivity, Notewiz supports many unique features such as search, flashcards, and multi-tab functionality. Notewiz also offers note sharing and commenting tools in order to facilitate collaborative efforts.
+Notewiz is a note-taking application that helps users record, organize, and review their notes. Users can sign in to the web application through a browser. Designed to improve organization and productivity, Notewiz supports many unique features such as search, flashcards, and multi-tab functionality. Notewiz also offers note-sharing and commenting tools in order to facilitate collaborative efforts.
 
 ### Motivation
 The motivation behind Notewiz stems from the need for an efficient and user-friendly note-taking solution tailored specifically for university students, researchers, and professionals. It aims to solve the problem of scattered and disorganized notes, providing a centralized platform for users to take, organize, and retrieve notes easily.
@@ -70,11 +70,23 @@ node -v # should print `v20.14.0`
 # verifies the right NPM version is in the environment
 npm -v # should print `10.7.0`
 ```
+### Getting Started with NoteWiz
+After installing Node.js, follow these steps to run the NoteWiz application:
+#### 1. Clone or Download NoteWiz:
+- If you haven't already downloaded the NoteWiz repository, clone it from your version control system or download the source files to your local machine.
+#### 2. Navigate to the NoteWiz Directory:
+-    Open your terminal or command prompt.
+-    Change to the directory where NoteWiz has been downloaded or cloned:
+`cd path/to/NoteWiz`
+#### 3. Start the Application:
+-    Run the following command to start the NoteWiz application:
+`npm start`
+-    This command will compile the application and start a local server. Once the server is running, you can access the application through your web browser at the address indicated in the terminal (typically `http://localhost:3000`).
 
 ### Contribution
 We welcome contributions to Notewiz! To contribute, follow these steps:
 
-1.Fork the repository: Click on the "Fork" button at the top right corner of the repository page.
+1. Fork the repository: Click on the "Fork" button at the top right corner of the repository page.
 
 2. Clone your fork:
     git clone https://github.com/yourusername/notewiz.git
