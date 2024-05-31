@@ -23,42 +23,53 @@ npm (Node Package Manager)
 
 Installation Steps:
 Install Node.js on Windows:
-1. Visit the official Node.js website, download and install the version suitable for your operating system.
-2. Follow the installation steps, accept the license agreement, and click "Next" until the installation is complete.
-3. To verify the installation, open the command line interface and enter the following commands to check the versions of Node.js and npm:
+1. Open Terminal.
+```
+# installs fnm (Fast Node Manager)
+winget install Schniz.fnm
 
-node -v
-npm -v
+# download and install Node.js
+fnm use --install-if-missing 20
+
+# verifies the right Node.js version is in the environment
+node -v # should print `v20.14.0`
+
+# verifies the right NPM version is in the environment
+npm -v # should print `10.7.0`
+```
 
 Install Node.js on macOS
-1. Visit the official Node.js website, download the macOS installer (PKG), and run the installer.
-2. Follow the installation steps, accept the license agreement, and click "Next" until the installation is complete.
-3. To verify the installation, open Terminal and enter the following commands:
+1. Open Terminal.
+```
+# installs fnm (Fast Node Manager)
+curl -fsSL https://fnm.vercel.app/install | bash
 
-node -v
-npm -v
+# download and install Node.js
+fnm use --install-if-missing 20
+
+# verifies the right Node.js version is in the environment
+node -v # should print `v20.14.0`
+
+# verifies the right NPM version is in the environment
+npm -v # should print `10.7.0`
+```
 
 Install Node.js on Linux (Ubuntu/Debian):
 
 1. Open Terminal.
-2. Update your package index and install prerequisites:
+```
+# installs fnm (Fast Node Manager)
+curl -fsSL https://fnm.vercel.app/install | bash
 
-sudo apt update
-sudo apt install -y curl software-properties-common
+# download and install Node.js
+fnm use --install-if-missing 20
 
-3. Add the NodeSource APT repository for Node 14.x:
+# verifies the right Node.js version is in the environment
+node -v # should print `v20.14.0`
 
-curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-
-4. Install Node.js and npm:
-
-sudo apt install -y nodejs
-
-5. To verify the installation, enter the following commands:
-
-node -v
-npm -v
-
+# verifies the right NPM version is in the environment
+npm -v # should print `10.7.0`
+```
 
 ### Contribution
 We welcome contributions to Notewiz! To contribute, follow these steps:
