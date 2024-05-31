@@ -8,6 +8,11 @@
 2. React has a large community and a rich ecosytem of libraries and tools, such as flash card and mind map, provding ample resources and support for us.
 3. With SSR and SSG capabilities (e.g., Next.js), React applications can be optimized for better SEO.
 
+##### Sources should install:
+```
+npm install react-quizlet-flashcard react-markdown-editor-lite react-draggable react-markdown
+```
+
 ### Back-end:
     Node.js 
 
