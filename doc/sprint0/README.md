@@ -5,8 +5,9 @@ Table of Contents
 1. Product Description
 2. Motivation
 3. Installation
-4. Contribution
-5. Resources
+4. Getting Started with NoteWiz
+5. Contribution
+6. Resources
 
 ### Product Description
 Notewiz is a note-taking application that helps users record, organize, and review their notes. Users can sign in to the web application through a browser. Designed to improve organization and productivity, Notewiz supports many unique features such as search, flashcards, and multi-tab functionality. Notewiz also offers note-sharing and commenting tools in order to facilitate collaborative efforts.
@@ -112,5 +113,5 @@ We use GitHub issues to track bugs and feature requests. You can submit a new is
 Pull Requests:
 Pull requests are welcome. Please ensure your code passes the linting and test checks before submitting.
 
-### Resources:
-
+### Licence
+[GPL](https://en.wikipedia.org/wiki/GNU_General_Public_License)
