@@ -21,7 +21,7 @@
 
 11. As a NoteWiz user, I want NoteWiz to generate a summary of my notes so that I can quickly review the key points and main ideas without reading through the entire content.
 
-12. As a NoteWiz user, I want NoteWiz to automatically generate a Q&A format from my written notes so that I can easily review and test my understanding of the material.
+12. As a NoteWiz user, I want NoteWiz to generate a Q&A format from my written notes so that I can easily review and test my understanding of the material.
 
 13. As a NoteWiz user, I want to create and edit flashcards so that I can effectively study and retain key information conveniently and in order.
 
