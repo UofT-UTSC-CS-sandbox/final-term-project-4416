@@ -41,7 +41,7 @@ const CreateNote = () => {
         <MarkdownEditor
           value={content}
           style={{ height: '500px' }}
-          renderHTML={(text) => <ReactMarkdown source={text} />}
+          renderHTML={(text) => <ReactMarkdown>{text}</ReactMarkdown>}
           onChange={handleEditorChange}
         />
         <button type="submit">Create Note</button>
