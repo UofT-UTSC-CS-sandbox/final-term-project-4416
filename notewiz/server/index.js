@@ -7,6 +7,8 @@ const session = require('express-session')
 
 const app = express();
 
+app.locals.LoginUser = null;
+
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(cors({origin: 'http://localhost:3000'}))
@@ -42,11 +44,15 @@ app.post('/', async (req, res)=>{
 
         if (existingUser) {
             if(existingUser.password === password){
-                req.session.user = { username: existingUser.username, 
-                    password: existingUser.password, 
-                    preferName: existingUser.preferName};
+                // req.session.user = { username: existingUser.username, 
+                //     password: existingUser.password, 
+                //     preferName: existingUser.preferName};
+                app.locals.LoginUser = { username: existingUser.username,
+                  password: existingUser.password,
+                  preferName: existingUser.preferName
+                }
                 res.status(200).json({ message: 'Login successfully'});
-                console.log("session data:", req.session.user);
+                // console.log("session data:", req.session.user);
             }else{
                 res.status(201).json({ message: 'Wrong password'});
             }
@@ -87,17 +93,27 @@ app.post('/signup', async (req, res)=>{
 
 app.get('/Profile', (req, res)=>{
     try{
-        if(req.session.user){
-            res.status(200).json({
-                name: req.session.user.preferName,
-                pass: req.session.user.password,
-                defaultName: req.session.user.username
-            })
-        }else{
-            console.log("else part");
-            console.log("session data:", req.session.user);
-            return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
-        }
+        // if(req.session.user){
+        //     res.status(200).json({
+        //         name: req.session.user.preferName,
+        //         pass: req.session.user.password,
+        //         defaultName: req.session.user.username
+        //     })
+        // }else{
+        //     console.log("else part");
+        //     console.log("session data:", req.session.user);
+        //     return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
+        // }
+        if(app.locals.LoginUser){
+          res.status(200).json({
+              name: app.locals.LoginUser.preferName,
+              pass: app.locals.LoginUser.password,
+              defaultName: app.locals.LoginUser.username
+          })
+      }else{
+          console.log("else part");
+          return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
+      }
     }catch(err){
         console.log("error part")
         res.status(500).json({name:'Internal Server Error', pass: 'Internal Server Error'});
@@ -112,14 +128,14 @@ app.post('/Profile',async (req, res)=>{
         return res.status(400).json({ message: 'Prefer name and password cannot be empty' });
     }
 
-    const name = req.session.user.username;
+    const name = app.locals.LoginUser.username;
 
     try {
         // Check if the user already exists
         const existingUser = await UserModel.findOneAndUpdate({ username: name }, {$set: {password: password, preferName: username}});
 
         if (existingUser) {
-            res.json({ message: 'Prefer Name and Password updated' }); 
+            res.json({ message: 'Prefer Name and Password updated' , name: username, pass: password}); 
         }else{
             res.status(201).json({ message: 'Unauthorized user'});
         }

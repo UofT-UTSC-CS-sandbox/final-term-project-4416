@@ -45,7 +45,7 @@ function Profile(props){
 
         if(!password){
             setMessage('Password cannot be empty');
-            setInputError('username');
+            setInputError('password');
             return;
         }
   
@@ -54,6 +54,8 @@ function Profile(props){
           setMessage(response.data.message);
         if (response.data.message.includes('updated')) {
           setMessage("Successfully updated prefer name and password");
+          setOUsername(response.data.name);
+          setOPassword(response.data.pass);
         }else{
             setMessage("Failed to update");
         }
@@ -84,7 +86,7 @@ function Profile(props){
                   placeholder={OriginPassword}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  style={{ borderColor: inputError === 'username' ? 'red' : '#ccc' }}
+                  style={{ borderColor: inputError === 'password' ? 'red' : '#ccc' }}
                 />
               </div>
               <button type="button" onClick={handleSubmit}>Save changes</button>
