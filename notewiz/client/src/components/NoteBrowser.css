@@ -8,6 +8,7 @@
 .grid-item {
     transition: transform 0.3s ease;
     width: 30ch;
+    width: 180px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
