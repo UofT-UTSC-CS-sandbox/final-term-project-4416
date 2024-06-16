@@ -1,0 +1,29 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 20px;
+    padding: 20px;
+}
+
+.grid-item {
+    transition: transform 0.3s ease;
+    width: 30ch;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.grid-item:hover {
+    transform: scale(1.05); /* This will slightly enlarge the grid item on hover */
+    cursor: pointer; /* This will change the cursor to a hand icon on hover */
+}
+
+
+/* styles for deletion mode */
+.grid-item.deletion-mode {
+    background-color: #f8f8f8; /* light gray */
+}
+
+.grid-item.selected {
+    background-color: #ffdddd; /* light red */
+}
