@@ -9,7 +9,7 @@ const CreateNote = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const { noteid } = useParams();
-    
+
     useEffect(() => {
         async function fetchNote(id) {
             try{
@@ -39,27 +39,26 @@ const CreateNote = () => {
         const response = await axios.post("http://localhost:5000/api/createNotes", note)
     };
 
-    return (
-        <div>
-            <h2>Create a New Note</h2>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                />
-                <MarkdownEditor
-                    value={content}
-                    style={{ height: '500px' }}
-                    renderHTML={(text) => <ReactMarkdown>{text}</ReactMarkdown>}
-                    onChange={handleEditorChange}
-                />
-                <button type="submit">Create Note</button>
-            </form>
-        </div>
-    );
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+        <MarkdownEditor
+          value={content}
+          style={{ height: '500px'}}
+          renderHTML={(text) => <ReactMarkdown>{text}</ReactMarkdown>}
+          onChange={handleEditorChange}
+        />
+        <button type="submit">Create Note</button>
+      </form>
+    </div>
+  );
 };
 
 export default CreateNote;

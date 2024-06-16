@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import './NoteBrowser.css'
 
@@ -58,7 +58,7 @@ function NoteBrowser(props) {
                 <div 
                     key={note._id} 
                     className={`grid-item ${deleteMode ? "deletion-mode" : ""} ${selectedNotes.has(note._id) ? "selected" : ""}`}
-                    onClick={deleteMode ? () => toggleNoteSelection(note._id) : () => navigate(`/note/${note._id}`)}
+                    onClick={deleteMode ? () => toggleNoteSelection(note._id) : () => navigate(`/Note/${note._id}`)}
                 >
                     <h2>{note.title}</h2>
                     <p>{note.content}</p>

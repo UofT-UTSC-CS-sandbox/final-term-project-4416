@@ -14,14 +14,22 @@ function Signup(props) {
     async function handleSubmit(event) {
       event.preventDefault();
       setInputError(''); // Reset input errors on new submission
+      setMessage('');
 
       if (!username) {
-        setMessage('Username cannot be empty');
+        setMessage('User name cannot be empty');
         setInputError('username');
         return;
       }
 
-      if (password !== ConfirmPassword || !password) {
+      if (!password ) {
+        setMessage('Passwords do not match');
+        setInputError('password');
+        return;
+      }
+
+
+      if (password !== ConfirmPassword) {
         setMessage('Passwords do not match');
         setInputError('password');
         return;
@@ -30,10 +38,12 @@ function Signup(props) {
       try {
         const response = await axios.post("http://localhost:5000/signup", { username, password, ConfirmPassword });
         setMessage(response.data.message);
-        if (response.data.message.includes('User created')) {
-          navigate('/');
-        } else if (response.data.message.includes('Username already exists')) {
+        if (response.data.message.includes('already')) {
+          console.log("user exist");
           setInputError('username');
+          return;
+        } else if (response.data.message.includes('User created')) {
+          navigate('/');
         }
       } catch (err) {
         setMessage(err.response ? err.response.data.message : 'An error occurred');

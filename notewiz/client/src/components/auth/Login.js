@@ -1,4 +1,3 @@
-
 import React, { useState }from "react";
 import "./Login.css"
 import { Link, useNavigate } from 'react-router-dom';
@@ -16,9 +15,10 @@ function Login(props) {
     async function handleSubmit(event) {
       event.preventDefault();
       setInputError(''); // Reset input errors on new submission
+      setMessage('');
 
       if (!username) {
-        setMessage('Username cannot be empty');
+        setMessage('User name cannot be empty');
         setInputError('username');
         return;
       }
