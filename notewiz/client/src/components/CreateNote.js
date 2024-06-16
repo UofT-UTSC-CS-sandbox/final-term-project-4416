@@ -29,7 +29,6 @@ const CreateNote = () => {
 
   return (
     <div>
-      <h2>Create a New Note</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
