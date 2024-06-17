@@ -3,6 +3,7 @@ const express = require('express')
 const mongoose = require("mongoose")
 const cors = require('cors');
 const UserModel = require('./models/User')
+const NoteModel = require('./models/Note')
 const session = require('express-session')
 
 const app = express();
@@ -143,6 +144,50 @@ app.post('/Profile',async (req, res)=>{
         res.status(500).json({ message: 'Failed to Update' });
     }
 })
+
+// noteBrowser handler
+app.post('/browser', async (req, res)=>{
+    const notes = await NoteModel.find();
+    return res.status(200).json({data: notes});
+})
+
+
+
+app.post('/deleteNotes', async (req, res) => {
+    //retrieve selected notes id from req
+    const idsToDelete = req.body;
+
+    try {
+        await NoteModel.deleteMany({ _id: { $in: idsToDelete } });
+        res.status(200).json({ message: 'Notes deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error deleting notes', error: err });
+    }
+});
+
+app.post('/api/createNotes', async (req, res)=>{
+    try {
+        await NoteModel.create(req.body);
+        return res.status(200);
+    } catch (err) {
+        return res.status(500);
+    }
+
+})
+
+
+app.post('/api/fetchNote', async (req, res) => {
+    console.log("fetching note: " + req.body.id); // use req.body.id instead of req.id
+
+    try {
+        let doc = await NoteModel.findById(req.body.id);
+        console.log('Found document:', doc);
+        res.status(200).send(doc); // send the found document as the response
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error occurred');
+    }
+});
 
 
 app.listen(5000, ()=>{

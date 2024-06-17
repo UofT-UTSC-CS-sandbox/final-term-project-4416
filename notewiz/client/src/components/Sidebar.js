@@ -200,7 +200,7 @@ function Sidebar({ visable_hidden }) {
         <List>
           
         <ListItem disablePadding>
-                <ListItemButton onClick={()=>navigate('/File')}>
+                <ListItemButton onClick={()=>navigate('/browser')}>
                     <ListItemIcon><FileCopyOutlinedIcon sx={{ fontSize: 35 }}/></ListItemIcon>
                     <ListItemText primary={'File'}/>
                 </ListItemButton>
