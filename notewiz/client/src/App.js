@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import './App.css';
 import CreateNote from './components/CreateNote';
-import Login from './components/auth/Login';
-import Signup from './components/auth/Signup';
-import Sidebar from './components/Sidebar';
-import Profile from './components/Profile';
-import NoteBrowser from './components/NoteBrowser';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import Sidebar from './components/Sidebar';
