@@ -13,7 +13,7 @@ const CreateNote = () => {
     useEffect(() => {
         async function fetchNote(id) {
             try{
-                const response = await axios.post("http://localhost:5000/api/fetchNote", {id: id});
+                const response = await axios.post("http://localhost:8777/api/fetchNote", {id: id});
                 return response;
             } catch (err) {
                 console.error(err);
@@ -36,7 +36,7 @@ const CreateNote = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const note = { title, content };
-        const response = await axios.post("http://localhost:5000/api/createNotes", note)
+        const response = await axios.post("http://localhost:8777/api/createNotes", note)
     };
 
   return (

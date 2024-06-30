@@ -11,7 +11,7 @@ function NoteBrowser(props) {
 
     async function retrieveNotes() {
         try {
-            const response = await axios.post("http://localhost:5000/browser", {a: "get notes"});
+            const response = await axios.post("http://localhost:8777/browser", {a: "get notes"});
             setNotes(response.data.data);
         } catch (err) {
             console.error(err);
@@ -34,7 +34,7 @@ function NoteBrowser(props) {
 
     async function deleteSelectedNotes() {
         try {
-            await axios.post("http://localhost:5000/deleteNotes", Array.from(selectedNotes));
+            await axios.post("http://localhost:8777/deleteNotes", Array.from(selectedNotes));
             setSelectedNotes(new Set());
             retrieveNotes();
         } catch (err) {
