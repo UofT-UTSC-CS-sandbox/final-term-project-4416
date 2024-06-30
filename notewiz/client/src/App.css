@@ -1,5 +1,21 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.Apps {
+  display: flex;
+  flex-direction: column;
+}
+
+
 .app-container {
   display: flex;
+}
+.app-container.dark {
+  display: flex;
+  background-color: #495057;
+  min-height: 100vh;
 }
 
 .sidebar {
@@ -21,4 +37,12 @@
   margin-top: 80px;
   padding: 10px;
   transition: margin-left 0.3s ease;
+}
+
+#light .Profile {
+  background-color: #f4f2f2;
+}
+
+#dark .Profile{
+  background-color: #495057;
 }

@@ -5,6 +5,7 @@ const cors = require('cors');
 const UserModel = require('./models/User')
 const NoteModel = require('./models/Note')
 const session = require('express-session')
+const bcrypt = require('bcrypt');
 
 const app = express();
 
@@ -44,7 +45,8 @@ app.post('/', async (req, res)=>{
         const existingUser = await UserModel.findOne({ username });
 
         if (existingUser) {
-            if(existingUser.password === password){
+            const match = await bcrypt.compare(password, existingUser.password);
+            if(match){
                 // req.session.user = { username: existingUser.username, 
                 //     password: existingUser.password, 
                 //     preferName: existingUser.preferName};
@@ -83,7 +85,8 @@ app.post('/signup', async (req, res)=>{
         if (existingUser) {
             res.json({ message: 'Username already exists' }); // Use status code 409 for conflict
         }else{
-            const newUser = await UserModel.create({ username, password });
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const newUser = await UserModel.create({ username, password: hashedPassword });
             res.status(201).json({ message: 'User created successfully', user: newUser });
         }
     } catch (error) {
@@ -128,14 +131,20 @@ app.post('/Profile',async (req, res)=>{
     if (!username || username.trim() === '' || !password) {
         return res.status(400).json({ message: 'Prefer name and password cannot be empty' });
     }
-
     const name = app.locals.LoginUser.username;
 
     try {
         // Check if the user already exists
-        const existingUser = await UserModel.findOneAndUpdate({ username: name }, {$set: {password: password, preferName: username}});
+
+        const existingUser = await UserModel.findOne({ username: name });
 
         if (existingUser) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            app.locals.LoginUser = { username: existingUser.username,
+                password: hashedPassword,
+                preferName: username
+              }
+            await UserModel.updateOne({username:name}, {$set: {password: hashedPassword, preferName: username}})
             res.json({ message: 'Prefer Name and Password updated' , name: username, pass: password}); 
         }else{
             res.status(201).json({ message: 'Unauthorized user'});

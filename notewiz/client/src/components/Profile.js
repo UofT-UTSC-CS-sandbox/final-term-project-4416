@@ -83,17 +83,20 @@ function Profile(props){
                 <label>Password</label>
                 <input
                   type="password"
-                  placeholder={OriginPassword}
+                  
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   style={{ borderColor: inputError === 'password' ? 'red' : '#ccc' }}
                 />
               </div>
-              <button type="button" onClick={handleSubmit}>Save changes</button>
-              <button type="button" onClick={()=>{navigate('/')}}>Log out</button>
+              <div className="buttonInProfile">
+                <button type="button" id = "button1"onClick={handleSubmit}>Save changes</button>
+              <button type="button" id="button2" onClick={()=>{navigate('/')}}>Log out</button>
               <div style={{ color: message.startsWith('Successfully') ? 'green' : 'red' }}>
                 {message}
               </div>
+              </div>
+              
             </form>
           </div>
         </div>

@@ -13,7 +13,6 @@ import MuiAppBar from "@mui/material/AppBar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -26,7 +25,9 @@ import RecentActorsIcon from '@mui/icons-material/RecentActors';
 import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined';
-import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
+
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 
 import { useNavigate } from "react-router-dom";
 
@@ -97,9 +98,18 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-function Sidebar({ visable_hidden }) {
+function Sidebar({ visable_hidden, modeStyle }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+
+  const [mode, setMode] = React.useState("light");
+
+  const setlightModel = ()=>{
+    setMode("light");
+  }
+  const setdarkModel = ()=>{
+    setMode("dark");
+  }
 
   const navigate = useNavigate();
 
@@ -114,7 +124,7 @@ function Sidebar({ visable_hidden }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" color="default" open={open}>
+      <AppBar position="fixed" open={open} sx={ {backgroundColor : mode === "light" ? '#f0f0f0' : '#495057'}}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <Box sx={{ flexGrow: 1, display: "flex" }}>
@@ -126,9 +136,8 @@ function Sidebar({ visable_hidden }) {
                   aria-haspopup="true"
                   onClick={()=>{handleDrawerOpen();
                      visable_hidden(true);}}
-                  color="black"
                 >
-                  <MenuIcon />
+                  <MenuIcon sx={{fontSize: 40,color: mode === "light" ? '#333333' : "#E0E0E0"}}/>
                 </IconButton>
               </Tooltip>
             </Box>
@@ -140,35 +149,68 @@ function Sidebar({ visable_hidden }) {
                 fontFamily: "Comic Sans MS, Comic Sans, cursive",
                 fontWeight: 700,
                 fontSize: 25,
-                color: "black",
+                color: mode === "light" ? "black" : "#E0E0E0",
               }}
             >
               NoteWiz
             </Typography>
+
+            { mode === "light" ?
+            <Box sx={{ flexGrow: 0.1 }}>
+              <Tooltip title="Light Mode">
+              <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={()=>{setdarkModel(); modeStyle("dark");}}
+                >
+                  <LightModeIcon sx={{ fontSize: 40, color: mode === "light" ? "black" : "#E0E0E0"}}/>
+                </IconButton>
+                </Tooltip>
+              </Box> :
+              <Box sx={{ flexGrow: 0.1 }}>
+                <Tooltip title="Dark Mode">
+              <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={()=>{setlightModel(); modeStyle("light");}}
+                >
+                  <DarkModeIcon sx={{ fontSize: 40, color: mode === "light" ? "black" : "#E0E0E0"}}/>
+                </IconButton>
+                </Tooltip>
+              </Box>
+              }
+
             <Box sx={{ flexGrow: 0 }}>
-            <IconButton
+              <Tooltip title="Profile">
+              <IconButton
                   size="large"
                   aria-label="account of current user"
                   aria-controls="menu-appbar"
                   aria-haspopup="true"
                   onClick={()=>navigate('/Profile')}
-                  color="black"
                 >
-                  <RecentActorsIcon sx={{ fontSize: 40}}/>
+                  <RecentActorsIcon sx={{ fontSize: 40, color: mode === "light" ? "black" : "#E0E0E0"}}/>
                 </IconButton>
+              </Tooltip>
             </Box>
           </Toolbar>
         </Container>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
+
+      <Drawer variant="permanent" open={open} sx={{
+        '& .MuiDrawer-paper': {
+          backgroundColor: mode === "light" ? '#f0f0f0' : '#495057', // Change this to your desired background color
+          color: mode === "light" ? "black" : "#E0E0E0", // Change this to your desired text color
+        },
+      }}>
         <DrawerHeader>
           <IconButton onClick={()=>{handleDrawerClose();
              visable_hidden(false);}}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+              <ChevronRightIcon sx={{ fontSize: 40, color: mode === "light" ? "black" : "#E0E0E0"}}/>
           </IconButton>
         </DrawerHeader>
         <Divider />
@@ -176,21 +218,21 @@ function Sidebar({ visable_hidden }) {
 
             <ListItem disablePadding>
                 <ListItemButton onClick={()=>navigate('/Note')}>
-                    <ListItemIcon><NoteAltIcon sx={{ fontSize: 35 }}/></ListItemIcon>
+                    <ListItemIcon><NoteAltIcon sx={{ fontSize: 35, color: mode === "light" ? "black" : "#E0E0E0" }}/></ListItemIcon>
                     <ListItemText primary={'Notes'}/>
                 </ListItemButton>
             </ListItem>
 
             <ListItem disablePadding>
                 <ListItemButton onClick={()=>navigate('/Flash')}>
-                    <ListItemIcon><CreditCardOutlinedIcon sx={{ fontSize: 35 }}/></ListItemIcon>
+                    <ListItemIcon><CreditCardOutlinedIcon sx={{ fontSize: 35, color: mode === "light" ? "black" : "#E0E0E0" }}/></ListItemIcon>
                     <ListItemText primary={'Flash Card'}/>
                 </ListItemButton>
             </ListItem>
 
             <ListItem disablePadding>
                 <ListItemButton onClick={()=>navigate('/Mind')}>
-                    <ListItemIcon><AccountTreeOutlinedIcon sx={{ fontSize: 35 }}/></ListItemIcon>
+                    <ListItemIcon><AccountTreeOutlinedIcon sx={{ fontSize: 35, color: mode === "light" ? "black" : "#E0E0E0" }}/></ListItemIcon>
                     <ListItemText primary={'Mind Map'}/>
                 </ListItemButton>
             </ListItem>
@@ -201,7 +243,7 @@ function Sidebar({ visable_hidden }) {
           
         <ListItem disablePadding>
                 <ListItemButton onClick={()=>navigate('/browser')}>
-                    <ListItemIcon><FileCopyOutlinedIcon sx={{ fontSize: 35 }}/></ListItemIcon>
+                    <ListItemIcon><FileCopyOutlinedIcon sx={{ fontSize: 35, color: mode === "light" ? "black" : "#E0E0E0" }}/></ListItemIcon>
                     <ListItemText primary={'File'}/>
                 </ListItemButton>
             </ListItem>
