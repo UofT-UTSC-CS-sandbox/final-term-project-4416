@@ -190,6 +190,6 @@ app.post('/api/fetchNote', async (req, res) => {
 });
 
 
-app.listen(5000, ()=>{
-    console.log('port connected at 5000');
+app.listen(8777, ()=>{
+    console.log('port connected at 8777');
 })
