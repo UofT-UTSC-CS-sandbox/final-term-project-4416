@@ -212,11 +212,14 @@ app.post('/Note_Summarize', async (req, res) => {
         const response = await openai.chat.completions.create({
             model: 'gpt-4-turbo',
             messages: [
-                { role: 'system', content: 'You are a helpful assistant.' },
+                { role: 'system', content: 'You are going to summarize the notes' },
                 { role: 'user', content: `Summarize the following notes in markdown format: \n\n ${notes}` }
             ],
             max_tokens: 300,
             temperature: 0.6,
+            top_p: 0.9,
+            frequency_penalty: 0.5,
+            presence_penalty: 0.5,
         });
         const summary = response.choices[0].message.content.trim();
         console.log(summary);
