@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar';
 import Profile from './components/Profile';
 import NoteBrowser from './components/NoteBrowser';
 
+
 function App() {
   return (
     <BrowserRouter>

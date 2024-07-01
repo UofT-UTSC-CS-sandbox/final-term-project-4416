@@ -35,9 +35,21 @@ const CreateNote = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const note = { title, content };
+        const note = { title, notes: content };
         const response = await axios.post("http://localhost:5000/api/createNotes", note)
     };
+
+    async function handleSummarize(event) {
+      event.preventDefault();
+      const note = { title, notes: content }; 
+      try {
+          const response = await axios.post("http://localhost:5000/Note_Summarize", note);
+          console.log('Summary: ', response.data.summary);
+      } catch (err) {
+          console.error('Failed to summarize notes: ', err);
+      }
+  }
+
 
   return (
     <div>
@@ -56,6 +68,7 @@ const CreateNote = () => {
           onChange={handleEditorChange}
         />
         <button type="submit">Create Note</button>
+        <button type='button' onClick={handleSummarize}>Summarize</button>
       </form>
     </div>
   );
