@@ -59,16 +59,23 @@ We basically get familiar with the relevant tools we might use in the future suc
 
 
 ##### Implemented the function of recording notes using markdown language in the web interface
->1. Artifacts: [1]()
+>1. Artifacts: [notewiz/client/src/components/CreateNote.js](https://github.com/UofT-UTSC-CS-sandbox/final-term-project-4416/blob/notesBrowser/notewiz/client/src/components/CreateNote.js)
 
 ##### Implemented the display and interaction of the basic interface
->1. Artifacts: [2]()
+>1. Artifacts: [navigation sidebar](https://github.com/UofT-UTSC-CS-sandbox/final-term-project-4416/blob/notesBrowser/notewiz/client/src/components/Sidebar.js)
+
 
 ##### Implemented the function of user login and registration
->1. Artifacts: [3]()
+>1. Artifacts: [Login & Sign up interface](https://github.com/UofT-UTSC-CS-sandbox/final-term-project-4416/tree/notesBrowser/notewiz/client/src/components/auth)
 
 ##### Implemented the function of batch management of files in the file manager interface
->1. Artifacts: [4]()
+>1. Artifacts: [Note browser](https://github.com/UofT-UTSC-CS-sandbox/final-term-project-4416/blob/notesBrowser/notewiz/client/src/components/NoteBrowser.js)
+
+##### Personal Profile
+>1. Artifacts: [Profile interface](https://github.com/UofT-UTSC-CS-sandbox/final-term-project-4416/blob/notesBrowser/notewiz/client/src/components/Profile.js)
+
+##### All back-end 
+>1. Artifacts: [Back-end](https://github.com/UofT-UTSC-CS-sandbox/final-term-project-4416/blob/notesBrowser/notewiz/server/index.js)
 
 
 #### Goals and/or tasks that were planned but not met/completed:
