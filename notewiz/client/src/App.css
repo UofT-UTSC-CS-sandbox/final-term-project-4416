@@ -1,24 +1,4 @@
-.app-container {
-  display: flex;
-}
-
-.sidebar {
-  width: 180px; /* Fixed width for sidebar */
-}
-
-.content {
-  flex-grow: 1;
-  margin-left: 10px;
-  margin-top: 80px;
-  padding: 10px; /* Padding around the note content */
-  transition: margin-left 0.3s ease;
-}
-
-
-.content.hidden{
-  flex-grow: 1;
-  margin-left: -110px;
-  margin-top: 80px;
-  padding: 10px;
-  transition: margin-left 0.3s ease;
-}
+.App {
+    text-align: center;
+  }
+  
