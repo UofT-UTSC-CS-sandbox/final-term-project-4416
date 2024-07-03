@@ -13,6 +13,7 @@ const app = express();
 const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY,});
 
 app.locals.LoginUser = null;
+app.locals.note = "Hello world";
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -28,12 +29,12 @@ app.use(session({
 }));
 
 mongoose.connect(process.env.MONGODB_URL)
-.then(()=>{
-    console.log("Successfully connected Mongodb")
-})
-.catch(()=>{
-    console.log("Failed connection")
-});
+    .then(()=>{
+        console.log("Successfully connected Mongodb")
+    })
+    .catch(()=>{
+        console.log("Failed connection")
+    });
 
 app.post('/', async (req, res)=>{
     const { username, password } = req.body;
@@ -50,12 +51,12 @@ app.post('/', async (req, res)=>{
         if (existingUser) {
             const match = await bcrypt.compare(password, existingUser.password);
             if(match){
-                // req.session.user = { username: existingUser.username, 
-                //     password: existingUser.password, 
+                // req.session.user = { username: existingUser.username,
+                //     password: existingUser.password,
                 //     preferName: existingUser.preferName};
                 app.locals.LoginUser = { username: existingUser.username,
-                  password: existingUser.password,
-                  preferName: existingUser.preferName
+                    password: existingUser.password,
+                    preferName: existingUser.preferName
                 }
                 res.status(200).json({ message: 'Login successfully'});
                 // console.log("session data:", req.session.user);
@@ -112,15 +113,16 @@ app.get('/Profile', (req, res)=>{
         //     return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
         // }
         if(app.locals.LoginUser){
-          res.status(200).json({
-              name: app.locals.LoginUser.preferName,
-              pass: app.locals.LoginUser.password,
-              defaultName: app.locals.LoginUser.username
-          })
-      }else{
-          console.log("else part");
-          return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
-      }
+            console.log(app.locals.LoginUser);
+            res.status(200).json({
+                name: app.locals.LoginUser.preferName,
+                pass: app.locals.LoginUser.password,
+                defaultName: app.locals.LoginUser.username
+            })
+        }else{
+            console.log("else part");
+            return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
+        }
     }catch(err){
         console.log("error part")
         res.status(500).json({name:'Internal Server Error', pass: 'Internal Server Error'});
@@ -146,9 +148,10 @@ app.post('/Profile',async (req, res)=>{
             app.locals.LoginUser = { username: existingUser.username,
                 password: hashedPassword,
                 preferName: username
-              }
+            }
             await UserModel.updateOne({username:name}, {$set: {password: hashedPassword, preferName: username}})
-            res.json({ message: 'Prefer Name and Password updated' , name: username, pass: password}); 
+            console.log(app.locals.LoginUser);
+            res.json({ message: 'Prefer Name and Password updated' , name: username, pass: password});
         }else{
             res.status(201).json({ message: 'Unauthorized user'});
         }
@@ -229,6 +232,29 @@ app.post('/Note_Summarize', async (req, res) => {
         res.status(500).json({ error: 'Failed to summarize notes' });
     }
 });
+
+
+// app.get('/Note', (req, res)=>{
+//     try{
+//         res.status(200).json({data: app.locals.note});
+//     }catch(err){
+//         console.log("fetch notes error part")
+//         res.status(500).json({data: 'Error occurred'});
+//     }
+// })
+//
+// app.post('/Note', (req, res)=>{
+//     try{
+//         const notes = req.body;
+//         if(notes.length > 0){
+//             app.locals.note = notes;
+//         }
+//     }catch(err){
+//         console.log("fetch notes error part")
+//         res.status(500).json({data: 'Error occurred'});
+//     }
+// })
+
 
 
 
