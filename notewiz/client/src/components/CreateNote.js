@@ -129,121 +129,160 @@ const codeBlocksMarkdown = ""
 
 function CreateNote() {
   const editorRef = React.useRef(null);
-  const [editorContent, setEditorContent] = useState("Hello world");
+  const existingNote = localStorage.getItem('userNote');
+  if (existingNote === null) {
+      localStorage.setItem('userNote','');
+  }
+  const [editorContent, setEditorContent] = useState(localStorage.getItem("userNote"));
+  const [loading, setloding] = useState(false);
+  const [title, setTitle] = useState('');
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await axios.get("http://localhost:5000/Note");
-    //             setEditorContent(response.data);
-    //         } catch (error) {
-    //             console.error('Error fetching notes:', error);
-    //         }
-    //     };
-    //
-    //     fetchData();
-    // }, []); // Empty dependency array means this runs once when the component mounts
-    //
-    // useEffect(() => {
-    //     const updateNotes = async () => {
-    //         try {
-    //             const response = await axios.post("http://localhost:5000/Note", { editorContent });
-    //             console.log('Notes updated successfully');
-    //         } catch (error) {
-    //             console.error('Error updating notes:', error);
-    //         }
-    //     };
-    //
-    //     if (editorContent) { // Only update if there is content
-    //         updateNotes();
-    //     }
-    // }, [editorContent]); // This runs whenever `editorContent` changes
+    // Load the note from local storage when the component mounts
+    useEffect(() => {
+        console.log("fetch",editorContent);
+        const savedNote = localStorage.getItem('userNote');
+        if (savedNote) {
+            setEditorContent(savedNote);
+        }
+    }, []);
+
+    // Save the note to local storage whenever it changes
+    useEffect(() => {
+        console.log(editorContent);
+        localStorage.setItem('userNote', editorContent);
+    }, [editorContent]);
+
+    const handleSave = async (e)=>{
+        e.preventDefault();
+        const note = { title, editorContent };
+        const response = await axios.post("http://localhost:5000/api/createNotes", note)
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try{
+            setloding(true);
+            const notes = {editorContent};
+            const response = await axios.post("http://localhost:5000/Note_Summarize", notes);
+            console.log(response.data.summary);
+            const resultRendering = response.data.summary + localStorage.getItem('userNote');
+            localStorage.setItem('userNote',resultRendering);
+            setEditorContent(resultRendering);
+
+        }catch (e) {
+            console.log(e);
+        }finally {
+            setloding(false);
+            location.reload();
+        }
+
+    };
 
   return (
       <div id={"operation"}>
-    <div className="App">
-      <header className="App-header">
-        <MDXEditor
-          // className="dark-theme dark-editor"
-          // you may use the upper 
-
-          contentEditableClassName="prose"
-
-          
-          markdown={editorContent}
-          onChange={setEditorContent}
-
-
-          plugins={[
-            codeBlockPlugin({ defaultCodeBlockLanguage: 'js', codeBlockEditorDescriptors: [PlainTextCodeEditorDescriptor] }),
-            sandpackPlugin({ sandpackConfig: simpleSandpackConfig }),
-            codeMirrorPlugin({
-              codeBlockLanguages: {
-                js: 'JavaScript',
-                css: 'CSS',
-                C: 'C',
-                Python: 'Python',
-                Java: 'Java',
-                Rust: 'Rust',
-                R: 'R',
-                bash: 'bash',
-                text: 'text',
-              }
-            }),
-
-            diffSourcePlugin({ diffMarkdown: 'An older version', viewMode: 'rich-text' }),
-
-            toolbarPlugin({
-              toolbarContents: () => (
-                <DiffSourceToggleWrapper>
-                  <UndoRedo />
-                  <BlockTypeSelect />
-                  <BoldItalicUnderlineToggles />
-                  <CodeToggle />
-                  <CreateLink />
-                  <InsertImage />
-                  <InsertTable />
-                  <InsertAdmonition />
-                  <InsertFrontmatter />
-                  <ConditionalContents
-                    options={[
-                      { when: (editor) => editor?.editorType === 'codeblock', contents: () => <ChangeCodeMirrorLanguage /> },
-                      { when: (editor) => editor?.editorType === 'sandpack', contents: () => <ShowSandpackInfo /> },
-                      {
-                        fallback: () => (<>
-                          <InsertCodeBlock />
-                          <InsertSandpack />
-                        </>)
-                      }
-                    ]}
+          <div className="App">
+              <input
+                  type="text"
+                  placeholder="Title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
                   />
-                  {/* <YouTubeButton /> */}
-                </DiffSourceToggleWrapper>
-              )
-            }),
-            headingsPlugin({
-              allowedHeadingLevels: [1, 2, 3, 4, 5, 6]
-            }),
-            quotePlugin(),
-            listsPlugin(),
-            thematicBreakPlugin(),
-            linkDialogPlugin({
-              linkAutocompleteSuggestions: ['https://google.com']
-            }),
-            imagePlugin({
-              imageUploadHandler,
-              imageAutocompleteSuggestions: ['https://picsum.photos/200/300', 'https://picsum.photos/200']
-            }),
-            linkPlugin(),
-            tablePlugin(),
-            directivesPlugin({ directiveDescriptors: [CalloutCustomDirectiveDescriptor, AdmonitionDirectiveDescriptor] }),
-            markdownShortcutPlugin(),
-            frontmatterPlugin()
-          ]}
-        />
-      </header>
-    </div>
-          <button onClick={()=>{console.log(editorContent)}}></button>
+              <header className="App-header">
+                  <MDXEditor
+                      contentEditableClassName="prose"
+
+                      markdown={editorContent}
+                      onChange={setEditorContent}
+
+
+                      plugins={[
+                          codeBlockPlugin({
+                              defaultCodeBlockLanguage: 'js',
+                              codeBlockEditorDescriptors: [PlainTextCodeEditorDescriptor]
+                          }),
+                          sandpackPlugin({sandpackConfig: simpleSandpackConfig}),
+                          codeMirrorPlugin({
+                              codeBlockLanguages: {
+                                  js: 'JavaScript',
+                                  css: 'CSS',
+                                  C: 'C',
+                                  Python: 'Python',
+                                  Java: 'Java',
+                                  Rust: 'Rust',
+                                  R: 'R',
+                                  bash: 'bash',
+                                  text: 'text',
+                              }
+                          }),
+
+                          diffSourcePlugin({diffMarkdown: 'An older version', viewMode: 'rich-text'}),
+
+                          toolbarPlugin({
+                              toolbarContents: () => (
+                                  <DiffSourceToggleWrapper>
+                                      <UndoRedo/>
+                                      <BlockTypeSelect/>
+                                      <BoldItalicUnderlineToggles/>
+                                      <CodeToggle/>
+                                      <CreateLink/>
+                                      <InsertImage/>
+                                      <InsertTable/>
+                                      <InsertAdmonition/>
+                                      <InsertFrontmatter/>
+                                      <ConditionalContents
+                                          options={[
+                                              {
+                                                  when: (editor) => editor?.editorType === 'codeblock',
+                                                  contents: () => <ChangeCodeMirrorLanguage/>
+                                              },
+                                              {
+                                                  when: (editor) => editor?.editorType === 'sandpack',
+                                                  contents: () => <ShowSandpackInfo/>
+                                              },
+                                              {
+                                                  fallback: () => (<>
+                                                      <InsertCodeBlock/>
+                                                      <InsertSandpack/>
+                                                  </>)
+                                              }
+                                          ]}
+                                      />
+                                      {/* <YouTubeButton /> */}
+                                  </DiffSourceToggleWrapper>
+                              )
+                          }),
+                          headingsPlugin({
+                              allowedHeadingLevels: [1, 2, 3, 4, 5, 6]
+                          }),
+                          quotePlugin(),
+                          listsPlugin(),
+                          thematicBreakPlugin(),
+                          linkDialogPlugin({
+                              linkAutocompleteSuggestions: ['https://google.com']
+                          }),
+                          imagePlugin({
+                              imageUploadHandler,
+                              imageAutocompleteSuggestions: ['https://picsum.photos/200/300', 'https://picsum.photos/200']
+                          }),
+                          linkPlugin(),
+                          tablePlugin(),
+                          directivesPlugin({directiveDescriptors: [CalloutCustomDirectiveDescriptor, AdmonitionDirectiveDescriptor]}),
+                          markdownShortcutPlugin(),
+                          frontmatterPlugin()
+                      ]}
+                  />
+              </header>
+          </div>
+          <button onClick={handleSubmit}>Generate</button>
+          <button onClick={handleSave}>Save</button>
+          {loading && (
+              <div className="modal">
+                  <div className="modal-content">
+                      <p>Generating summary, please wait...</p>
+                  </div>
+              </div>
+          )}
       </div>
   );
 }

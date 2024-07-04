@@ -32,6 +32,10 @@ function RoutesWithSidebar() {
     setModeTheme(model);
   }
 
+  const handleLogout = ()=>{
+    setModeTheme('light');
+  }
+
 
   return (
     <div className='Apps'>
@@ -50,7 +54,7 @@ function RoutesWithSidebar() {
       <Routes>
         <Route path='/Note' element={<CreateNote />}></Route>
         <Route path='/Note/:noteid' element={<CreateNote />}></Route>
-        <Route path='/Profile' element={<Profile />}></Route>
+        <Route path='/Profile' element={<Profile logout={handleLogout}/>}></Route>
         <Route path='/browser' element={<NoteBrowser/>}></Route>
       </Routes>
       </div>

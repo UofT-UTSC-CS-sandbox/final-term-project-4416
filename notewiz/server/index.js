@@ -113,7 +113,7 @@ app.get('/Profile', (req, res)=>{
         //     return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
         // }
         if(app.locals.LoginUser){
-            console.log(app.locals.LoginUser);
+
             res.status(200).json({
                 name: app.locals.LoginUser.preferName,
                 pass: app.locals.LoginUser.password,
@@ -150,7 +150,6 @@ app.post('/Profile',async (req, res)=>{
                 preferName: username
             }
             await UserModel.updateOne({username:name}, {$set: {password: hashedPassword, preferName: username}})
-            console.log(app.locals.LoginUser);
             res.json({ message: 'Prefer Name and Password updated' , name: username, pass: password});
         }else{
             res.status(201).json({ message: 'Unauthorized user'});
@@ -205,7 +204,8 @@ app.post('/api/fetchNote', async (req, res) => {
 });
 
 app.post('/Note_Summarize', async (req, res) => {
-    const { title, notes } = req.body;
+    const notes = JSON.stringify(req.body);
+    // console.log(notes);
     if (!notes) {
         console.log("Notes are not received");
         return res.status(400).json({ error: 'Notes are required' });
@@ -216,7 +216,7 @@ app.post('/Note_Summarize', async (req, res) => {
             model: 'gpt-4-turbo',
             messages: [
                 { role: 'system', content: 'You are going to summarize the notes' },
-                { role: 'user', content: `Summarize the following notes in markdown format: \n\n ${notes}` }
+                { role: 'user', content: `Summarize the following notes in Markdown format, after summarize \n\n ${notes}` }
             ],
             max_tokens: 300,
             temperature: 0.6,
@@ -224,38 +224,14 @@ app.post('/Note_Summarize', async (req, res) => {
             frequency_penalty: 0.5,
             presence_penalty: 0.5,
         });
-        const summary = response.choices[0].message.content.trim();
-        console.log(summary);
-        res.status(200).json({ summary });
+        let GeneratedText = response.choices[0].message.content.trim();
+        const summary = `${GeneratedText}\n***\n`;
+        res.status(200).json({summary});
     } catch (error) {
         console.log("Error: ", error.response ? error.response.data : error.message);
         res.status(500).json({ error: 'Failed to summarize notes' });
     }
 });
-
-
-// app.get('/Note', (req, res)=>{
-//     try{
-//         res.status(200).json({data: app.locals.note});
-//     }catch(err){
-//         console.log("fetch notes error part")
-//         res.status(500).json({data: 'Error occurred'});
-//     }
-// })
-//
-// app.post('/Note', (req, res)=>{
-//     try{
-//         const notes = req.body;
-//         if(notes.length > 0){
-//             app.locals.note = notes;
-//         }
-//     }catch(err){
-//         console.log("fetch notes error part")
-//         res.status(500).json({data: 'Error occurred'});
-//     }
-// })
-
-
 
 
 app.listen(5000, ()=>{

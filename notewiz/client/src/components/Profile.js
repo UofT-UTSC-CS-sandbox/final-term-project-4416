@@ -3,7 +3,7 @@ import "./Profile.css"
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 
-function Profile(props){
+function Profile({logout}){
 
     const [OriginUsername, setOUsername] = useState('');
     const [OriginPassword, setOPassword] = useState('');
@@ -32,6 +32,13 @@ function Profile(props){
         };
         fetchData();
     },[]);
+
+    const handleLogout = async()=>{
+        localStorage.removeItem("userNote");
+        localStorage.removeItem("NoteSummary");
+        logout();
+        navigate('/');
+    }
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -91,7 +98,7 @@ function Profile(props){
                     </div>
                     <div className="buttonInProfile">
                         <button type="button" id = "button1"onClick={handleSubmit}>Save changes</button>
-                        <button type="button" id="button2" onClick={()=>{navigate('/')}}>Log out</button>
+                        <button type="button" id="button2" onClick={handleLogout}>Log out</button>
                         <div style={{ color: message.startsWith('Successfully') ? 'green' : 'red' }}>
                             {message}
                         </div>
