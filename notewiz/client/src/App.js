@@ -7,6 +7,7 @@ import Signup from './components/auth/Signup';
 import Sidebar from './components/Sidebar';
 import Profile from './components/Profile';
 import NoteBrowser from './components/NoteBrowser';
+import PublicNoteDisplay from "./components/PublicNoteDisplay";
 
 function App() {
   return (
@@ -29,10 +30,12 @@ function RoutesWithSidebar() {
 
   return (
     <>
-      {['/', '/signup'].includes(location.pathname) ? (
+      {(['/', '/signup'].includes(location.pathname ) ||
+          /^\/sheared-note\/.*$/.test(location.pathname)) ? (
         <Routes>
           <Route path='/' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
+          <Route path='/sheared-note/:id' element={<PublicNoteDisplay />} />
         </Routes>
       ) :(
         <div className='app-container'>
