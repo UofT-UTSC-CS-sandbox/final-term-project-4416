@@ -9,7 +9,6 @@
     "@mui/material": "^5.15.20",
     "axios": "^1.7.2",
     "cors": "^2.8.5",
-    "node-pandoc": "^0.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-draggable": "^4.4.3",

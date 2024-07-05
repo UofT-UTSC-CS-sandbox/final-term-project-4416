@@ -1,6 +1,9 @@
 //require('dotenv').config();
 const express = require('express')
 const mongoose = require("mongoose")
+//require('dotenv').config();
+const express = require('express')
+const mongoose = require("mongoose")
 const showdown  = require('showdown')
 const cors = require('cors');
 const UserModel = require('./models/User')
@@ -46,8 +49,8 @@ app.post('/', async (req, res)=>{
 
         if (existingUser) {
             if(existingUser.password === password){
-                // req.session.user = { username: existingUser.username, 
-                //     password: existingUser.password, 
+                // req.session.user = { username: existingUser.username,
+                //     password: existingUser.password,
                 //     preferName: existingUser.preferName};
                 app.locals.LoginUser = { username: existingUser.username,
                   password: existingUser.password,
@@ -137,7 +140,7 @@ app.post('/Profile',async (req, res)=>{
         const existingUser = await UserModel.findOneAndUpdate({ username: name }, {$set: {password: password, preferName: username}});
 
         if (existingUser) {
-            res.json({ message: 'Prefer Name and Password updated' , name: username, pass: password}); 
+            res.json({ message: 'Prefer Name and Password updated' , name: username, pass: password});
         }else{
             res.status(201).json({ message: 'Unauthorized user'});
         }
@@ -184,28 +187,6 @@ app.post('/api/fetchNote', async (req, res) => {
         let doc = await NoteModel.findById(req.body.id);
         console.log('Found document:', doc);
         res.status(200).send(doc); // send the found document as the response
-    } catch (err) {
-        console.log(err);
-        res.status(500).send('Error occurred');
-    }
-});
-
-app.post('/api/fetchPublicNote', async (req, res) => {
-    console.log("fetching note: " + req.body.id); // use req.body.id instead of req.id
-
-    try {
-        let doc = await NoteModel.findById(req.body.id);
-        console.log('Found document:', doc);
-        if (doc.public === false) {
-            return res.status(401).send('Not authorized');
-        }
-
-        //html conversion
-        let converter = new showdown.Converter(),
-            text      = '#'+doc.title+'\n'+doc.content,
-            html      = converter.makeHtml(text);
-
-        res.status(200).send(html); // send the found document as the response
     } catch (err) {
         console.log(err);
         res.status(500).send('Error occurred');
