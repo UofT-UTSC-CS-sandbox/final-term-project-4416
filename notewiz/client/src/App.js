@@ -20,7 +20,8 @@ function App() {
 function RoutesWithSidebar() {
   const location = useLocation(); // Get the current location
   const sidebarPaths = ['/Note', '/Profile','/browser'];
-  const showSidebar = sidebarPaths.includes(location.pathname); // Determine whether to show the sidebar
+  const showSidebar = sidebarPaths.includes(location.pathname) ||
+      /^\/Note\/.*$/.test(location.pathname) ; // Determine whether to show the sidebar
 
   const [sidebarVisable, setVisbility] = useState(false);
   const handleSideBarVisability = (data) =>{
