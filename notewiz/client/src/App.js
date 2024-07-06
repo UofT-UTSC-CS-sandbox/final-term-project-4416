@@ -7,7 +7,6 @@ import Signup from './components/auth/Signup';
 import Sidebar from './components/Sidebar';
 import Profile from './components/Profile';
 import NoteBrowser from './components/NoteBrowser';
-import PublicNoteDisplay from "./components/PublicNoteDisplay";
 
 function App() {
   return (
@@ -27,9 +26,18 @@ function RoutesWithSidebar() {
     setVisbility(data);
   }
 
+  const [modeTheme, setModeTheme] = useState("light");
+  const handlemodeTheme = (model) =>{
+    setModeTheme(model);
+  }
+
+  const handleLogout = ()=>{
+    setModeTheme('light');
+  }
+
 
   return (
-    <>
+      <div className='Apps'>
       {(['/', '/signup'].includes(location.pathname ) ||
           /^\/sheared-note\/.*$/.test(location.pathname)) ? (
         <Routes>
@@ -38,19 +46,23 @@ function RoutesWithSidebar() {
           <Route path='/sheared-note/:id' element={<PublicNoteDisplay />} />
         </Routes>
       ) :(
-        <div className='app-container'>
-          {showSidebar && <div className='sidebar'><Sidebar visable_hidden={handleSideBarVisability}/></div>}
+        <div className={`app-container ${modeTheme === 'light' ? '' : 'dark'}`} >
+          {showSidebar && <div className='sidebar'>
+            <Sidebar visable_hidden={handleSideBarVisability} modeStyle={handlemodeTheme}/>
+        </div>}
       <div className={`content ${sidebarVisable ? '' : 'hidden'}`}>
+        <div id = {modeTheme}>
       <Routes>
         <Route path='/Note' element={<CreateNote />}></Route>
         <Route path='/Note/:noteid' element={<CreateNote />}></Route>
-        <Route path='/Profile' element={<Profile />}></Route>
+        <Route path='/Profile' element={<Profile logout={handleLogout}/>}></Route>
         <Route path='/browser' element={<NoteBrowser/>}></Route>
       </Routes>
       </div>
+      </div>
       </div>)}
 
-    </>
+    </div>
   );
 }
 

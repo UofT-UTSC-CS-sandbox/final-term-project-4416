@@ -1,24 +1,51 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.Apps {
+  display: flex;
+  flex-direction: column;
+}
+
+
 .app-container {
   display: flex;
+}
+.app-container.dark {
+  display: flex;
+  background-color: #495057;
+  min-height: 100vh;
 }
 
 .sidebar {
   width: 180px; /* Fixed width for sidebar */
+  flex-shrink: 0;
 }
 
 .content {
   flex-grow: 1;
   margin-left: 10px;
   margin-top: 80px;
+  max-width: calc(100% - 200px);
+  overflow-x: auto;
   padding: 10px; /* Padding around the note content */
   transition: margin-left 0.3s ease;
 }
 
 
 .content.hidden{
-  flex-grow: 1;
   margin-left: -110px;
-  margin-top: 80px;
-  padding: 10px;
-  transition: margin-left 0.3s ease;
+}
+
+#light .Profile {
+  background-color: #f4f2f2;
+}
+
+#dark{
+  background-color: #495057;
+}
+
+#dark .App{
+  background-color: #495057;
 }
