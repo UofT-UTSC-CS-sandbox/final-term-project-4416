@@ -10,7 +10,7 @@ import NoteBrowser from './components/NoteBrowser';
 import { FlashCardsView } from './components/FlashCardsView';
 import FlashCardList from './components/FlashCardList';
 import CreateFlashCard from './components/CreateFlashCard';
-
+import PublicNoteDisplay from "./components/PublicNoteDisplay";
 
 function App() {
   return (
@@ -23,7 +23,7 @@ function App() {
 function RoutesWithSidebar() {
   const location = useLocation(); // Get the current location
   const sidebarPaths = ['/Note', '/Profile','/browser',"/flashcards", "/Flash", "/create-new-flashcard"];
-  const showSidebar = sidebarPaths.includes(location.pathname); // Determine whether to show the sidebar
+  const showSidebar = sidebarPaths.includes(location.pathname) || /^\/Note\/.*$/; // Determine whether to show the sidebar
 
   const [sidebarVisable, setVisbility] = useState(false);
   const handleSideBarVisability = (data) =>{
@@ -41,11 +41,13 @@ function RoutesWithSidebar() {
 
 
   return (
-    <div className='Apps'>
-      {['/', '/signup'].includes(location.pathname) ? (
+      <div className='Apps'>
+      {(['/', '/signup'].includes(location.pathname ) ||
+          /^\/sheared-note\/.*$/.test(location.pathname)) ? (
         <Routes>
           <Route path='/' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
+          <Route path='/sheared-note/:id' element={<PublicNoteDisplay />} />
         </Routes>
       ) :(
         <div className={`app-container ${modeTheme === 'light' ? '' : 'dark'}`} >
