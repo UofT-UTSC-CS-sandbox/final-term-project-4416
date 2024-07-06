@@ -7,6 +7,9 @@ import Signup from './components/auth/Signup';
 import Sidebar from './components/Sidebar';
 import Profile from './components/Profile';
 import NoteBrowser from './components/NoteBrowser';
+import { FlashCardsView } from './components/FlashCardsView';
+import FlashCardList from './components/FlashCardList';
+import CreateFlashCard from './components/CreateFlashCard';
 
 function App() {
   return (
@@ -18,7 +21,7 @@ function App() {
 
 function RoutesWithSidebar() {
   const location = useLocation(); // Get the current location
-  const sidebarPaths = ['/Note', '/Profile','/browser'];
+  const sidebarPaths = ['/Note', '/Profile','/browser',"/flashcards", "/Flash", "/create-new-flashcard"];
   const showSidebar = sidebarPaths.includes(location.pathname); // Determine whether to show the sidebar
 
   const [sidebarVisable, setVisbility] = useState(false);
@@ -57,6 +60,9 @@ function RoutesWithSidebar() {
         <Route path='/Note/:noteid' element={<CreateNote />}></Route>
         <Route path='/Profile' element={<Profile logout={handleLogout}/>}></Route>
         <Route path='/browser' element={<NoteBrowser/>}></Route>
+          <Route path="/flashcards" element={<FlashCardsView/>} />
+          <Route path="/Flash" element={<FlashCardList/>} />
+          <Route path="/create-new-flashcard" element={<CreateFlashCard />} />
       </Routes>
       </div>
       </div>

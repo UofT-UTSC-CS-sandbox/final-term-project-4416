@@ -148,13 +148,12 @@ function CreateNote() {
 
     // Save the note to local storage whenever it changes
     useEffect(() => {
-        console.log(editorContent);
         localStorage.setItem('userNote', editorContent);
     }, [editorContent]);
 
     const handleSave = async (e)=>{
         e.preventDefault();
-        const note = { title, editorContent };
+        const note = { 'title': title, 'content': editorContent };
         const response = await axios.post("http://localhost:5000/api/createNotes", note)
     }
 

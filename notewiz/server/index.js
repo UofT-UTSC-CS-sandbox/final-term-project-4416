@@ -182,6 +182,7 @@ app.post('/deleteNotes', async (req, res) => {
 
 app.post('/api/createNotes', async (req, res)=>{
     try {
+        console.log(req.body);
         await NoteModel.create(req.body);
         return res.status(200);
     } catch (err) {
