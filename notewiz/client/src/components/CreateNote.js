@@ -1,42 +1,43 @@
 import React, {useEffect, useState} from 'react';
+import {useParams} from "react-router-dom";
 import '@mdxeditor/editor/style.css';
 import './editorStyles.css';
 import {
-  MDXEditor,
-  UndoRedo,
-  BoldItalicUnderlineToggles,
-  toolbarPlugin,
-  headingsPlugin,
-  quotePlugin,
-  listsPlugin,
-  thematicBreakPlugin,
-  linkDialogPlugin,
-  imagePlugin,
-  BlockTypeSelect,
-  CodeToggle,
-  CreateLink,
-  InsertImage,
-  diffSourcePlugin,
-  DiffSourceToggleWrapper,
-  linkPlugin,
-  tablePlugin,
-  InsertTable,
-  codeMirrorPlugin,
-  sandpackPlugin,
-  ChangeCodeMirrorLanguage,
-  InsertAdmonition,
-  InsertCodeBlock,
-  InsertFrontmatter,
-  InsertSandpack,
-  ShowSandpackInfo,
-  codeBlockPlugin,
-  ConditionalContents,
-  useCodeBlockEditorContext,
-  markdownShortcutPlugin,
-  NestedLexicalEditor,
-  directivesPlugin,
-  AdmonitionDirectiveDescriptor,
-  frontmatterPlugin
+    AdmonitionDirectiveDescriptor,
+    BlockTypeSelect,
+    BoldItalicUnderlineToggles,
+    ChangeCodeMirrorLanguage,
+    codeBlockPlugin,
+    codeMirrorPlugin,
+    CodeToggle,
+    ConditionalContents,
+    CreateLink,
+    diffSourcePlugin,
+    DiffSourceToggleWrapper,
+    directivesPlugin,
+    frontmatterPlugin,
+    headingsPlugin,
+    imagePlugin,
+    InsertAdmonition,
+    InsertCodeBlock,
+    InsertFrontmatter,
+    InsertImage,
+    InsertSandpack,
+    InsertTable,
+    linkDialogPlugin,
+    linkPlugin,
+    listsPlugin,
+    markdownShortcutPlugin,
+    MDXEditor,
+    NestedLexicalEditor,
+    quotePlugin,
+    sandpackPlugin,
+    ShowSandpackInfo,
+    tablePlugin,
+    thematicBreakPlugin,
+    toolbarPlugin,
+    UndoRedo,
+    useCodeBlockEditorContext
 } from '@mdxeditor/editor';
 import axios from "axios";
 
@@ -136,15 +137,35 @@ function CreateNote() {
   const [editorContent, setEditorContent] = useState(localStorage.getItem("userNote"));
   const [loading, setloding] = useState(false);
   const [title, setTitle] = useState('');
+  const { noteid } = useParams();
 
     // Load the note from local storage when the component mounts
     useEffect(() => {
+        if (noteid !== null) {return}
         console.log("fetch",editorContent);
         const savedNote = localStorage.getItem('userNote');
         if (savedNote) {
             setEditorContent(savedNote);
         }
     }, []);
+
+    useEffect(() => {
+        async function fetchNote(id) {
+            try{
+                return await axios.post("http://localhost:5000/api/fetchNote", {id: id});
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        if (noteid) {
+            fetchNote(noteid).then(note => {
+                if(note) {
+                    setEditorContent(note.data.content || '');
+                    setTitle(note.data.title || '');
+                }
+            });
+        }
+    }, [noteid])
 
     // Save the note to local storage whenever it changes
     useEffect(() => {
@@ -177,7 +198,16 @@ function CreateNote() {
 
     };
 
-  return (
+    function handleShear() {
+        if (!noteid) {
+            alert("Please save the note first!");
+        } else {
+            let shareableLink = `http://localhost:3000/shared-note/${noteid}`;
+            alert(`Your shareable link is: ${shareableLink}`);
+        }
+    }
+
+    return (
       <div id={"operation"}>
           <div className="App">
               <input
@@ -186,7 +216,7 @@ function CreateNote() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
-                  />
+              />
               <header className="App-header">
                   <MDXEditor
                       contentEditableClassName="prose"
@@ -275,6 +305,7 @@ function CreateNote() {
           </div>
           <button onClick={handleSubmit}>Generate</button>
           <button onClick={handleSave}>Save</button>
+          <button onClick={handleShear}>Shear</button>
           {loading && (
               <div className="modal">
                   <div className="modal-content">

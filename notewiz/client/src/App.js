@@ -10,6 +10,7 @@ import NoteBrowser from './components/NoteBrowser';
 import { FlashCardsView } from './components/FlashCardsView';
 import FlashCardList from './components/FlashCardList';
 import CreateFlashCard from './components/CreateFlashCard';
+import PublicNoteDisplay from "./components/PublicNoteDisplay";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
 function RoutesWithSidebar() {
   const location = useLocation(); // Get the current location
   const sidebarPaths = ['/Note', '/Profile','/browser',"/flashcards", "/Flash", "/create-new-flashcard"];
-  const showSidebar = sidebarPaths.includes(location.pathname); // Determine whether to show the sidebar
+  const showSidebar = sidebarPaths.includes(location.pathname) || /^\/Note\/.*$/; // Determine whether to show the sidebar
 
   const [sidebarVisable, setVisbility] = useState(false);
   const handleSideBarVisability = (data) =>{

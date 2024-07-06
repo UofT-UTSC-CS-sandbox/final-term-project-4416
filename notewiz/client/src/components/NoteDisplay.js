@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
-import ReactHtmlParser from 'react-html-parser';
+import parse from 'html-react-parser';
 import './NoteDisplay.css'
 
 const NoteDisplay = ({nid}) => {
@@ -25,7 +25,7 @@ const NoteDisplay = ({nid}) => {
 
     return (
         <div id={'publicNote'}>
-            {ReactHtmlParser(note)}
+            {parse(note)}
             {/* TODO: add more JS here */}
 
             <div id={'comments'}>
