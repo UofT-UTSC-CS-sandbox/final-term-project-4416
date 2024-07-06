@@ -97,7 +97,7 @@ const CreateFlashCard = () => {
   };
 
   const handleCancel = () => {
-    navigate('/flashcards-list');
+    navigate('/Flash');
   };
 
   const preventFlip = (e) => e.stopPropagation();

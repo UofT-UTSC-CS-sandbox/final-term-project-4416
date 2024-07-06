@@ -45,8 +45,8 @@ app.post('/', async (req, res)=>{
 
         if (existingUser) {
             if(existingUser.password === password){
-                // req.session.user = { username: existingUser.username, 
-                //     password: existingUser.password, 
+                // req.session.user = { username: existingUser.username,
+                //     password: existingUser.password,
                 //     preferName: existingUser.preferName};
                 app.locals.LoginUser = { username: existingUser.username,
                   password: existingUser.password,
@@ -136,7 +136,7 @@ app.post('/Profile',async (req, res)=>{
         const existingUser = await UserModel.findOneAndUpdate({ username: name }, {$set: {password: password, preferName: username}});
 
         if (existingUser) {
-            res.json({ message: 'Prefer Name and Password updated' , name: username, pass: password}); 
+            res.json({ message: 'Prefer Name and Password updated' , name: username, pass: password});
         }else{
             res.status(201).json({ message: 'Unauthorized user'});
         }
@@ -190,6 +190,6 @@ app.post('/api/fetchNote', async (req, res) => {
 });
 
 
-app.listen(8777, ()=>{
-    console.log('port connected at 8777');
+app.listen(5000, ()=>{
+    console.log('port connected at 5000');
 })
