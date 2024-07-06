@@ -1,6 +1,21 @@
 @import url('@radix-ui/colors/tomato-dark.css');
 @import url('@radix-ui/colors/mauve-dark.css');
 
+.App {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    width: auto;
+    min-height: 700px;
+    height: auto;
+    @import url('@radix-ui/colors/tomato-dark.css');
+@import url('@radix-ui/colors/mauve-dark.css');
+}
+
+
 .dark-editor {
     --accentBase: var(--tomato-1);
     --accentBgSubtle: var(--tomato-2);
@@ -51,9 +66,28 @@
     background: var(--basePageBg);
 }
 
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
 
 .prose {
     font-family: "Inter", sans-serif;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
 }
 
 .prose strong {
