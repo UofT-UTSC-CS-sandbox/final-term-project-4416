@@ -162,7 +162,7 @@ app.post('/Profile',async (req, res)=>{
 
 // noteBrowser handler
 app.post('/browser', async (req, res)=>{
-    const notes = await NoteModel.find();
+    const notes = await NoteModel.find({owner: app.locals.LoginUser.username});
     return res.status(200).json({data: notes});
 })
 
@@ -183,7 +183,9 @@ app.post('/deleteNotes', async (req, res) => {
 app.post('/api/createNotes', async (req, res)=>{
     try {
         console.log(req.body);
-        await NoteModel.create(req.body);
+        let newNote = req.body;
+        newNote.owner = app.locals.LoginUser.username;
+        await NoteModel.create(newNote);
         return res.status(200);
     } catch (err) {
         return res.status(500);
@@ -225,6 +227,18 @@ app.post('/api/fetchPublicNote', async (req, res) => {
         console.log(err);
         res.status(500).send('Error occurred');
     }
+});
+
+app.post('/api/searchNotes', async (req, res) => {
+    const { term } = req.body;
+    const notes = await NoteModel.find({
+        owner: app.locals.LoginUser.username,
+        $or: [
+            { title: new RegExp(term, 'i') },
+            { content: new RegExp(term, 'i') }
+        ]
+    });
+    return res.status(200).json({ data: notes });
 });
 
 app.post('/Note_Summarize', async (req, res) => {
