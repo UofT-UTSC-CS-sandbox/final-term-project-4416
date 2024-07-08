@@ -6,12 +6,22 @@ import './NoteBrowser.css'
 function NoteBrowser(props) {
     const navigate = useNavigate();
     const [notes, setNotes] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [deleteMode, setDeleteMode] = useState(false);
     const [selectedNotes, setSelectedNotes] = useState(new Set());
 
     async function retrieveNotes() {
         try {
             const response = await axios.post("http://localhost:5000/browser", {a: "get notes"});
+            setNotes(response.data.data);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function searchNotes() {
+        try {
+            const response = await axios.post("http://localhost:5000/api/searchNotes", { term: searchTerm });
             setNotes(response.data.data);
         } catch (err) {
             console.error(err);
@@ -45,6 +55,18 @@ function NoteBrowser(props) {
     return (
         <div className="NoteBrowser">
             <h1>Notes</h1>
+            <form onSubmit={(e) => {
+                e.preventDefault();
+                searchNotes();
+            }}>
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search notes"
+                />
+                <button type="submit" style={{width: "120px", fontSize: 'small'}}>Search</button>
+            </form>
             <button onClick={() => setDeleteMode(!deleteMode)}>
                 {deleteMode ? "Cancel" : "Delete Notes"}
             </button>
@@ -54,18 +76,19 @@ function NoteBrowser(props) {
                 </button>
             )}
             <div className="grid-container">
-            {notes.map(note => (
-                <div 
-                    key={note._id} 
-                    className={`grid-item ${deleteMode ? "deletion-mode" : ""} ${selectedNotes.has(note._id) ? "selected" : ""}`}
-                    onClick={deleteMode ? () => toggleNoteSelection(note._id) : () => navigate(`/Note/${note._id}`)}
-                >
-                    <h2>{note.title}</h2>
-                    <p>{note.content}</p>
-                </div>
-            ))}
+                {notes.map(note => (
+                    <div
+                        key={note._id}
+                        className={`grid-item ${deleteMode ? "deletion-mode" : ""} ${selectedNotes.has(note._id) ? "selected" : ""}`}
+                        onClick={deleteMode ? () => toggleNoteSelection(note._id) : () => navigate(`/Note/${note._id}`)}
+                    >
+                        <h2>{note.title}</h2>
+                        <p>{note.content}</p>
+                    </div>
+                ))}
             </div>
         </div>
     )
 }
+
 export default NoteBrowser;

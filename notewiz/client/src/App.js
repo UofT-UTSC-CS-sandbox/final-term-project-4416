@@ -43,11 +43,11 @@ function RoutesWithSidebar() {
   return (
       <div className='Apps'>
       {(['/', '/signup'].includes(location.pathname ) ||
-          /^\/sheared-note\/.*$/.test(location.pathname)) ? (
+          /^\/shared-note\/.*$/.test(location.pathname)) ? (
         <Routes>
           <Route path='/' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
-          <Route path='/sheared-note/:id' element={<PublicNoteDisplay />} />
+          <Route path='/shared-note/:id' element={<PublicNoteDisplay />} />
         </Routes>
       ) :(
         <div className={`app-container ${modeTheme === 'light' ? '' : 'dark'}`} >
