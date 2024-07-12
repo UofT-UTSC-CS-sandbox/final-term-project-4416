@@ -7,6 +7,10 @@ import Signup from './components/auth/Signup';
 import Sidebar from './components/Sidebar';
 import Profile from './components/Profile';
 import NoteBrowser from './components/NoteBrowser';
+import { FlashCardsView } from './components/FlashCardsView';
+import FlashCardList from './components/FlashCardList';
+import CreateFlashCard from './components/CreateFlashCard';
+import PublicNoteDisplay from "./components/PublicNoteDisplay";
 
 function App() {
   return (
@@ -18,36 +22,54 @@ function App() {
 
 function RoutesWithSidebar() {
   const location = useLocation(); // Get the current location
-  const sidebarPaths = ['/Note', '/Profile','/browser'];
-  const showSidebar = sidebarPaths.includes(location.pathname); // Determine whether to show the sidebar
+  const sidebarPaths = ['/Note', '/Profile','/browser',"/flashcards", "/Flash", "/create-new-flashcard"];
+  const showSidebar = sidebarPaths.includes(location.pathname) || /^\/Note\/.*$/; // Determine whether to show the sidebar
 
   const [sidebarVisable, setVisbility] = useState(false);
   const handleSideBarVisability = (data) =>{
     setVisbility(data);
   }
 
+  const [modeTheme, setModeTheme] = useState("light");
+  const handlemodeTheme = (model) =>{
+    setModeTheme(model);
+  }
+
+  const handleLogout = ()=>{
+    setModeTheme('light');
+  }
+
 
   return (
-    <>
-      {['/', '/signup'].includes(location.pathname) ? (
+      <div className='Apps'>
+      {(['/', '/signup'].includes(location.pathname ) ||
+          /^\/shared-note\/.*$/.test(location.pathname)) ? (
         <Routes>
           <Route path='/' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
+          <Route path='/shared-note/:id' element={<PublicNoteDisplay />} />
         </Routes>
       ) :(
-        <div className='app-container'>
-          {showSidebar && <div className='sidebar'><Sidebar visable_hidden={handleSideBarVisability}/></div>}
+        <div className={`app-container ${modeTheme === 'light' ? '' : 'dark'}`} >
+          {showSidebar && <div className='sidebar'>
+            <Sidebar visable_hidden={handleSideBarVisability} modeStyle={handlemodeTheme}/>
+        </div>}
       <div className={`content ${sidebarVisable ? '' : 'hidden'}`}>
+        <div id = {modeTheme}>
       <Routes>
         <Route path='/Note' element={<CreateNote />}></Route>
         <Route path='/Note/:noteid' element={<CreateNote />}></Route>
-        <Route path='/Profile' element={<Profile />}></Route>
+        <Route path='/Profile' element={<Profile logout={handleLogout}/>}></Route>
         <Route path='/browser' element={<NoteBrowser/>}></Route>
+          <Route path="/flashcards" element={<FlashCardsView/>} />
+          <Route path="/Flash" element={<FlashCardList/>} />
+          <Route path="/create-new-flashcard" element={<CreateFlashCard />} />
       </Routes>
+      </div>
       </div>
       </div>)}
 
-    </>
+    </div>
   );
 }
 

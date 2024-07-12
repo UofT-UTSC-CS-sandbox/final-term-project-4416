@@ -1,31 +1,27 @@
 {
   "name": "client",
-  "version": "0.2.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
-    "@mdxeditor/editor": "^3.7.0",
-    "@mui/icons-material": "^5.15.21",
-    "@mui/material": "^5.15.21",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
     "@reduxjs/toolkit": "^2.2.6",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
     "axios": "^1.7.2",
     "cors": "^2.8.5",
-    "html-react-parser": "^5.1.10",
     "react": "^18.3.1",
     "react-card-flip": "^1.2.3",
     "react-dom": "^18.3.1",
-    "react-draggable": "^4.4.6",
-    "react-hook-form": "^7.52.1",
-    "react-markdown": "^9.0.1",
-    "react-markdown-editor-lite": "^1.3.4",
+    "react-draggable": "^4.4.3",
+    "react-markdown": "^5.0.3",
+    "react-markdown-editor-lite": "^1.3.0",
     "react-quizlet-flashcard": "^3.0.0",
     "react-redux": "^9.1.2",
-    "react-router-dom": "^6.24.0",
+    "react-router-dom": "^6.23.1",
     "react-scripts": "^5.0.1",
-    "web-vitals": "^4.2.1"
+    "typescript": "^5.5.3",
+    "web-vitals": "^4.1.0"
   },
   "scripts": {
     "start": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
@@ -34,8 +30,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "react-router-dom": "^6.24.0",
-    "react-scripts": "^5.0.1"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   },
   "browserslist": {
     "production": [
