@@ -1,35 +1,41 @@
-//require('dotenv').config();
+const OpenAI = require('openai');
+require('dotenv').config();
 const express = require('express')
 const mongoose = require("mongoose")
+const showdown  = require('showdown')
 const cors = require('cors');
 const UserModel = require('./models/User')
 const NoteModel = require('./models/Note')
 const session = require('express-session')
+const bcrypt = require('bcrypt');
+const bodyParser = require('body-parser');
 
 const app = express();
+const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY,});
 
 app.locals.LoginUser = null;
+app.locals.note = "Hello world";
 
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
-app.use(cors({origin: 'http://localhost:3000'}))
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({origin: process.env.CORS_ORIGIN}));
 
 app.use(session({
-    secret: '4416',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false } // for HTTP; set true for HTTPS
 }));
 
-const url = "mongodb+srv://NoteWiz:4416@cluster0.1bzlqay.mongodb.net/UserInfo?retryWrites=true&w=majority&appName=Cluster0"
-
-mongoose.connect(url)
-.then(()=>{
-    console.log("Successfully connected Mongodb")
-})
-.catch(()=>{
-    console.log("Failed connection")
-})
+mongoose.connect(process.env.MONGODB_URL)
+    .then(()=>{
+        console.log("Successfully connected Mongodb")
+    })
+    .catch(()=>{
+        console.log("Failed connection")
+    });
 
 app.post('/', async (req, res)=>{
     const { username, password } = req.body;
@@ -44,13 +50,14 @@ app.post('/', async (req, res)=>{
         const existingUser = await UserModel.findOne({ username });
 
         if (existingUser) {
-            if(existingUser.password === password){
-                // req.session.user = { username: existingUser.username, 
-                //     password: existingUser.password, 
+            const match = await bcrypt.compare(password, existingUser.password);
+            if(match){
+                // req.session.user = { username: existingUser.username,
+                //     password: existingUser.password,
                 //     preferName: existingUser.preferName};
                 app.locals.LoginUser = { username: existingUser.username,
-                  password: existingUser.password,
-                  preferName: existingUser.preferName
+                    password: existingUser.password,
+                    preferName: existingUser.preferName
                 }
                 res.status(200).json({ message: 'Login successfully'});
                 // console.log("session data:", req.session.user);
@@ -83,7 +90,8 @@ app.post('/signup', async (req, res)=>{
         if (existingUser) {
             res.json({ message: 'Username already exists' }); // Use status code 409 for conflict
         }else{
-            const newUser = await UserModel.create({ username, password });
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const newUser = await UserModel.create({ username, password: hashedPassword });
             res.status(201).json({ message: 'User created successfully', user: newUser });
         }
     } catch (error) {
@@ -106,15 +114,16 @@ app.get('/Profile', (req, res)=>{
         //     return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
         // }
         if(app.locals.LoginUser){
-          res.status(200).json({
-              name: app.locals.LoginUser.preferName,
-              pass: app.locals.LoginUser.password,
-              defaultName: app.locals.LoginUser.username
-          })
-      }else{
-          console.log("else part");
-          return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
-      }
+
+            res.status(200).json({
+                name: app.locals.LoginUser.preferName,
+                pass: app.locals.LoginUser.password,
+                defaultName: app.locals.LoginUser.username
+            })
+        }else{
+            console.log("else part");
+            return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
+        }
     }catch(err){
         console.log("error part")
         res.status(500).json({name:'Internal Server Error', pass: 'Internal Server Error'});
@@ -128,15 +137,21 @@ app.post('/Profile',async (req, res)=>{
     if (!username || username.trim() === '' || !password) {
         return res.status(400).json({ message: 'Prefer name and password cannot be empty' });
     }
-
     const name = app.locals.LoginUser.username;
 
     try {
         // Check if the user already exists
-        const existingUser = await UserModel.findOneAndUpdate({ username: name }, {$set: {password: password, preferName: username}});
+
+        const existingUser = await UserModel.findOne({ username: name });
 
         if (existingUser) {
-            res.json({ message: 'Prefer Name and Password updated' , name: username, pass: password}); 
+            const hashedPassword = await bcrypt.hash(password, 10);
+            app.locals.LoginUser = { username: existingUser.username,
+                password: hashedPassword,
+                preferName: username
+            }
+            await UserModel.updateOne({username:name}, {$set: {password: hashedPassword, preferName: username}})
+            res.json({ message: 'Prefer Name and Password updated' , name: username, pass: password});
         }else{
             res.status(201).json({ message: 'Unauthorized user'});
         }
@@ -147,7 +162,7 @@ app.post('/Profile',async (req, res)=>{
 
 // noteBrowser handler
 app.post('/browser', async (req, res)=>{
-    const notes = await NoteModel.find();
+    const notes = await NoteModel.find({owner: app.locals.LoginUser.username});
     return res.status(200).json({data: notes});
 })
 
@@ -167,7 +182,10 @@ app.post('/deleteNotes', async (req, res) => {
 
 app.post('/api/createNotes', async (req, res)=>{
     try {
-        await NoteModel.create(req.body);
+        console.log(req.body);
+        let newNote = req.body;
+        newNote.owner = app.locals.LoginUser.username;
+        await NoteModel.create(newNote);
         return res.status(200);
     } catch (err) {
         return res.status(500);
@@ -186,6 +204,70 @@ app.post('/api/fetchNote', async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).send('Error occurred');
+    }
+});
+
+app.post('/api/fetchPublicNote', async (req, res) => {
+    console.log("fetching note: " + req.body.id); // use req.body.id instead of req.id
+
+    try {
+        let doc = await NoteModel.findById(req.body.id);
+        console.log('Found document:', doc);
+        if (doc.public === false) {
+            return res.status(401).send('Not authorized');
+        }
+
+        //html conversion
+        let converter = new showdown.Converter(),
+            text      = '#'+doc.title+'\n'+doc.content,
+            html      = converter.makeHtml(text);
+
+        res.status(200).send(html); // send the found document as the response
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error occurred');
+    }
+});
+
+app.post('/api/searchNotes', async (req, res) => {
+    const { term } = req.body;
+    const notes = await NoteModel.find({
+        owner: app.locals.LoginUser.username,
+        $or: [
+            { title: new RegExp(term, 'i') },
+            { content: new RegExp(term, 'i') }
+        ]
+    });
+    return res.status(200).json({ data: notes });
+});
+
+app.post('/Note_Summarize', async (req, res) => {
+    const notes = JSON.stringify(req.body);
+    // console.log(notes);
+    if (!notes) {
+        console.log("Notes are not received");
+        return res.status(400).json({ error: 'Notes are required' });
+    }
+
+    try {
+        const response = await openai.chat.completions.create({
+            model: 'gpt-4-turbo',
+            messages: [
+                { role: 'system', content: 'You are going to summarize the notes' },
+                { role: 'user', content: `Summarize the following notes in Markdown format, after summarize \n\n ${notes}` }
+            ],
+            max_tokens: 300,
+            temperature: 0.6,
+            top_p: 0.9,
+            frequency_penalty: 0.5,
+            presence_penalty: 0.5,
+        });
+        let GeneratedText = response.choices[0].message.content.trim();
+        const summary = `${GeneratedText}\n***\n`;
+        res.status(200).json({summary});
+    } catch (error) {
+        console.log("Error: ", error.response ? error.response.data : error.message);
+        res.status(500).json({ error: 'Failed to summarize notes' });
     }
 });
 
