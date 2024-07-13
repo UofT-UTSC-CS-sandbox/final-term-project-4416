@@ -8,7 +8,15 @@
     content: {
         type: String,
         required: true
-    }
+    },
+     public: {
+        type: Boolean,
+         default: true
+     },
+     owner: {
+        type: String,
+         required: true
+     }
  })
 
  const NoteModel = mongoose.model("plainNote", NoteSchema)
