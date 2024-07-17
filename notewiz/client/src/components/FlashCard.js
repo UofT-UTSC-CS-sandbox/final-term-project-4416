@@ -5,6 +5,7 @@ import { flipFlashCard, deleteFlashCard } from './FlashCardSlice';
 import { Card, CardContent, CardHeader, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
+import axios from "axios";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   "& .MuiCardHeader-root": {
@@ -30,6 +31,16 @@ const FlashCard = ({ id, front, back }) => {
   const dispatch = useDispatch();
   const { flipped } = useSelector((state) => state.flashCards);
 
+  async function handleDelete(id){
+    try{
+      await dispatch(deleteFlashCard(id));
+      const response = await axios.post("http://localhost:5000/api/deleteFlashCard", {id});
+    }catch (e) {
+      console.log(e)
+    }
+  }
+
+
   return (
     <div id={`${id + 1}`}>
       <Flip isFlipped={flipped} flipDirection="vertical">
@@ -42,7 +53,7 @@ const FlashCard = ({ id, front, back }) => {
             action={
               <IconButton
                 aria-label="delete"
-                onClick={() => dispatch(deleteFlashCard())}
+                onClick={handleDelete(id)}
               >
                 <DeleteIcon />
               </IconButton>
@@ -61,7 +72,7 @@ const FlashCard = ({ id, front, back }) => {
             action={
               <IconButton
                 aria-label="delete"
-                onClick={() => dispatch(deleteFlashCard())}
+                onClick={handleDelete(id)}
               >
                 <DeleteIcon />
               </IconButton>

@@ -6,6 +6,7 @@ const showdown  = require('showdown')
 const cors = require('cors');
 const UserModel = require('./models/User')
 const NoteModel = require('./models/Note')
+const FlashModel = require('./models/FlashCard')
 const session = require('express-session')
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
@@ -270,6 +271,63 @@ app.post('/Note_Summarize', async (req, res) => {
         res.status(500).json({ error: 'Failed to summarize notes' });
     }
 });
+
+app.get('/api/fetchFlashCardSet', async (req, res) => {
+    console.log('fetching card now');
+    try{
+        if (!app.locals.LoginUser || !app.locals.LoginUser.username) {
+            return res.send([]);
+        }
+        const cards = await FlashModel.find({owner: app.locals.LoginUser.username});
+        if(cards){
+            console.log(cards);
+            res.status(200).send(cards);
+        }
+    }catch (e) {
+        console.log("Error fetching FlashCardSet");
+        console.log(e);
+    }
+});
+
+app.post('/api/deleteFlashCard', async (req, res) => {
+    try{
+        const id = req.body.id;
+        const count = await FlashModel.countDocuments({owner: app.locals.LoginUser.username});
+        const deleteFlashCard = await FlashModel.findOneAndDelete(
+            {owner: app.locals.LoginUser.username, id: id});
+        if(id !== (count-1)) {
+            const lastOne = count - 1;
+            const updateFlashCard = await FlashModel.findOneAndUpdate({
+                owner: app.locals.LoginUser.username,
+                id: lastOne
+            }, {$set: {id: id}});
+        }
+    }catch (e) {
+        console.log(e)
+    }
+});
+
+app.post('/api/createFlashCard', async (req, res) => {
+
+    console.log(req.body);
+    try{
+        const id = await FlashModel.countDocuments({owner: app.locals.LoginUser.username});
+        const newFlashCard = await FlashModel.create({owner: app.locals.LoginUser.username, id: id,
+            front:{
+                title: req.body.frontTitle,
+                content: req.body.frontContent,
+            },
+            back:{
+                title: req.body.backTitle,
+                content: req.body.backContent,
+            }
+        });
+    }catch(err){
+        console.log(err)
+    }
+});
+
+
 
 
 app.listen(5000, ()=>{

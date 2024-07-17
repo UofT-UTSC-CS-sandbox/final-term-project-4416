@@ -195,7 +195,6 @@ function CreateNote() {
             setloding(false);
             location.reload();
         }
-
     };
 
     function handleShear() {

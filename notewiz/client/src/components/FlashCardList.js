@@ -5,16 +5,23 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { deleteFlashCard } from './FlashCardSlice';
 import FlashCardDialog from './FlashCardDialog';
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
 const FlashCardList = () => {
+
   const flashCards = useSelector((state) => state.flashCards.cards);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selectedCard, setSelectedCard] = useState(null);
 
-  const handleDelete = (id) => {
-    dispatch(deleteFlashCard(id));
-  };
+    async function handleDelete(id){
+        try{
+            await dispatch(deleteFlashCard(id));
+            const response = await axios.post("http://localhost:5000/api/deleteFlashCard", {id});
+        }catch (e) {
+            console.log(e)
+        }
+    }
 
   const handleItemClick = (card) => {
     setSelectedCard(card);
@@ -30,7 +37,7 @@ const FlashCardList = () => {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom onClick={()=>navigate('/create-new-flashcard')}>
         FlashCard List
       </Typography>
       <Button

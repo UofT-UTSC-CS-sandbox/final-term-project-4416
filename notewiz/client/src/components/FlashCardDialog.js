@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import SimpleBottomNavigation from './BottomNav';
 import { deleteFlashCard, nextFlashCard, prevFlashCard } from './FlashCardSlice';
+import axios from "axios";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   '& .MuiCardHeader-root': {
@@ -41,10 +42,16 @@ const FlashCardDialog = ({ open, onClose, current_id }) => {
     setCurrentCardId(current_id);
   }, [current_id]);
 
-  const handleDelete = () => {
-    dispatch(deleteFlashCard(currentCardId));
-    onClose();
-  };
+  async function handleDelete(id){
+    try{
+      await dispatch(deleteFlashCard(currentCardId));
+      const response = await axios.post("http://localhost:5000/api/deleteFlashCard", {id});
+      onClose();
+    }catch (e) {
+      console.log(e)
+    }
+  }
+
 
   const handleFlip = () => {
     setIsFlipped(!isFlipped);

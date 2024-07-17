@@ -1,40 +1,31 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
-import { createSlice } from "@reduxjs/toolkit";
+async function fetchFlashCardSet() {
+  let response;
+  response = await axios.get("http://localhost:5000/api/fetchFlashCardSet");
+  return response.data;
+}
+
+export const fetchFlashCardSetThunk = createAsyncThunk(
+    'flashCards/fetchFlashCardSet',
+    async () => {
+      try {
+        const cards = await fetchFlashCardSet();
+        return cards ?? [];
+      } catch (error) {
+        console.error('Error fetching flashcard set:', error);
+        return [];
+      }
+    }
+);
 
 const flashCards = createSlice({
   name: "flashCards",
   initialState: {
     current: 0, // index of current visible card
     flipped: false,
-    cards: [
-      {
-        // State is an Array of Flashcards With a Front and Back. The id is the array index
-        id: 0,
-        front: {
-          title: "Question 1",
-          content: "What is Redux Toolkit? (click anywhere on the card to flip)"
-        },
-        back: {
-          title: "",
-          content:
-            "Redux Toolkit is the official, opinionated, batteries-included toolset for efficient Redux development and is intended to be the standard way to write Redux logic."
-        }
-      },
-      {
-        // State is an Array of Flashcards With a Front and Back. The id is the array index
-        id: 1,
-        front: {
-          title: "About This Project",
-          content:
-            "This project was built with React, React-Router, Redux, Redux Toolkit, React-Redux & a Custom Designed MaterialUI Theme"
-        },
-        back: {
-          title: "More info",
-          content:
-            "Click the GitHub icon in the top right of the screen to view the source code!"
-        }
-      }
-    ]
+    cards: [],
   },
   reducers: {
     nextFlashCard: state => {
@@ -74,7 +65,16 @@ const flashCards = createSlice({
         state.cards.splice(state.current, 1);
       }
     }
-  }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchFlashCardSetThunk.fulfilled, (state, action) => {
+      state.cards = action.payload; // Update the state with fetched cards
+    });
+    builder.addCase(fetchFlashCardSetThunk.rejected, (state, action) => {
+      console.error('Fetch flashcard set failed:', action.error);
+      state.cards = []; // Ensure the state is still set to an empty array on error
+    });
+  },
 });
 
 export const {

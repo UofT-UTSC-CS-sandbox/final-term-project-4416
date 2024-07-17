@@ -18,6 +18,7 @@ import {
 import { styled } from "@mui/material/styles";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from '@mui/icons-material/Cancel';
+import axios from "axios";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   "& .MuiCardHeader-root": {
@@ -71,11 +72,11 @@ const CreateFlashCard = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.frontContent || formData.frontContent.length < 3) {
-      newErrors.frontContent = "You must write at least 1 word";
+    if (!formData.frontContent || formData.frontContent.length < 1) {
+      newErrors.frontContent = "You must write at least 1 word at Front Content";
     }
-    if (!formData.backContent || formData.backContent.length < 3) {
-      newErrors.backContent = "You must write at least 1 word";
+    if (!formData.backContent || formData.backContent.length < 1) {
+      newErrors.backContent = "You must write at least 1 word at Back Content";
     }
     return newErrors;
   };
@@ -85,16 +86,19 @@ const CreateFlashCard = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  async function handleSubmit (e) {
     e.preventDefault();
     const formErrors = validateForm();
     console.log("formErrors", formErrors);
-    if (Object.keys(formErrors).length === 0) {
-      dispatch(createFlashCard(formData));
-    } else {
-      setErrors(formErrors);
+    console.log(formData);
+    try{
+      const response = await axios.post("http://localhost:5000/api/createFlashCard", formData);
+    }catch(err){
+      console.log(err);
+    }finally {
+      location.reload();
     }
-  };
+  }
 
   const handleCancel = () => {
     navigate('/Flash');
