@@ -290,22 +290,32 @@ app.get('/api/fetchFlashCardSet', async (req, res) => {
 });
 
 app.post('/api/deleteFlashCard', async (req, res) => {
-    try{
+    try {
         const id = req.body.id;
-        const count = await FlashModel.countDocuments({owner: app.locals.LoginUser.username});
-        const deleteFlashCard = await FlashModel.findOneAndDelete(
-            {owner: app.locals.LoginUser.username, id: id});
-        if(id !== (count-1)) {
-            const lastOne = count - 1;
-            const updateFlashCard = await FlashModel.findOneAndUpdate({
-                owner: app.locals.LoginUser.username,
-                id: lastOne
-            }, {$set: {id: id}});
+        const count = await FlashModel.countDocuments({ owner: app.locals.LoginUser.username });
+        console.log(`id: ${id}, and count: ${count}`);
+
+        const flashCardToDelete = await FlashModel.findOne({ owner: app.locals.LoginUser.username, id: id });
+        if (flashCardToDelete) {
+            await flashCardToDelete.delete();
+
+            if (id !== (count - 1)) {
+                const lastOne = count - 1;
+                const lastFlashCard = await FlashModel.findOne({ owner: app.locals.LoginUser.username, id: lastOne });
+                if (lastFlashCard) {
+                    lastFlashCard.id = id;
+                    await lastFlashCard.save();
+                }
+            }
         }
-    }catch (e) {
-        console.log(e)
+
+        res.status(200).send({ message: 'FlashCard deleted successfully' });
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({ message: 'Error deleting FlashCard' });
     }
 });
+
 
 app.post('/api/createFlashCard', async (req, res) => {
 

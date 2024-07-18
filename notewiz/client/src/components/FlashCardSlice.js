@@ -54,15 +54,37 @@ const flashCards = createSlice({
       const { index, updatedCardInfo } = action.payload;
       state.cards[index] = updatedCardInfo;
     },
+    // deleteFlashCard: state => {
+    //   // if (state.cards.length === 1) return; // If there's only one card, don't allow it to be deleted
+    //   if (!state.flipped) flashCards.caseReducers.flipFlashCard(state); // Ensure front of card is displayed when we change cards
+    //   if (state.cards.length - 1 === state.current) {
+    //     // If looking at the last card, move back 1 card before deleting so we don't reference an undefined array position
+    //     state.current--;
+    //     state.cards.splice(state.current + 1, 1);
+    //   } else {
+    //     state.cards.splice(state.current, 1);
+    //   }
+    // }
     deleteFlashCard: state => {
-      // if (state.cards.length === 1) return; // If there's only one card, don't allow it to be deleted
-      if (!state.flipped) flashCards.caseReducers.flipFlashCard(state); // Ensure front of card is displayed when we change cards
+      if (state.cards.length === 0) return; // If there are no cards, do nothing
+
+      if (!state.flipped) {
+        flashCards.caseReducers.flipFlashCard(state); // Ensure front of card is displayed when we change cards
+      }
+
       if (state.cards.length - 1 === state.current) {
         // If looking at the last card, move back 1 card before deleting so we don't reference an undefined array position
-        state.current--;
-        state.cards.splice(state.current + 1, 1);
+        state.cards.splice(state.current, 1);
+        if (state.current > 0) {
+          state.current--;
+        }
       } else {
         state.cards.splice(state.current, 1);
+      }
+
+      if (state.current >= state.cards.length) {
+        // Ensure the current index is within the bounds of the array
+        state.current = state.cards.length - 1;
       }
     }
   },

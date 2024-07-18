@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Divider, Typography, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteFlashCard } from './FlashCardSlice';
+import {deleteFlashCard, fetchFlashCardSetThunk} from './FlashCardSlice';
 import FlashCardDialog from './FlashCardDialog';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
@@ -10,9 +10,24 @@ import axios from "axios";
 const FlashCardList = () => {
 
   const flashCards = useSelector((state) => state.flashCards.cards);
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selectedCard, setSelectedCard] = useState(null);
+  let fetchRequired = useSelector((state) => state.fetchingRequire)
+
+    useEffect( () => {
+
+        const fetchNode = async ()=>{
+            try{
+                await dispatch(fetchFlashCardSetThunk());
+                console.log(flashCards);
+
+            }catch (e) {
+                console.log(e)
+            }
+        }
+        fetchNode();
+    }, [dispatch]);
 
     async function handleDelete(id){
         try{
@@ -51,10 +66,10 @@ const FlashCardList = () => {
       <List>
         {flashCards.map((card) => (
           <React.Fragment key={card.id}>
-            <ListItem button onClick={() => handleItemClick(card)}>
+            <ListItem onClick={() => handleItemClick(card)}>
               <ListItemText
-                primary={card.front.title}
-                secondary={card.front.content}
+                  primary={card.front?.title || ''}
+                  secondary={card.front?.content || ''}
               />
               <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(card.id)}>
