@@ -2,7 +2,7 @@ const OpenAI = require('openai');
 require('dotenv').config();
 const express = require('express')
 const mongoose = require("mongoose")
-const showdown  = require('showdown')
+const showdown = require('showdown')
 const cors = require('cors');
 const UserModel = require('./models/User')
 const NoteModel = require('./models/Note')
@@ -11,16 +11,16 @@ const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 
 const app = express();
-const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY,});
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, });
 
 app.locals.LoginUser = null;
 app.locals.note = "Hello world";
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors({origin: process.env.CORS_ORIGIN}));
+app.use(cors({ origin: process.env.CORS_ORIGIN }));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -30,14 +30,14 @@ app.use(session({
 }));
 
 mongoose.connect(process.env.MONGODB_URL)
-    .then(()=>{
+    .then(() => {
         console.log("Successfully connected Mongodb")
     })
-    .catch(()=>{
+    .catch(() => {
         console.log("Failed connection")
     });
 
-app.post('/', async (req, res)=>{
+app.post('/', async (req, res) => {
     const { username, password } = req.body;
 
     // Check if the username is empty
@@ -51,20 +51,21 @@ app.post('/', async (req, res)=>{
 
         if (existingUser) {
             const match = await bcrypt.compare(password, existingUser.password);
-            if(match){
+            if (match) {
                 // req.session.user = { username: existingUser.username,
                 //     password: existingUser.password,
                 //     preferName: existingUser.preferName};
-                app.locals.LoginUser = { username: existingUser.username,
+                app.locals.LoginUser = {
+                    username: existingUser.username,
                     password: existingUser.password,
                     preferName: existingUser.preferName
                 }
-                res.status(200).json({ message: 'Login successfully'});
+                res.status(200).json({ message: 'Login successfully' });
                 // console.log("session data:", req.session.user);
-            }else{
-                res.status(201).json({ message: 'Wrong password'});
+            } else {
+                res.status(201).json({ message: 'Wrong password' });
             }
-        }else{
+        } else {
             return res.status(400).json({ message: "User name doesn't exist, please sign up" });
         }
     } catch (error) {
@@ -75,7 +76,7 @@ app.post('/', async (req, res)=>{
 
 
 
-app.post('/signup', async (req, res)=>{
+app.post('/signup', async (req, res) => {
     const { username, password, ConfirmPassword } = req.body;
 
     //Check if the username is empty
@@ -89,7 +90,7 @@ app.post('/signup', async (req, res)=>{
 
         if (existingUser) {
             res.json({ message: 'Username already exists' }); // Use status code 409 for conflict
-        }else{
+        } else {
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = await UserModel.create({ username, password: hashedPassword });
             res.status(201).json({ message: 'User created successfully', user: newUser });
@@ -100,8 +101,9 @@ app.post('/signup', async (req, res)=>{
     }
 })
 
-app.get('/Profile', (req, res)=>{
-    try{
+
+app.get('/Profile', (req, res) => {
+    try {
         // if(req.session.user){
         //     res.status(200).json({
         //         name: req.session.user.preferName,
@@ -113,24 +115,24 @@ app.get('/Profile', (req, res)=>{
         //     console.log("session data:", req.session.user);
         //     return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
         // }
-        if(app.locals.LoginUser){
+        if (app.locals.LoginUser) {
 
             res.status(200).json({
                 name: app.locals.LoginUser.preferName,
                 pass: app.locals.LoginUser.password,
                 defaultName: app.locals.LoginUser.username
             })
-        }else{
+        } else {
             console.log("else part");
-            return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
+            return res.status(401).json({ name: "Unauthorized User", pass: "Unauthorized Password" });
         }
-    }catch(err){
+    } catch (err) {
         console.log("error part")
-        res.status(500).json({name:'Internal Server Error', pass: 'Internal Server Error'});
+        res.status(500).json({ name: 'Internal Server Error', pass: 'Internal Server Error' });
     }
 })
 
-app.post('/Profile',async (req, res)=>{
+app.post('/Profile', async (req, res) => {
     const { username, password } = req.body;
 
     //Check if the username is empty
@@ -146,14 +148,15 @@ app.post('/Profile',async (req, res)=>{
 
         if (existingUser) {
             const hashedPassword = await bcrypt.hash(password, 10);
-            app.locals.LoginUser = { username: existingUser.username,
+            app.locals.LoginUser = {
+                username: existingUser.username,
                 password: hashedPassword,
                 preferName: username
             }
-            await UserModel.updateOne({username:name}, {$set: {password: hashedPassword, preferName: username}})
-            res.json({ message: 'Prefer Name and Password updated' , name: username, pass: password});
-        }else{
-            res.status(201).json({ message: 'Unauthorized user'});
+            await UserModel.updateOne({ username: name }, { $set: { password: hashedPassword, preferName: username } })
+            res.json({ message: 'Prefer Name and Password updated', name: username, pass: password });
+        } else {
+            res.status(201).json({ message: 'Unauthorized user' });
         }
     } catch (error) {
         res.status(500).json({ message: 'Failed to Update' });
@@ -161,12 +164,21 @@ app.post('/Profile',async (req, res)=>{
 })
 
 // noteBrowser handler
-app.post('/browser', async (req, res)=>{
-    const notes = await NoteModel.find({owner: app.locals.LoginUser.username});
-    return res.status(200).json({data: notes});
+app.post('/browser', async (req, res) => {
+    const notes = await NoteModel.find({ owner: app.locals.LoginUser.username });
+    return res.status(200).json({ data: notes });
 })
 
-
+app.post('/GlobalSearch', async (req, res) => {
+    try {
+        const notes = await NoteModel.find({ public: true });
+        console.log('Fetched notes from MongoDB:', notes); // 打印到终端
+        return res.status(202).json({ data: notes });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).send('Error fetching data');
+    }
+});
 
 app.post('/deleteNotes', async (req, res) => {
     //retrieve selected notes id from req
@@ -180,7 +192,7 @@ app.post('/deleteNotes', async (req, res) => {
     }
 });
 
-app.post('/api/createNotes', async (req, res)=>{
+app.post('/api/createNotes', async (req, res) => {
     try {
         console.log(req.body);
         let newNote = req.body;
@@ -219,8 +231,8 @@ app.post('/api/fetchPublicNote', async (req, res) => {
 
         //html conversion
         let converter = new showdown.Converter(),
-            text      = '#'+doc.title+'\n'+doc.content,
-            html      = converter.makeHtml(text);
+            text = '#' + doc.title + '\n' + doc.content,
+            html = converter.makeHtml(text);
 
         res.status(200).send(html); // send the found document as the response
     } catch (err) {
@@ -264,7 +276,7 @@ app.post('/Note_Summarize', async (req, res) => {
         });
         let GeneratedText = response.choices[0].message.content.trim();
         const summary = `${GeneratedText}\n***\n`;
-        res.status(200).json({summary});
+        res.status(200).json({ summary });
     } catch (error) {
         console.log("Error: ", error.response ? error.response.data : error.message);
         res.status(500).json({ error: 'Failed to summarize notes' });
@@ -272,6 +284,6 @@ app.post('/Note_Summarize', async (req, res) => {
 });
 
 
-app.listen(5000, ()=>{
-    console.log('port connected at 5000');
+app.listen(8000, () => {
+    console.log('port connected at 8000');
 })

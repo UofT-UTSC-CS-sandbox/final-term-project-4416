@@ -9,7 +9,7 @@ const NoteDisplay = ({nid}) => {
     useEffect(() => {
         const fetchNote = async () => {
             try {
-                let response = await axios.post("http://localhost:5000/api/fetchPublicNote", {id: nid});
+                let response = await axios.post("http://localhost:8000/api/fetchPublicNote", {id: nid});
                 setNote(response.data);
             } catch (error) {
                 console.error("Error fetching note", error);

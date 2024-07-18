@@ -152,7 +152,7 @@ function CreateNote() {
     useEffect(() => {
         async function fetchNote(id) {
             try{
-                return await axios.post("http://localhost:5000/api/fetchNote", {id: id});
+                return await axios.post("http://localhost:8000/api/fetchNote", {id: id});
             } catch (err) {
                 console.error(err);
             }
@@ -175,7 +175,7 @@ function CreateNote() {
     const handleSave = async (e)=>{
         e.preventDefault();
         const note = { 'title': title, 'content': editorContent };
-        const response = await axios.post("http://localhost:5000/api/createNotes", note)
+        const response = await axios.post("http://localhost:8000/api/createNotes", note)
     }
 
     const handleSubmit = async (e) => {
@@ -183,7 +183,7 @@ function CreateNote() {
         try{
             setloding(true);
             const notes = {editorContent};
-            const response = await axios.post("http://localhost:5000/Note_Summarize", notes);
+            const response = await axios.post("http://localhost:8000/Note_Summarize", notes);
             console.log(response.data.summary);
             const resultRendering = response.data.summary + localStorage.getItem('userNote');
             localStorage.setItem('userNote',resultRendering);

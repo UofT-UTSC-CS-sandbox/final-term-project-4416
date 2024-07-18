@@ -6,6 +6,7 @@ html, body {
 .Apps {
   display: flex;
   flex-direction: column;
+  background-color: white;
 }
 
 
@@ -27,7 +28,8 @@ html, body {
   flex-grow: 1;
   margin-left: 10px;
   margin-top: 80px;
-  max-width: calc(100% - 200px);
+
+  max-width: calc(100% - 10px);
   overflow-x: auto;
   padding: 10px; /* Padding around the note content */
   transition: margin-left 0.3s ease;
@@ -49,3 +51,12 @@ html, body {
 #dark .App{
   background-color: #495057;
 }
+
+#dark .Global{
+  background-color: #495057;
+}
+
+#dark .scroll-container{
+  background-color: #495057;
+}
+
