@@ -1,6 +1,6 @@
- const mongoose = require('mongoose')
+const mongoose = require('mongoose')
 
- const NoteSchema = new mongoose.Schema({
+const NoteSchema = new mongoose.Schema({
     title: {
         type: String,
         unique: false,
@@ -9,15 +9,19 @@
         type: String,
         required: true
     },
-     public: {
+    public: {
         type: Boolean,
-         default: true
-     },
-     owner: {
+        default: true
+    },
+    owner: {
         type: String,
-         required: true
-     }
- })
+        required: true
+    },
+    comment: {
+        type: [commentSchema],
+        default: []
+    }
+})
 
- const NoteModel = mongoose.model("plainNote", NoteSchema)
- module.exports = NoteModel
+const NoteModel = mongoose.model("plainNote", NoteSchema)
+module.exports = NoteModel

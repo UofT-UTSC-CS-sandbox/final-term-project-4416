@@ -53,7 +53,7 @@ function GlobalSearch() {
             <div className="main-content">
                 <section className="note-section">
                     <div className="header">
-                        <h2 className="title">Search your notes</h2>
+                        <h2 className="title">Search Public Notes</h2>
                     </div>
                     <div className="search-container">
                         <input
@@ -68,7 +68,7 @@ function GlobalSearch() {
             </div>
         </div>
     );
-    
+
 }
 
 export default GlobalSearch;
