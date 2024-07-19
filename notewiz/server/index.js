@@ -20,7 +20,11 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors({origin: process.env.CORS_ORIGIN}));
+
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+}));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -37,6 +41,12 @@ mongoose.connect(process.env.MONGODB_URL)
         console.log("Failed connection")
     });
 
+app.get('/session-test', (req, res) => {
+    if (!req.session.test) req.session.test = [];
+    req.session.test.push('1');
+    return res.status(200).send(req.session);
+})
+
 app.post('/', async (req, res)=>{
     const { username, password } = req.body;
 
@@ -52,9 +62,10 @@ app.post('/', async (req, res)=>{
         if (existingUser) {
             const match = await bcrypt.compare(password, existingUser.password);
             if(match){
-                // req.session.user = { username: existingUser.username,
-                //     password: existingUser.password,
-                //     preferName: existingUser.preferName};
+                req.session.user = { username: existingUser.username,
+                     password: existingUser.password,
+                     preferName: existingUser.preferName};
+
                 app.locals.LoginUser = { username: existingUser.username,
                     password: existingUser.password,
                     preferName: existingUser.preferName
@@ -121,7 +132,6 @@ app.get('/Profile', (req, res)=>{
                 defaultName: app.locals.LoginUser.username
             })
         }else{
-            console.log("else part");
             return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
         }
     }catch(err){
@@ -162,7 +172,7 @@ app.post('/Profile',async (req, res)=>{
 
 // noteBrowser handler
 app.post('/browser', async (req, res)=>{
-    const notes = await NoteModel.find({owner: app.locals.LoginUser.username});
+    const notes = await NoteModel.find({owner: req.session.user.username});
     return res.status(200).json({data: notes});
 })
 
@@ -184,7 +194,7 @@ app.post('/api/createNotes', async (req, res)=>{
     try {
         console.log(req.body);
         let newNote = req.body;
-        newNote.owner = app.locals.LoginUser.username;
+        newNote.owner = req.session.user.username;
         await NoteModel.create(newNote);
         return res.status(200);
     } catch (err) {
@@ -195,15 +205,20 @@ app.post('/api/createNotes', async (req, res)=>{
 
 
 app.post('/api/fetchNote', async (req, res) => {
-    console.log("fetching note: " + req.body.id); // use req.body.id instead of req.id
+    console.log("fetching note: " + req.body.id);
 
     try {
         let doc = await NoteModel.findById(req.body.id);
         console.log('Found document:', doc);
-        res.status(200).send(doc); // send the found document as the response
+        let user = req.session.user;
+        if (user.username !== doc.owner) {
+            console.log(user.username + ' | ' + doc.owner + ' | not authorized');
+            return res.status(401).send("not authorized");
+        }
+        return res.status(200).send(doc); // send the found document as the response
     } catch (err) {
         console.log(err);
-        res.status(500).send('Error occurred');
+        return res.status(500).send('Error occurred');
     }
 });
 
@@ -232,7 +247,7 @@ app.post('/api/fetchPublicNote', async (req, res) => {
 app.post('/api/searchNotes', async (req, res) => {
     const { term } = req.body;
     const notes = await NoteModel.find({
-        owner: app.locals.LoginUser.username,
+        owner: req.session.user.username,
         $or: [
             { title: new RegExp(term, 'i') },
             { content: new RegExp(term, 'i') }
@@ -243,7 +258,6 @@ app.post('/api/searchNotes', async (req, res) => {
 
 app.post('/Note_Summarize', async (req, res) => {
     const notes = JSON.stringify(req.body);
-    // console.log(notes);
     if (!notes) {
         console.log("Notes are not received");
         return res.status(400).json({ error: 'Notes are required' });
@@ -270,7 +284,6 @@ app.post('/Note_Summarize', async (req, res) => {
         res.status(500).json({ error: 'Failed to summarize notes' });
     }
 });
-
 
 app.listen(5000, ()=>{
     console.log('port connected at 5000');
