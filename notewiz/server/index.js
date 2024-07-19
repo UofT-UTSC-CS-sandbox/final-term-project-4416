@@ -273,14 +273,14 @@ app.post('/Note_Summarize', async (req, res) => {
 });
 
 app.get('/api/fetchFlashCardSet', async (req, res) => {
-    console.log('fetching card now');
+    const username = app.locals.LoginUser.username;
     try{
         if (!app.locals.LoginUser || !app.locals.LoginUser.username) {
             return res.send([]);
         }
-        const cards = await FlashModel.find({owner: app.locals.LoginUser.username});
+        const cards = await FlashModel.find({owner: username});
         if(cards){
-            console.log(cards);
+            //console.log(cards);
             res.status(200).send(cards);
         }
     }catch (e) {
@@ -292,23 +292,20 @@ app.get('/api/fetchFlashCardSet', async (req, res) => {
 app.post('/api/deleteFlashCard', async (req, res) => {
     try {
         const id = req.body.id;
-        const count = await FlashModel.countDocuments({ owner: app.locals.LoginUser.username });
-        console.log(`id: ${id}, and count: ${count}`);
+        const username = app.locals.LoginUser.username;
+        const count = await FlashModel.countDocuments({ owner: username });
+        // console.log(`deleting id: ${id}, and number of card before : ${count}`);
 
-        const flashCardToDelete = await FlashModel.findOne({ owner: app.locals.LoginUser.username, id: id });
-        if (flashCardToDelete) {
-            await flashCardToDelete.delete();
-
+        const flashCardToDelete = await FlashModel.findOne({ owner: username, id: id });
+        if(flashCardToDelete){
+            const deleteOperation = await FlashModel.deleteOne({ owner: username, id: id });
             if (id !== (count - 1)) {
-                const lastOne = count - 1;
-                const lastFlashCard = await FlashModel.findOne({ owner: app.locals.LoginUser.username, id: lastOne });
-                if (lastFlashCard) {
-                    lastFlashCard.id = id;
-                    await lastFlashCard.save();
-                }
+                await FlashModel.updateMany(
+                    { owner: username, id: { $gt: id } },
+                    { $inc: { id: -1 } }
+                );
             }
         }
-
         res.status(200).send({ message: 'FlashCard deleted successfully' });
     } catch (e) {
         console.log(e);
@@ -319,10 +316,11 @@ app.post('/api/deleteFlashCard', async (req, res) => {
 
 app.post('/api/createFlashCard', async (req, res) => {
 
-    console.log(req.body);
+    // console.log(req.body);
+    const username = app.locals.LoginUser.username;
     try{
-        const id = await FlashModel.countDocuments({owner: app.locals.LoginUser.username});
-        const newFlashCard = await FlashModel.create({owner: app.locals.LoginUser.username, id: id,
+        const id = await FlashModel.countDocuments({owner: username});
+        const newFlashCard = await FlashModel.create({owner: username, id: id,
             front:{
                 title: req.body.frontTitle,
                 content: req.body.frontContent,

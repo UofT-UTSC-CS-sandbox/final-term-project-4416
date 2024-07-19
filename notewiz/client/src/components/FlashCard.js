@@ -1,7 +1,7 @@
 import React from 'react';
 import Flip from 'react-card-flip';
 import { useDispatch, useSelector } from 'react-redux';
-import { flipFlashCard, deleteFlashCard } from './FlashCardSlice';
+import {flipFlashCard, deleteFlashCard} from './FlashCardSlice';
 import { Card, CardContent, CardHeader, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';

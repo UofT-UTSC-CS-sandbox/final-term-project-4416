@@ -96,8 +96,6 @@ const CreateFlashCard = () => {
       const response = await axios.post("http://localhost:5000/api/createFlashCard", formData);
     }catch(err){
       console.log(err);
-    }finally {
-      location.reload();
     }
   }
 

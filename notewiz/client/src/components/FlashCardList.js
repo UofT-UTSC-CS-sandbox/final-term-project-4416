@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Divider, Typography, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {deleteFlashCard, fetchFlashCardSetThunk} from './FlashCardSlice';
+import { DeleteFlashCardThunk, fetchFlashCardSetThunk} from './FlashCardSlice';
 import FlashCardDialog from './FlashCardDialog';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
@@ -10,29 +10,27 @@ import axios from "axios";
 const FlashCardList = () => {
 
   const flashCards = useSelector((state) => state.flashCards.cards);
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selectedCard, setSelectedCard] = useState(null);
-  let fetchRequired = useSelector((state) => state.fetchingRequire)
 
-    useEffect( () => {
-
-        const fetchNode = async ()=>{
-            try{
-                await dispatch(fetchFlashCardSetThunk());
-                console.log(flashCards);
-
-            }catch (e) {
-                console.log(e)
-            }
+    const fetchNode = async ()=>{
+        try{
+            await dispatch(fetchFlashCardSetThunk());
+        }catch (e) {
+            console.log(e)
         }
+    }
+    useEffect( () => {
         fetchNode();
     }, [dispatch]);
 
     async function handleDelete(id){
         try{
-            await dispatch(deleteFlashCard(id));
+            await dispatch(DeleteFlashCardThunk(id));
             const response = await axios.post("http://localhost:5000/api/deleteFlashCard", {id});
+            await fetchNode();
+
         }catch (e) {
             console.log(e)
         }

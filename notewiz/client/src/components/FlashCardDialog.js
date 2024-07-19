@@ -6,7 +6,12 @@ import { styled } from '@mui/material/styles';
 import { Card, CardContent, CardHeader } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import SimpleBottomNavigation from './BottomNav';
-import { deleteFlashCard, nextFlashCard, prevFlashCard } from './FlashCardSlice';
+import {
+  DeleteFlashCardThunk,
+  fetchFlashCardSetThunk,
+  nextFlashCard,
+  prevFlashCard
+} from './FlashCardSlice';
 import axios from "axios";
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -42,10 +47,19 @@ const FlashCardDialog = ({ open, onClose, current_id }) => {
     setCurrentCardId(current_id);
   }, [current_id]);
 
-  async function handleDelete(id){
+  const fetchNode = async ()=>{
     try{
-      await dispatch(deleteFlashCard(currentCardId));
-      const response = await axios.post("http://localhost:5000/api/deleteFlashCard", {id});
+      await dispatch(fetchFlashCardSetThunk());
+    }catch (e) {
+      console.log(e)
+    }
+  }
+
+  async function handleDelete(){
+    try{
+      await dispatch(DeleteFlashCardThunk(current_id));
+      const response = await axios.post("http://localhost:5000/api/deleteFlashCard", {current_id});
+      await fetchNode();
       onClose();
     }catch (e) {
       console.log(e)
@@ -78,11 +92,11 @@ const FlashCardDialog = ({ open, onClose, current_id }) => {
         <Flip isFlipped={isFlipped} flipDirection="vertical">
           <StyledCard elevation={24} key="front" onClick={handleFlip}>
             <CardHeader
-              action={
-                <IconButton aria-label="delete" onClick={handleDelete}>
-                  <DeleteIcon />
-                </IconButton>
-              }
+              // action={
+              //   <IconButton aria-label="delete" onClick={handleDelete}>
+              //     <DeleteIcon />
+              //   </IconButton>
+              // }
               title={card.front.title}
             />
             <CardContent>{card.front.content}</CardContent>
@@ -90,11 +104,11 @@ const FlashCardDialog = ({ open, onClose, current_id }) => {
 
           <StyledCard key="back" elevation={24} onClick={handleFlip}>
             <CardHeader
-              action={
-                <IconButton aria-label="delete" onClick={handleDelete}>
-                  <DeleteIcon />
-                </IconButton>
-              }
+              // action={
+              //   <IconButton aria-label="delete" onClick={handleDelete}>
+              //     <DeleteIcon />
+              //   </IconButton>
+              // }
               title={card.back.title}
             />
             <CardContent>{card.back.content}</CardContent>
