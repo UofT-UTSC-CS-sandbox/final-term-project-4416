@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import '@mdxeditor/editor/style.css';
 import './editorStyles.css';
 import {
@@ -138,6 +138,7 @@ function CreateNote() {
   const [loading, setloding] = useState(false);
   const [title, setTitle] = useState('');
   const { noteid } = useParams();
+  const navigate = useNavigate();
 
     // Load the note from local storage when the component mounts
     useEffect(() => {
@@ -205,6 +206,10 @@ function CreateNote() {
             let shareableLink = `http://localhost:3000/shared-note/${noteid}`;
             alert(`Your shareable link is: ${shareableLink}`);
         }
+    }
+
+    function handleMindMap() {
+      navigate('/mind-map-list')
     }
 
     return (
@@ -306,6 +311,7 @@ function CreateNote() {
           <button onClick={handleSubmit}>Generate</button>
           <button onClick={handleSave}>Save</button>
           <button onClick={handleShear}>Shear</button>
+          <button onClick={handleMindMap}>Create MindMap</button>
           {loading && (
               <div className="modal">
                   <div className="modal-content">
