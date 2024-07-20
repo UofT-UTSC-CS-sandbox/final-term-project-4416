@@ -61,6 +61,7 @@ const CreateFlashCard = () => {
   const { flipped } = useSelector(state => state.flashCards);
   const navigate = useNavigate();
 
+
   const [formData, setFormData] = useState({
     frontTitle: "",
     frontContent: "",
@@ -91,10 +92,10 @@ const CreateFlashCard = () => {
     const formErrors = validateForm();
     console.log("formErrors", formErrors);
     console.log(formData);
-    try{
+    try {
       dispatch(createFlashCard(formData));
-      const response = await axios.post("http://localhost:5000/api/createFlashCard", formData);
-    }catch(err){
+      const response = await axios.post("http://localhost:5000/api/createFlashCard", formData, {withCredentials: true});
+    } catch (err) {
       console.log(err);
     }
   }
@@ -178,7 +179,7 @@ const CreateFlashCard = () => {
                 >
                     <CancelIcon />
                   </IconButton>
-                </>              
+                </>
               }
               title={
                 <TextField

@@ -6,6 +6,8 @@ import { DeleteFlashCardThunk, fetchFlashCardSetThunk} from './FlashCardSlice';
 import FlashCardDialog from './FlashCardDialog';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { Box, Fab } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const FlashCardList = () => {
 
@@ -28,7 +30,7 @@ const FlashCardList = () => {
     async function handleDelete(id){
         try{
             await dispatch(DeleteFlashCardThunk(id));
-            const response = await axios.post("http://localhost:5000/api/deleteFlashCard", {id});
+            const response = await axios.post("http://localhost:5000/api/deleteFlashCard", {id},{withCredentials: true});
             await fetchNode();
 
         }catch (e) {
@@ -50,17 +52,14 @@ const FlashCardList = () => {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom onClick={()=>navigate('/create-new-flashcard')}>
-        FlashCard List
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleAddNewFlashCard}
-        style={{ position: 'absolute', top: 10, right: 10 }}
-      >
-        Add New Flash Card
-      </Button>
+        <Box sx={{ display: 'flex', alignItems: 'center', '& > :not(style)': { m: 1 } }}>
+            <Typography variant="h4" gutterBottom>
+                FlashCard List
+            </Typography>
+            <Fab size="small" aria-label="add" onClick={handleAddNewFlashCard} className='AddIcon'>
+                <AddCircleOutlineIcon />
+            </Fab>
+        </Box>
       <List>
         {flashCards.map((card) => (
           <React.Fragment key={card.id}>

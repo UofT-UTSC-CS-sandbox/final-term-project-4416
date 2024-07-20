@@ -58,7 +58,7 @@ const FlashCardDialog = ({ open, onClose, current_id }) => {
   async function handleDelete(){
     try{
       await dispatch(DeleteFlashCardThunk(current_id));
-      const response = await axios.post("http://localhost:5000/api/deleteFlashCard", {current_id});
+      const response = await axios.post("http://localhost:5000/api/deleteFlashCard", {current_id}, {withCredentials: true});
       await fetchNode();
       onClose();
     }catch (e) {

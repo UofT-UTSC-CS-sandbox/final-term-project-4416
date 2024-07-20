@@ -44,9 +44,13 @@ html, body {
 
 #dark{
   background-color: #495057;
+  color: #f8f8f8;
 }
 
 #dark .App{
   background-color: #495057;
 }
 
+#dark .MuiListItemText-secondary{
+  color: #d3d3d3;
+}

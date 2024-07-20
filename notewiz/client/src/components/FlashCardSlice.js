@@ -3,7 +3,7 @@ import axios from "axios";
 
 async function fetchFlashCardSet() {
   let response;
-  response = await axios.get("http://localhost:5000/api/fetchFlashCardSet");
+  response = await axios.get("http://localhost:5000/api/fetchFlashCardSet", {withCredentials: true});
   return response.data;
 }
 
