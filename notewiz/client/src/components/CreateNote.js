@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useParams} from "react-router-dom";
 import '@mdxeditor/editor/style.css';
 import './editorStyles.css';
@@ -29,9 +29,10 @@ import {
     listsPlugin,
     markdownShortcutPlugin,
     MDXEditor,
+    MDXEditorMethods,
     NestedLexicalEditor,
     quotePlugin,
-    sandpackPlugin,
+    sandpackPlugin, setMarkdown$,
     ShowSandpackInfo,
     tablePlugin,
     thematicBreakPlugin,
@@ -131,6 +132,8 @@ const codeBlocksMarkdown = ""
 function CreateNote() {
   const editorRef = React.useRef(null);
   const existingNote = localStorage.getItem('userNote');
+  const mdxEditorRef = React.useRef(null)
+
   if (existingNote === null) {
       localStorage.setItem('userNote','');
   }
@@ -171,11 +174,7 @@ function CreateNote() {
                 if(note) {
                     setEditorContent(note.data.content || '');
                     setTitle(note.data.title || '');
-                    if(note.data.content != localStorage.getItem('userNote'))
-                    {
-                        localStorage.setItem('userNote', note.data.content);
-                        location.reload()
-                    }
+                    mdxEditorRef.current.setMarkdown(note.data.content);
                 }
             });
         }
@@ -221,6 +220,10 @@ function CreateNote() {
         }
     }
 
+    async function handleConvert() {
+        let response = await axios.post("http://localhost:5000/api/note-to-flashcard", {note: editorContent, title: title}, {withCredentials: true});
+    }
+
     return (
       <div id={"operation"}>
           <div className="App">
@@ -234,6 +237,8 @@ function CreateNote() {
               <header className="App-header">
                   <MDXEditor
                       contentEditableClassName="prose"
+
+                      ref={mdxEditorRef}
 
                       markdown={editorContent}
                       onChange={setEditorContent}
@@ -320,10 +325,11 @@ function CreateNote() {
           <button onClick={handleSubmit}>Generate</button>
           <button onClick={handleSave}>Save</button>
           <button onClick={handleShear}>Shear</button>
+          <button onClick={handleConvert}>Convert</button>
           {loading && (
               <div className="modal">
                   <div className="modal-content">
-                      <p>Generating summary, please wait...</p>
+                      <p>Generating summary, please wait...\\\\\\</p>
                   </div>
               </div>
           )}
