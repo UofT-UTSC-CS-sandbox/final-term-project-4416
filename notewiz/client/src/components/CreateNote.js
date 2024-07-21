@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useParams} from "react-router-dom";
 import '@mdxeditor/editor/style.css';
 import './editorStyles.css';
@@ -32,6 +32,7 @@ import {
     listsPlugin,
     markdownShortcutPlugin,
     MDXEditor,
+    MDXEditorMethods,
     NestedLexicalEditor,
     quotePlugin,
     sandpackPlugin, setMarkdown$,
@@ -133,6 +134,8 @@ const PlainTextCodeEditorDescriptor = {
 function CreateNote() {
   const editorRef = React.useRef(null);
   const existingNote = localStorage.getItem('userNote');
+  const mdxEditorRef = React.useRef(null)
+
   if (existingNote === null) {
       localStorage.setItem('userNote','');
   }
@@ -184,11 +187,7 @@ function CreateNote() {
                 if(note) {
                     setEditorContent(note.data.content || '');
                     setTitle(note.data.title || '');
-                    if(note.data.content != localStorage.getItem('userNote'))
-                    {
-                        localStorage.setItem('userNote', note.data.content);
-                        location.reload()
-                    }
+                    mdxEditorRef.current.setMarkdown(note.data.content);
                 }
             });
         }
@@ -219,14 +218,16 @@ function CreateNote() {
             const response = await axios.post("http://localhost:5000/Note_Summarize", notes, {withCredentials: true});
             console.log(response.data.summary);
             const resultRendering = response.data.summary + localStorage.getItem('userNote');
+            localStorage.setItem('userNote',resultRendering);
             setEditorContent(resultRendering);
-            setMarkdown(resultRendering);
+
         }catch (e) {
             console.log(e);
         }finally {
             setloding(false);
             location.reload();
         }
+
     };
 
     function handleShare() {
@@ -245,6 +246,10 @@ function CreateNote() {
         <Button key={2} onClick={handleShare} className='NoteButtons'>Share</Button>,
     ];
 
+    async function handleConvert() {
+        let response = await axios.post("http://localhost:5000/api/note-to-flashcard", {note: editorContent, title: title}, {withCredentials: true});
+    }
+
     return (
       <div id={"operation"}>
           <div className="App">
@@ -258,6 +263,8 @@ function CreateNote() {
               <header className="App-header">
                   <MDXEditor
                       contentEditableClassName="prose"
+
+                      ref={mdxEditorRef}
 
                       markdown={editorContent}
                       onChange={setEditorContent}
@@ -291,6 +298,8 @@ function CreateNote() {
                                       <BlockTypeSelect/>
                                       <BoldItalicUnderlineToggles/>
                                       <CodeToggle/>
+                                      <CreateLink/>
+                                      <InsertImage/>
                                       <InsertTable/>
                                       <InsertAdmonition/>
                                           <ConditionalContents
