@@ -218,14 +218,12 @@ function CreateNote() {
             const response = await axios.post("http://localhost:5000/Note_Summarize", notes, {withCredentials: true});
             console.log(response.data.summary);
             const resultRendering = response.data.summary + localStorage.getItem('userNote');
-            localStorage.setItem('userNote',resultRendering);
             setEditorContent(resultRendering);
-
+            mdxEditorRef.current.setMarkdown(resultRendering);
         }catch (e) {
             console.log(e);
         }finally {
             setloding(false);
-            location.reload();
         }
 
     };
@@ -298,8 +296,6 @@ function CreateNote() {
                                       <BlockTypeSelect/>
                                       <BoldItalicUnderlineToggles/>
                                       <CodeToggle/>
-                                      <CreateLink/>
-                                      <InsertImage/>
                                       <InsertTable/>
                                       <InsertAdmonition/>
                                           <ConditionalContents
