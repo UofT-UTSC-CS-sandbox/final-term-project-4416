@@ -1,4 +1,20 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const commentSchema = new Schema({
+    username: {
+        type: String,
+        required: true
+    },
+    content: {
+        type: String,
+        required: true
+    },
+    timestamp: {
+        type: Date,
+        default: Date.now
+    }
+});
 
 const NoteSchema = new mongoose.Schema({
     title: {
