@@ -2,7 +2,7 @@ const OpenAI = require('openai');
 require('dotenv').config();
 const express = require('express')
 const mongoose = require("mongoose")
-const showdown  = require('showdown')
+const showdown = require('showdown')
 const cors = require('cors');
 const UserModel = require('./models/User')
 const NoteModel = require('./models/Note')
@@ -12,11 +12,11 @@ const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 
 const app = express();
-const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY,});
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, });
 
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -33,10 +33,10 @@ app.use(session({
 }));
 
 mongoose.connect(process.env.MONGODB_URL)
-    .then(()=>{
+    .then(() => {
         console.log("Successfully connected Mongodb")
     })
-    .catch(()=>{
+    .catch(() => {
         console.log("Failed connection")
     });
 
@@ -46,7 +46,7 @@ app.get('/session-test', (req, res) => {
     return res.status(200).send(req.session);
 })
 
-app.post('/', async (req, res)=>{
+app.post('/', async (req, res) => {
     const { username, password } = req.body;
 
     // Check if the username is empty
@@ -159,7 +159,16 @@ app.post('/browser', async (req, res)=>{
     return res.status(200).json({data: notes});
 })
 
-
+app.post('/GlobalSearch', async (req, res) => {
+    try {
+        const notes = await NoteModel.find({ public: true });
+        console.log('Fetched notes from MongoDB:', notes); // 打印到终端
+        return res.status(202).json({ data: notes });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).send('Error fetching data');
+    }
+});
 
 app.post('/deleteNotes', async (req, res) => {
     //retrieve selected notes id from req
@@ -217,8 +226,8 @@ app.post('/api/fetchPublicNote', async (req, res) => {
 
         //html conversion
         let converter = new showdown.Converter(),
-            text      = '#'+doc.title+'\n'+doc.content,
-            html      = converter.makeHtml(text);
+            text = '#' + doc.title + '\n' + doc.content,
+            html = converter.makeHtml(text);
 
         res.status(200).send(html); // send the found document as the response
     } catch (err) {
