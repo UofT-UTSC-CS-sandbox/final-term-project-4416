@@ -19,6 +19,7 @@ import { styled } from "@mui/material/styles";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from '@mui/icons-material/Cancel';
 import axios from "axios";
+import {notifySuccess} from "./ToastNotification";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   "& .MuiCardHeader-root": {
@@ -108,7 +109,7 @@ const CreateFlashCard = () => {
 
   return (
     <Grid item xs={10} sm={8} md={6} xl={4}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e)=>{handleSubmit(e); notifySuccess("Successfully Created")}}>
         <Flip isFlipped={flipped} flipDirection="vertical">
           <StyledCard
             key="front"

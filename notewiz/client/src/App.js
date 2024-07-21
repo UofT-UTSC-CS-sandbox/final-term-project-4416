@@ -11,12 +11,15 @@ import { FlashCardsView } from './components/FlashCardsView';
 import FlashCardList from './components/FlashCardList';
 import CreateFlashCard from './components/CreateFlashCard';
 import PublicNoteDisplay from "./components/PublicNoteDisplay";
+import ToastNotification from './components/ToastNotification';
 
 function App() {
   return (
     <BrowserRouter>
       <RoutesWithSidebar />
+      <ToastNotification/>
     </BrowserRouter>
+
   );
 }
 

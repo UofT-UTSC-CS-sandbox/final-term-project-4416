@@ -46,6 +46,8 @@ import {
 import axios from "axios";
 import {red} from "@mui/material/colors";
 import LoadingProcess from "./LoadingProcess";
+import { notifySuccess } from "./ToastNotification";
+
 
 // If you need something more flexible, implement a custom directive editor.
 const CalloutCustomDirectiveDescriptor = {
@@ -239,7 +241,7 @@ function CreateNote() {
 
 
     const buttons = [
-        <Button key={0} onClick={handleSave} className='NoteButtons'>Save</Button>,
+        <Button key={0} onClick={(e)=>{handleSave(e); notifySuccess("Successfully Save")}} className='NoteButtons'>Save</Button>,
         <Button key={1} onClick={handleSubmit} className='NoteButtons'>Summarize</Button>,
         <Button key={2} onClick={handleShare} className='NoteButtons'>Share</Button>,
     ];
@@ -247,6 +249,8 @@ function CreateNote() {
     async function handleConvert() {
         let response = await axios.post("http://localhost:5000/api/note-to-flashcard", {note: editorContent, title: title}, {withCredentials: true});
     }
+
+
 
     return (
       <div id={"operation"}>
@@ -296,6 +300,7 @@ function CreateNote() {
                                       <BlockTypeSelect/>
                                       <BoldItalicUnderlineToggles/>
                                       <CodeToggle/>
+                                      <CreateLink/>
                                       <InsertTable/>
                                       <InsertAdmonition/>
                                           <ConditionalContents
