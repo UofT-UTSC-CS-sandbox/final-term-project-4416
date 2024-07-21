@@ -1,7 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {useNavigate, useParams} from "react-router-dom";
+import React, {useEffect, useRef, useState} from 'react';
+import {useParams} from "react-router-dom";
 import '@mdxeditor/editor/style.css';
 import './editorStyles.css';
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import ButtonGroup from "@mui/material/ButtonGroup";
 import {
     AdmonitionDirectiveDescriptor,
     BlockTypeSelect,
@@ -29,9 +32,10 @@ import {
     listsPlugin,
     markdownShortcutPlugin,
     MDXEditor,
+    MDXEditorMethods,
     NestedLexicalEditor,
     quotePlugin,
-    sandpackPlugin,
+    sandpackPlugin, setMarkdown$,
     ShowSandpackInfo,
     tablePlugin,
     thematicBreakPlugin,
@@ -40,6 +44,10 @@ import {
     useCodeBlockEditorContext
 } from '@mdxeditor/editor';
 import axios from "axios";
+import {red} from "@mui/material/colors";
+import LoadingProcess from "./LoadingProcess";
+import { notifySuccess } from "./ToastNotification";
+
 
 // If you need something more flexible, implement a custom directive editor.
 const CalloutCustomDirectiveDescriptor = {
@@ -125,24 +133,35 @@ const PlainTextCodeEditorDescriptor = {
   }
 }
 
-/** use markdown with some code blocks */
-const codeBlocksMarkdown = ""
-
 function CreateNote() {
   const editorRef = React.useRef(null);
   const existingNote = localStorage.getItem('userNote');
+  const mdxEditorRef = React.useRef(null)
+
   if (existingNote === null) {
       localStorage.setItem('userNote','');
   }
   const [editorContent, setEditorContent] = useState(localStorage.getItem("userNote"));
-  const [loading, setloding] = useState(false);
+  const [loadingSummary, setloding] = useState(false);
   const [title, setTitle] = useState('');
   const { noteid } = useParams();
-  const navigate = useNavigate();
+
+
+  const oldVersionNote = localStorage.getItem('oldVersion')
+  if(oldVersionNote === null){
+      localStorage.setItem('oldVersion','Old Version')
+  }
+  const [oldVersion, setoldVersion] = useState(localStorage.getItem('oldVersion'));
+  const changeCount = localStorage.getItem('userNoteCount');
+  if (changeCount === null) {
+      localStorage.setItem('userNoteCount', '0');
+  }
 
     // Load the note from local storage when the component mounts
     useEffect(() => {
-        if (noteid !== null) {return}
+        if (noteid !== null) {
+            return
+        }
         console.log("fetch",editorContent);
         const savedNote = localStorage.getItem('userNote');
         if (savedNote) {
@@ -151,11 +170,18 @@ function CreateNote() {
     }, []);
 
     useEffect(() => {
+        if (noteid === undefined) return
         async function fetchNote(id) {
             try{
-                return await axios.post("http://localhost:5000/api/fetchNote", {id: id});
+                return await axios.post("http://localhost:5000/api/fetchNote", {id: id}, {withCredentials: true});
             } catch (err) {
-                console.error(err);
+                if (axios.isCancel(err)) {
+                    console.log('Request canceled:', err.message);
+                } else if (err.code === 'ECONNABORTED') {
+                    console.error('Request timed out:', err);
+                } else {
+                    console.error('Error fetching note:', err);
+                }
             }
         }
         if (noteid) {
@@ -163,20 +189,27 @@ function CreateNote() {
                 if(note) {
                     setEditorContent(note.data.content || '');
                     setTitle(note.data.title || '');
+                    mdxEditorRef.current.setMarkdown(note.data.content);
                 }
             });
         }
-    }, [noteid])
+    }, [])
 
     // Save the note to local storage whenever it changes
     useEffect(() => {
         localStorage.setItem('userNote', editorContent);
+        let count = parseInt(localStorage.getItem('userNoteCount'),10);
+        localStorage.setItem('userNoteCount', (count + 1).toString());
+        if ((count + 1) > 0 && (count + 1) % 20 === 0){
+            localStorage.setItem('oldVersion', editorContent);
+            setoldVersion(localStorage.getItem('userNote'));
+        }
     }, [editorContent]);
 
     const handleSave = async (e)=>{
         e.preventDefault();
         const note = { 'title': title, 'content': editorContent };
-        const response = await axios.post("http://localhost:5000/api/createNotes", note)
+        const response = await axios.post("http://localhost:5000/api/createNotes", note, {withCredentials: true})
     }
 
     const handleSubmit = async (e) => {
@@ -184,22 +217,20 @@ function CreateNote() {
         try{
             setloding(true);
             const notes = {editorContent};
-            const response = await axios.post("http://localhost:5000/Note_Summarize", notes);
+            const response = await axios.post("http://localhost:5000/Note_Summarize", notes, {withCredentials: true});
             console.log(response.data.summary);
             const resultRendering = response.data.summary + localStorage.getItem('userNote');
-            localStorage.setItem('userNote',resultRendering);
             setEditorContent(resultRendering);
-
+            mdxEditorRef.current.setMarkdown(resultRendering);
         }catch (e) {
             console.log(e);
         }finally {
             setloding(false);
-            location.reload();
         }
 
     };
 
-    function handleShear() {
+    function handleShare() {
         if (!noteid) {
             alert("Please save the note first!");
         } else {
@@ -208,9 +239,18 @@ function CreateNote() {
         }
     }
 
-    function handleMindMap() {
-      navigate('/mind-map-list')
+
+    const buttons = [
+        <Button key={0} onClick={(e)=>{handleSave(e); notifySuccess("Successfully Save")}} className='NoteButtons'>Save</Button>,
+        <Button key={1} onClick={handleSubmit} className='NoteButtons'>Summarize</Button>,
+        <Button key={2} onClick={handleShare} className='NoteButtons'>Share</Button>,
+    ];
+
+    async function handleConvert() {
+        let response = await axios.post("http://localhost:5000/api/note-to-flashcard", {note: editorContent, title: title}, {withCredentials: true});
     }
+
+
 
     return (
       <div id={"operation"}>
@@ -225,6 +265,8 @@ function CreateNote() {
               <header className="App-header">
                   <MDXEditor
                       contentEditableClassName="prose"
+
+                      ref={mdxEditorRef}
 
                       markdown={editorContent}
                       onChange={setEditorContent}
@@ -250,38 +292,36 @@ function CreateNote() {
                               }
                           }),
 
-                          diffSourcePlugin({diffMarkdown: 'An older version', viewMode: 'rich-text'}),
-
+                          diffSourcePlugin({diffMarkdown: oldVersion, viewMode: 'rich-text'}),
                           toolbarPlugin({
                               toolbarContents: () => (
-                                  <DiffSourceToggleWrapper>
+                                  <DiffSourceToggleWrapper style={{ backgroundColor: red}}>
                                       <UndoRedo/>
                                       <BlockTypeSelect/>
                                       <BoldItalicUnderlineToggles/>
                                       <CodeToggle/>
                                       <CreateLink/>
-                                      <InsertImage/>
                                       <InsertTable/>
                                       <InsertAdmonition/>
-                                      <InsertFrontmatter/>
-                                      <ConditionalContents
-                                          options={[
-                                              {
-                                                  when: (editor) => editor?.editorType === 'codeblock',
-                                                  contents: () => <ChangeCodeMirrorLanguage/>
-                                              },
-                                              {
-                                                  when: (editor) => editor?.editorType === 'sandpack',
-                                                  contents: () => <ShowSandpackInfo/>
-                                              },
-                                              {
-                                                  fallback: () => (<>
-                                                      <InsertCodeBlock/>
-                                                      <InsertSandpack/>
-                                                  </>)
-                                              }
-                                          ]}
-                                      />
+                                          <ConditionalContents
+                                              options={[
+                                                  {
+                                                      when: (editor) => editor?.editorType === 'codeblock',
+                                                      contents: () => <ChangeCodeMirrorLanguage/>
+                                                  },
+                                                  {
+                                                      when: (editor) => editor?.editorType === 'sandpack',
+                                                      contents: () => <ShowSandpackInfo/>
+                                                  },
+                                                  {
+                                                      fallback: () => (<>
+                                                          <InsertCodeBlock/>
+                                                          <InsertSandpack/>
+                                                      </>)
+                                                  }
+                                              ]}
+                                          />
+
                                       {/* <YouTubeButton /> */}
                                   </DiffSourceToggleWrapper>
                               )
@@ -308,16 +348,16 @@ function CreateNote() {
                   />
               </header>
           </div>
-          <button onClick={handleSubmit}>Generate</button>
-          <button onClick={handleSave}>Save</button>
-          <button onClick={handleShear}>Shear</button>
-          <button onClick={handleMindMap}>Create MindMap</button>
-          {loading && (
-              <div className="modal">
-                  <div className="modal-content">
-                      <p>Generating summary, please wait...</p>
-                  </div>
-              </div>
+          <Box sx={{
+              display: 'flex',
+              flexDirection: 'column',
+          }}>
+              <ButtonGroup size="large" aria-label="Small button group">
+                  {buttons}
+              </ButtonGroup>
+          </Box>
+          {loadingSummary && (
+              <LoadingProcess Generate='Summary'/>
           )}
       </div>
   );

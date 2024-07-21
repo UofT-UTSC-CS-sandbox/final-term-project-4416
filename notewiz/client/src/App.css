@@ -44,8 +44,22 @@ html, body {
 
 #dark{
   background-color: #495057;
+  color: #f8f8f8;
 }
 
 #dark .App{
   background-color: #495057;
+}
+
+#dark .MuiListItemText-secondary{
+  color: #d3d3d3;
+}
+
+._linkDialogAnchor_yms4a_586 {
+  top: 50% !important;
+  left: 50% !important;
+  width: auto !important;
+  height: 44px !important;
+  transform: translate(-50%, -50%) !important;
+  position: fixed !important;
 }

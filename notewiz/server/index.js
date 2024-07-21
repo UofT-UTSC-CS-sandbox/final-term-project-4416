@@ -6,6 +6,7 @@ const showdown  = require('showdown')
 const cors = require('cors');
 const UserModel = require('./models/User')
 const NoteModel = require('./models/Note')
+const FlashModel = require('./models/FlashCard')
 const session = require('express-session')
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
@@ -13,14 +14,16 @@ const bodyParser = require('body-parser');
 const app = express();
 const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY,});
 
-app.locals.LoginUser = null;
-app.locals.note = "Hello world";
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors({origin: process.env.CORS_ORIGIN}));
+
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+}));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -37,6 +40,12 @@ mongoose.connect(process.env.MONGODB_URL)
         console.log("Failed connection")
     });
 
+app.get('/session-test', (req, res) => {
+    if (!req.session.test) req.session.test = [];
+    req.session.test.push('1');
+    return res.status(200).send(req.session);
+})
+
 app.post('/', async (req, res)=>{
     const { username, password } = req.body;
 
@@ -52,13 +61,9 @@ app.post('/', async (req, res)=>{
         if (existingUser) {
             const match = await bcrypt.compare(password, existingUser.password);
             if(match){
-                // req.session.user = { username: existingUser.username,
-                //     password: existingUser.password,
-                //     preferName: existingUser.preferName};
-                app.locals.LoginUser = { username: existingUser.username,
-                    password: existingUser.password,
-                    preferName: existingUser.preferName
-                }
+                req.session.user = { username: existingUser.username,
+                     password: existingUser.password,
+                     preferName: existingUser.preferName};
                 res.status(200).json({ message: 'Login successfully'});
                 // console.log("session data:", req.session.user);
             }else{
@@ -102,26 +107,13 @@ app.post('/signup', async (req, res)=>{
 
 app.get('/Profile', (req, res)=>{
     try{
-        // if(req.session.user){
-        //     res.status(200).json({
-        //         name: req.session.user.preferName,
-        //         pass: req.session.user.password,
-        //         defaultName: req.session.user.username
-        //     })
-        // }else{
-        //     console.log("else part");
-        //     console.log("session data:", req.session.user);
-        //     return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
-        // }
-        if(app.locals.LoginUser){
-
+        if(req.session.user){
             res.status(200).json({
-                name: app.locals.LoginUser.preferName,
-                pass: app.locals.LoginUser.password,
-                defaultName: app.locals.LoginUser.username
+                name: req.session.user.preferName,
+                pass: req.session.user.password,
+                defaultName: req.session.user.username
             })
         }else{
-            console.log("else part");
             return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
         }
     }catch(err){
@@ -137,7 +129,8 @@ app.post('/Profile',async (req, res)=>{
     if (!username || username.trim() === '' || !password) {
         return res.status(400).json({ message: 'Prefer name and password cannot be empty' });
     }
-    const name = app.locals.LoginUser.username;
+    // const name = app.locals.LoginUser.username;
+    const name = req.session.user.username;
 
     try {
         // Check if the user already exists
@@ -146,7 +139,7 @@ app.post('/Profile',async (req, res)=>{
 
         if (existingUser) {
             const hashedPassword = await bcrypt.hash(password, 10);
-            app.locals.LoginUser = { username: existingUser.username,
+            req.session.user = { username: existingUser.username,
                 password: hashedPassword,
                 preferName: username
             }
@@ -162,7 +155,7 @@ app.post('/Profile',async (req, res)=>{
 
 // noteBrowser handler
 app.post('/browser', async (req, res)=>{
-    const notes = await NoteModel.find({owner: app.locals.LoginUser.username});
+    const notes = await NoteModel.find({owner: req.session.user.username});
     return res.status(200).json({data: notes});
 })
 
@@ -184,7 +177,7 @@ app.post('/api/createNotes', async (req, res)=>{
     try {
         console.log(req.body);
         let newNote = req.body;
-        newNote.owner = app.locals.LoginUser.username;
+        newNote.owner = req.session.user.username;
         await NoteModel.create(newNote);
         return res.status(200);
     } catch (err) {
@@ -195,15 +188,20 @@ app.post('/api/createNotes', async (req, res)=>{
 
 
 app.post('/api/fetchNote', async (req, res) => {
-    console.log("fetching note: " + req.body.id); // use req.body.id instead of req.id
+    console.log("fetching note: " + req.body.id);
 
     try {
         let doc = await NoteModel.findById(req.body.id);
         console.log('Found document:', doc);
-        res.status(200).send(doc); // send the found document as the response
+        let user = req.session.user;
+        if (user.username !== doc.owner) {
+            console.log(user.username + ' | ' + doc.owner + ' | not authorized');
+            return res.status(401).send("not authorized");
+        }
+        return res.status(200).send(doc); // send the found document as the response
     } catch (err) {
         console.log(err);
-        res.status(500).send('Error occurred');
+        return res.status(500).send('Error occurred');
     }
 });
 
@@ -232,7 +230,7 @@ app.post('/api/fetchPublicNote', async (req, res) => {
 app.post('/api/searchNotes', async (req, res) => {
     const { term } = req.body;
     const notes = await NoteModel.find({
-        owner: app.locals.LoginUser.username,
+        owner: req.session.user.username,
         $or: [
             { title: new RegExp(term, 'i') },
             { content: new RegExp(term, 'i') }
@@ -243,7 +241,6 @@ app.post('/api/searchNotes', async (req, res) => {
 
 app.post('/Note_Summarize', async (req, res) => {
     const notes = JSON.stringify(req.body);
-    // console.log(notes);
     if (!notes) {
         console.log("Notes are not received");
         return res.status(400).json({ error: 'Notes are required' });
@@ -271,6 +268,68 @@ app.post('/Note_Summarize', async (req, res) => {
     }
 });
 
+app.get('/api/fetchFlashCardSet', async (req, res) => {
+    const username = req.session.user.username;
+    try{
+        if (!req.session.user.username || !req.session.user) {
+            return res.send([]);
+        }
+        const cards = await FlashModel.find({owner: username});
+        if(cards){
+            //console.log(cards);
+            res.status(200).send(cards);
+        }
+    }catch (e) {
+        console.log("Error fetching FlashCardSet");
+        console.log(e);
+    }
+});
+
+app.post('/api/deleteFlashCard', async (req, res) => {
+    try {
+        const id = req.body.id;
+        const username = req.session.user.username;
+        const count = await FlashModel.countDocuments({ owner: username });
+        // console.log(`deleting id: ${id}, and number of card before : ${count}`);
+
+        const flashCardToDelete = await FlashModel.findOne({ owner: username, id: id });
+        if(flashCardToDelete){
+            const deleteOperation = await FlashModel.deleteOne({ owner: username, id: id });
+            if (id !== (count - 1)) {
+                await FlashModel.updateMany(
+                    { owner: username, id: { $gt: id } },
+                    { $inc: { id: -1 } }
+                );
+            }
+        }
+        res.status(200).send({ message: 'FlashCard deleted successfully' });
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({ message: 'Error deleting FlashCard' });
+    }
+});
+
+
+app.post('/api/createFlashCard', async (req, res) => {
+
+    // console.log(req.body);
+    const username = req.session.user.username;
+    try{
+        const id = await FlashModel.countDocuments({owner: username});
+        const newFlashCard = await FlashModel.create({owner: username, id: id,
+            front:{
+                title: req.body.frontTitle,
+                content: req.body.frontContent,
+            },
+            back:{
+                title: req.body.backTitle,
+                content: req.body.backContent,
+            }
+        });
+    }catch(err){
+        console.log(err)
+    }
+});
 
 app.listen(5000, ()=>{
     console.log('port connected at 5000');
