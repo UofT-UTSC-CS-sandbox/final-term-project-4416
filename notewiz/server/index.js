@@ -176,7 +176,16 @@ app.post('/browser', async (req, res)=>{
     return res.status(200).json({data: notes});
 })
 
-
+app.post('/GlobalSearch', async (req, res) => {
+    try {
+        const notes = await NoteModel.find({ public: true });
+        console.log('Fetched notes from MongoDB:', notes); // 打印到终端
+        return res.status(202).json({ data: notes });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).send('Error fetching data');
+    }
+});
 
 app.post('/deleteNotes', async (req, res) => {
     //retrieve selected notes id from req

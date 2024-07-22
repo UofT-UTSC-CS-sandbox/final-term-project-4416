@@ -141,7 +141,9 @@ function CreateNote() {
 
     // Load the note from local storage when the component mounts
     useEffect(() => {
-        if (noteid !== null) {return}
+        if (noteid !== null) {
+            return
+        }
         console.log("fetch",editorContent);
         const savedNote = localStorage.getItem('userNote');
         if (savedNote) {
@@ -150,11 +152,18 @@ function CreateNote() {
     }, []);
 
     useEffect(() => {
+        if (noteid === undefined) return
         async function fetchNote(id) {
             try{
-                return await axios.post("http://localhost:8000/api/fetchNote", {id: id});
+                return await axios.post("http://localhost:8000/api/fetchNote", {id: id}, {withCredentials: true});
             } catch (err) {
-                console.error(err);
+                if (axios.isCancel(err)) {
+                    console.log('Request canceled:', err.message);
+                } else if (err.code === 'ECONNABORTED') {
+                    console.error('Request timed out:', err);
+                } else {
+                    console.error('Error fetching note:', err);
+                }
             }
         }
         if (noteid) {
@@ -162,10 +171,15 @@ function CreateNote() {
                 if(note) {
                     setEditorContent(note.data.content || '');
                     setTitle(note.data.title || '');
+                    if(note.data.content != localStorage.getItem('userNote'))
+                    {
+                        localStorage.setItem('userNote', note.data.content);
+                        location.reload()
+                    }
                 }
             });
         }
-    }, [noteid])
+    }, [])
 
     // Save the note to local storage whenever it changes
     useEffect(() => {
@@ -175,7 +189,7 @@ function CreateNote() {
     const handleSave = async (e)=>{
         e.preventDefault();
         const note = { 'title': title, 'content': editorContent };
-        const response = await axios.post("http://localhost:8000/api/createNotes", note)
+        const response = await axios.post("http://localhost:8000/api/createNotes", note, {withCredentials: true})
     }
 
     const handleSubmit = async (e) => {
@@ -183,7 +197,7 @@ function CreateNote() {
         try{
             setloding(true);
             const notes = {editorContent};
-            const response = await axios.post("http://localhost:8000/Note_Summarize", notes);
+            const response = await axios.post("http://localhost:8000/Note_Summarize", notes, {withCredentials: true});
             console.log(response.data.summary);
             const resultRendering = response.data.summary + localStorage.getItem('userNote');
             localStorage.setItem('userNote',resultRendering);
