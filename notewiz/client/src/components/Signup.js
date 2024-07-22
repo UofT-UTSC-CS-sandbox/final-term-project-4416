@@ -28,7 +28,7 @@ function Signup(props) {
       }
 
       try {
-        const response = await axios.post("http://localhost:5000/signup", { username, password, ConfirmPassword });
+        const response = await axios.post("http://localhost:8000/signup", { username, password, ConfirmPassword });
         setMessage(response.data.message);
         if (response.data.message.includes('User created')) {
           navigate('/');

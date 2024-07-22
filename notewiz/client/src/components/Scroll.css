@@ -1,0 +1,10 @@
+/* Scroll.css */
+
+.scroll-container {
+    overflow-y: scroll;
+    border: 1px solid #f4f4f4;
+    padding: 10px;
+    background-color: #f4f4f4;
+    max-height: 100vh;
+    /* 确保高度最多到屏幕底部 */
+}

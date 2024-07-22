@@ -6,7 +6,6 @@ import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Tooltip from "@mui/material/Tooltip";
-
 import { styled, useTheme } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
@@ -18,18 +17,16 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-
-
+import SearchIcon from '@mui/icons-material/Search';
 import NoteAltIcon from '@mui/icons-material/NoteAlt';
 import RecentActorsIcon from '@mui/icons-material/RecentActors';
 import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined';
-
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-
 import { useNavigate } from "react-router-dom";
+
 
 const drawerWidth = 180;
 
@@ -119,6 +116,12 @@ function Sidebar({ visable_hidden, modeStyle }) {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleSearch = async (query) => {
+    // 处理搜索逻辑，例如发送请求到后端API
+    console.log('Search query:', query);
+    // 在这里添加你的搜索逻辑
   };
 
   return (
@@ -214,7 +217,16 @@ function Sidebar({ visable_hidden, modeStyle }) {
           </IconButton>
         </DrawerHeader>
         <Divider />
+        
+        
         <List>
+
+            <ListItem disablePadding>
+                <ListItemButton onClick={()=>navigate('/GlobalSearch')}>
+                    <ListItemIcon><SearchIcon sx={{ fontSize: 35, color: mode === "light" ? "black" : "#E0E0E0" }}/></ListItemIcon>
+                    <ListItemText primary={'Search'}/>
+                </ListItemButton>
+            </ListItem>
 
             <ListItem disablePadding>
                 <ListItemButton onClick={()=>navigate('/Note')}>

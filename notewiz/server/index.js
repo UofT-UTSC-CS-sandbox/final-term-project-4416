@@ -2,24 +2,24 @@ const OpenAI = require('openai');
 require('dotenv').config();
 const express = require('express')
 const mongoose = require("mongoose")
-const showdown  = require('showdown')
+const showdown = require('showdown')
 const cors = require('cors');
 const UserModel = require('./models/User')
 const NoteModel = require('./models/Note')
 const FlashModel = require('./models/FlashCard')
+const MapModel = require('./models/MindMap')
 const session = require('express-session')
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 
 const app = express();
-const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY,});
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, });
 
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true
@@ -33,20 +33,14 @@ app.use(session({
 }));
 
 mongoose.connect(process.env.MONGODB_URL)
-    .then(()=>{
+    .then(() => {
         console.log("Successfully connected Mongodb")
     })
-    .catch(()=>{
+    .catch(() => {
         console.log("Failed connection")
     });
 
-app.get('/session-test', (req, res) => {
-    if (!req.session.test) req.session.test = [];
-    req.session.test.push('1');
-    return res.status(200).send(req.session);
-})
-
-app.post('/', async (req, res)=>{
+app.post('/', async (req, res) => {
     const { username, password } = req.body;
 
     // Check if the username is empty
@@ -159,7 +153,16 @@ app.post('/browser', async (req, res)=>{
     return res.status(200).json({data: notes});
 })
 
-
+app.post('/GlobalSearch', async (req, res) => {
+    try {
+        const notes = await NoteModel.find({ public: true });
+        // console.log('Fetched notes from MongoDB:', notes); // 打印到终端
+        return res.status(202).json({ data: notes });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).send('Error fetching data');
+    }
+});
 
 app.post('/deleteNotes', async (req, res) => {
     //retrieve selected notes id from req
@@ -205,11 +208,11 @@ app.post('/api/fetchNote', async (req, res) => {
 });
 
 app.post('/api/fetchPublicNote', async (req, res) => {
-    console.log("fetching note: " + req.body.id); // use req.body.id instead of req.id
+    // console.log("fetching note: " + req.body.id); // use req.body.id instead of req.id
 
     try {
         let doc = await NoteModel.findById(req.body.id);
-        console.log('Found document:', doc);
+        // console.log('Found document:', doc);
         if (doc.public === false) {
             return res.status(401).send('Not authorized');
         }
@@ -266,6 +269,9 @@ app.post('/Note_Summarize', async (req, res) => {
         res.status(500).json({ error: 'Failed to summarize notes' });
     }
 });
+
+// Flash Card
+
 
 app.get('/api/fetchFlashCardSet', async (req, res) => {
     const username = req.session.user.username;
@@ -329,6 +335,142 @@ app.post('/api/createFlashCard', async (req, res) => {
         console.log(err)
     }
 });
+app.post('/api/addComment', async (req, res) => {
+    const { noteId, content } = req.body;
+    const username = req.session?.user?.username;
+    // console.log("username:", username);
+    // console.log("nodeid======", noteId);
+
+    if (!username) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    if (!content || content.trim() === '') {
+        return res.status(400).json({ message: 'Comment content cannot be empty' });
+    }
+
+    try {
+        const note = await NoteModel.findById(noteId);
+        // console.log("nodeid======", note);
+        if (!note) {
+            return res.status(404).json({ message: 'Note not found' });
+        }
+        const newComment = {
+            username: username,
+            content: content,
+            timestamp: new Date()
+        };
+        // console.log("wuhahahahhahah!");
+
+        note.comment.push(newComment);
+        await note.save();
+
+        res.status(200).json({ message: 'Comment added successfully', comment: newComment });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to add comment', error });
+    }
+});
+
+app.post('/api/deleteComment', async (req, res) => {
+    const { noteId, commentId } = req.body;
+
+    try {
+        const note = await NoteModel.findById(noteId);
+        if (!note) {
+            return res.status(404).json({ message: 'Note not found' });
+        }
+
+        const comment = note.comment.id(commentId);
+        if (!comment) {
+            // console.log("not find comment!!!");
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+        // console.log("good");
+        // console.log("Comment", comment);
+        await note.comment.pull(commentId);
+        // console.log("good1");
+        await note.save();
+        res.status(200).json({ message: 'Comment deleted successfully' });
+    } catch (err) {
+        // console.log("errrrrr!");
+        res.status(500).json({ message: 'Error deleting comment', error: err });
+    }
+});
+
+
+app.post('/api/getComments', async (req, res) => {
+    const { noteId } = req.body;
+    // console.log("noteId is :", noteId);
+
+    try {
+        const note = await NoteModel.findById(noteId);
+
+        if (!note) {
+            // console.log("does not find any thing");
+            return res.status(404).json({ message: 'Note not found' });
+        }
+        res.status(200).send(note.comment);
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to get comments', error });
+    }
+});
+
+
+// Mind Map
+app.get('/api/fetchMindMapSet', async (req, res) => {
+    const username = req.session.user.username;
+    try{
+        if (!req.session.user.username || !req.session.user) {
+            return res.send([]);
+        }
+        const maps = await MapModel.find({owner: username});
+        if(maps){
+            //console.log(cards);
+            res.status(200).send(maps);
+        }
+    }catch (e) {
+        console.log("Error fetching MindMapSet");
+        console.log(e);
+    }
+});
+
+app.post('/api/createMindMap', async (req, res) => {
+
+    // console.log(req.body);
+    const username = req.session.user.username;
+    try{
+        const id = await MapModel.countDocuments({owner: username});
+        const newMindMap = await MapModel.create({owner: username, id: id, content: req.body}); // not enough
+    }catch(err){
+        console.log(err)
+    }
+});
+
+app.post('/api/deleteMindMap', async (req, res) => {
+    try {
+        const id = req.body.id;
+        const username = req.session.user.username;
+        const count = await MapModel.countDocuments({ owner: username });
+        // console.log(`deleting id: ${id}, and number of card before : ${count}`);
+
+        const MindMapToDelete = await MapModel.findOne({ owner: username, id: id });
+        if(MindMapToDelete){
+            const deleteOperation = await MapModel.deleteOne({ owner: username, id: id });
+            if (id !== (count - 1)) {
+                await MapModel.updateMany(
+                    { owner: username, id: { $gt: id } },
+                    { $inc: { id: -1 } }
+                );
+            }
+        }
+        res.status(200).send({ message: 'MindMap deleted successfully' });
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({ message: 'Error deleting MindMap' });
+    }
+});
+
+
 
 app.post('/api/note-to-flashcard', async (req, res) => {
     const notes = req.body.note.editorContent;
