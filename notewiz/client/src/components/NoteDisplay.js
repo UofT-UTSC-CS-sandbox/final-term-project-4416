@@ -15,7 +15,7 @@ const NoteDisplay = ({ nid }) => {
         const fetchNote = async () => {
             try {
                 setLoading(true);
-                let response = await axios.post("http://localhost:8000/api/fetchPublicNote", { id: nid });
+                let response = await axios.post("http://localhost:5000/api/fetchPublicNote", { id: nid });
                 setNote(response.data);
                 setLoading(false);
             } catch (error) {
