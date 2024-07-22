@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import parse from 'html-react-parser';
 import './NoteDisplay.css';
+import CommentSystem from './CommentSystem';
+import {useParams} from "react-router-dom";
 
 const NoteDisplay = ({ nid }) => {
+    const { id } = useParams();
     const [note, setNote] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -41,7 +44,7 @@ const NoteDisplay = ({ nid }) => {
         <div id='publicNote'>
             {parse(note)}
             <div id='comments'>
-                <h3>Comments:</h3>
+                <CommentSystem noteId={id} />
             </div>
         </div>
     );

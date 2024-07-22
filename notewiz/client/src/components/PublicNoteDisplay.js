@@ -9,7 +9,6 @@ function PublicNoteDisplay() {
     return (
         <div>
             <NoteDisplay nid={id} />
-            <CommentSystem noteId={id} /> 
         </div>
     );
 }

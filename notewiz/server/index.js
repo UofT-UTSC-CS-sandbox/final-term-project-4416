@@ -179,7 +179,7 @@ app.post('/browser', async (req, res)=>{
 app.post('/GlobalSearch', async (req, res) => {
     try {
         const notes = await NoteModel.find({ public: true });
-        console.log('Fetched notes from MongoDB:', notes); // 打印到终端
+        // console.log('Fetched notes from MongoDB:', notes); // 打印到终端
         return res.status(202).json({ data: notes });
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -232,11 +232,11 @@ app.post('/api/fetchNote', async (req, res) => {
 });
 
 app.post('/api/fetchPublicNote', async (req, res) => {
-    console.log("fetching note: " + req.body.id); // use req.body.id instead of req.id
+    // console.log("fetching note: " + req.body.id); // use req.body.id instead of req.id
 
     try {
         let doc = await NoteModel.findById(req.body.id);
-        console.log('Found document:', doc);
+        // console.log('Found document:', doc);
         if (doc.public === false) {
             return res.status(401).send('Not authorized');
         }
@@ -291,6 +291,86 @@ app.post('/Note_Summarize', async (req, res) => {
     } catch (error) {
         console.log("Error: ", error.response ? error.response.data : error.message);
         res.status(500).json({ error: 'Failed to summarize notes' });
+    }
+});
+
+app.post('/api/addComment', async (req, res) => {
+    const { noteId, content } = req.body;
+    const username = req.session?.user?.username;
+    // console.log("username:", username);
+    // console.log("nodeid======", noteId);
+
+    if (!username) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    if (!content || content.trim() === '') {
+        return res.status(400).json({ message: 'Comment content cannot be empty' });
+    }
+
+    try {
+        const note = await NoteModel.findById(noteId);
+        // console.log("nodeid======", note);
+        if (!note) {
+            return res.status(404).json({ message: 'Note not found' });
+        }
+        const newComment = {
+            username: username,
+            content: content,
+            timestamp: new Date()
+        };
+        // console.log("wuhahahahhahah!");
+
+        note.comment.push(newComment);
+        await note.save();
+
+        res.status(200).json({ message: 'Comment added successfully', comment: newComment });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to add comment', error });
+    }
+});
+
+app.post('/api/deleteComment', async (req, res) => {
+    const { noteId, commentId } = req.body;
+
+    try {
+        const note = await NoteModel.findById(noteId);
+        if (!note) {
+            return res.status(404).json({ message: 'Note not found' });
+        }
+
+        const comment = note.comment.id(commentId);
+        if (!comment) {
+            // console.log("not find comment!!!");
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+        // console.log("good");
+        // console.log("Comment", comment);
+        await note.comment.pull(commentId);
+        // console.log("good1");
+        await note.save();
+        res.status(200).json({ message: 'Comment deleted successfully' });
+    } catch (err) {
+        // console.log("errrrrr!");
+        res.status(500).json({ message: 'Error deleting comment', error: err });
+    }
+});
+
+
+app.post('/api/getComments', async (req, res) => {
+    const { noteId } = req.body;
+    // console.log("noteId is :", noteId);
+
+    try {
+        const note = await NoteModel.findById(noteId);
+
+        if (!note) {
+            // console.log("does not find any thing");
+            return res.status(404).json({ message: 'Note not found' });
+        }
+        res.status(200).send(note.comment);
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to get comments', error });
     }
 });
 
