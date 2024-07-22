@@ -109,7 +109,7 @@ const CreateFlashCard = () => {
 
   return (
     <Grid item xs={10} sm={8} md={6} xl={4}>
-      <form onSubmit={(e)=>{handleSubmit(e); notifySuccess("Successfully Created")}}>
+      <form onSubmit={handleSubmit}>
         <Flip isFlipped={flipped} flipDirection="vertical">
           <StyledCard
             key="front"
