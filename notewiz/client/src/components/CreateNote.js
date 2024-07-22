@@ -189,6 +189,7 @@ function CreateNote() {
                 if(note) {
                     setEditorContent(note.data.content || '');
                     setTitle(note.data.title || '');
+                    localStorage.setItem("userNote",note.data.content);
                     mdxEditorRef.current.setMarkdown(note.data.content);
                 }
             });
@@ -244,10 +245,23 @@ function CreateNote() {
         <Button key={0} onClick={(e)=>{handleSave(e); notifySuccess("Successfully Save")}} className='NoteButtons'>Save</Button>,
         <Button key={1} onClick={handleSubmit} className='NoteButtons'>Summarize</Button>,
         <Button key={2} onClick={handleShare} className='NoteButtons'>Share</Button>,
+        <Button key={3} onClick={handleConvert} className='NoteButtons'>convert</Button>
     ];
 
     async function handleConvert() {
-        let response = await axios.post("http://localhost:5000/api/note-to-flashcard", {note: editorContent, title: title}, {withCredentials: true});
+        try {
+            const notes = {editorContent};
+            let response = await axios.post(
+                "http://localhost:5000/api/note-to-flashcard",
+                {note: notes, title: title},
+                {withCredentials: true}
+            );
+            console.log(response.data);
+            alert("You can check the result in flash cards");
+        } catch (error) {
+            console.error("Error during conversion:", error);
+            alert("An error occurred during conversion. Please try again.");
+        }
     }
 
 
