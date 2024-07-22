@@ -369,7 +369,7 @@ app.post('/api/createMindMap', async (req, res) => {
     const username = req.session.user.username;
     try{
         const id = await MapModel.countDocuments({owner: username});
-        const newFlashCard = await MapModel.create({owner: username, id: id}); // not enough
+        const newMindMap = await MapModel.create({owner: username, id: id, content: req.body}); // not enough
     }catch(err){
         console.log(err)
     }
@@ -386,7 +386,7 @@ app.post('/api/deleteMindMap', async (req, res) => {
         if(MindMapToDelete){
             const deleteOperation = await MapModel.deleteOne({ owner: username, id: id });
             if (id !== (count - 1)) {
-                await FlashModel.updateMany(
+                await MapModel.updateMany(
                     { owner: username, id: { $gt: id } },
                     { $inc: { id: -1 } }
                 );
