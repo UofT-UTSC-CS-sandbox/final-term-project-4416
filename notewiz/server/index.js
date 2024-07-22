@@ -192,7 +192,6 @@ app.post('/api/fetchNote', async (req, res) => {
 
     try {
         let doc = await NoteModel.findById(req.body.id);
-        console.log('Found document:', doc);
         let user = req.session.user;
         if (user.username !== doc.owner) {
             console.log(user.username + ' | ' + doc.owner + ' | not authorized');
@@ -330,6 +329,65 @@ app.post('/api/createFlashCard', async (req, res) => {
         console.log(err)
     }
 });
+
+app.post('/api/note-to-flashcard', async (req, res) => {
+    const notes = req.body.note.editorContent;
+    const title = req.body.title;
+    if (!notes) {
+        console.log("Notes are not received");
+        return res.status(400).json({ error: 'Notes are required' });
+    }
+
+    try {
+        const response = await openai.chat.completions.create({
+            model: 'gpt-4-turbo',
+            messages: [
+                { role: 'system', content: 'You are a professional note analyser that helps people with reviewing on' +
+                        ' their note, you do not output anything other than json formatted string'
+                        +'Given the following note, please output a series of question/answer set that helps user with reviewing the note. The output should be in json format. The output has 2 field, question and answer. You should not output anything other than the json string. Do not include json string in a markdown codeblock. Do not include \\" in your response. Do use double quote for string.'},
+                { role: 'user', content: `${notes}` }
+            ],
+            max_tokens: 4096,
+            temperature: 0.3,
+            top_p: 0.9,
+            frequency_penalty: 0.5,
+            presence_penalty: 0.5,
+        });
+        let GeneratedText = response.choices[0].message.content.trim();
+
+        console.log(GeneratedText);
+
+        // Extract question-answer pairs from the string
+        let qaPairs = GeneratedText.match(/\{[^}]*?\}/g).map(JSON.parse);
+
+        let count = await FlashModel.countDocuments({owner: req.session.user.username});
+
+        qaPairs.forEach((item, index) => {
+            const flashCard = new FlashModel({
+                owner: req.session.user.username,
+                id: count+index,
+                front:{
+                    title: title + '-Q' + index,
+                    content: item.question
+                },
+                back:{
+                    title: 'A',
+                    content: item.answer
+                }
+            });
+
+            flashCard.save()
+                .then(() => console.log('Flash card saved successfully'))
+                .catch(err => console.error('Error saving flash card:', err));
+        });
+
+        res.status(200);
+    } catch (error) {
+        console.log("Error: ", error.response ? error.response.data : error.message);
+        res.status(500).json({ error: 'Convert to flashcard failed' });
+    }
+});
+
 
 app.listen(5000, ()=>{
     console.log('port connected at 5000');
