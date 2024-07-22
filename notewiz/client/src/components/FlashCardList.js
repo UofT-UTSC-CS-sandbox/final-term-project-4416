@@ -63,7 +63,7 @@ const FlashCardList = () => {
       <List>
         {flashCards.map((card) => (
           <React.Fragment key={card.id}>
-            <ListItem onClick={() => handleItemClick(card)}>
+            <ListItem button onClick={() => handleItemClick(card)}>
               <ListItemText
                   primary={card.front?.title || ''}
                   secondary={card.front?.content || ''}

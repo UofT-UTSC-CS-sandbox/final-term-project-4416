@@ -1,4 +1,36 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import {DeleteFlashCardThunk} from "../FlashCardSlice";
+
+async function fetchMindMapSet() {
+    let response;
+    response = await axios.get("http://localhost:5000/api/fetchMindMapSet", {withCredentials: true});
+    return response.data;
+}
+
+export const fetchMindMapSetThunk = createAsyncThunk(
+    'MindMaps/fetchMindMapSet',
+    async () => {
+        try {
+            const maps = await fetchMindMapSet();
+            return maps ?? [];
+        } catch (error) {
+            console.error('Error fetching MindMap set:', error);
+            return [];
+        }
+    }
+);
+
+export const DeleteMindMapThunk = createAsyncThunk(
+    'MindMaps/DeleteMindMap',
+    async (id)=>{
+        try{
+            return id;
+        }catch (e){
+            console.error(e);
+        }
+    }
+);
 
 const mindMaps = createSlice({
     name: "mindMaps",
@@ -10,24 +42,24 @@ const mindMaps = createSlice({
                 id: 0,
                 nodeData: {
                     id: 'd451a556d866ba7b',
-                    topic: 'new topic',
+                    topic: 'topic',
                     root: true,
                     children: [
                         {
-                            topic: 'new node',
+                            topic: 'ABCD',
                             id: 'd451a6f027c33b1f',
                             direction: 0,
                             children: [
                                 {
-                                    topic: 'new node',
+                                    topic: 'EFG',
                                     id: 'd451a724b7c10970',
                                 },
                                 {
-                                    topic: 'new node',
+                                    topic: 'HIJK',
                                     id: 'd451a77ca7348eae',
                                 },
                                 {
-                                    topic: 'new node',
+                                    topic: 'LMN',
                                     id: 'd451a78e1ec7181c',
                                 },
                             ],
@@ -119,7 +151,32 @@ const mindMaps = createSlice({
                 state.maps.splice(state.current, 1);
             }
         }
-    }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchMindMapSetThunk.fulfilled, (state, action) => {
+            state.maps = action.payload; // Update the state with fetched cards
+        });
+        builder.addCase(fetchMindMapSetThunk.rejected, (state, action) => {
+            console.error('Fetch flashcard set failed:', action.error);
+            state.maps = []; // Ensure the state is still set to an empty array on error
+        });
+        builder.addCase(DeleteMindMapThunk.fulfilled, (state, action) => {
+            state.current = action.payload;
+            console.log(`run DeleteFlashCard:${state.current}`);
+            if (!state.flipped) flashCards.caseReducers.flipFlashCard(state); // Ensure front of card is displayed when we change cards
+            if (state.cards.length - 1 === state.current) {
+                // If looking at the last card, move back 1 card before deleting so we don't reference an undefined array position
+                state.current--;
+                state.cards.splice(state.current + 1, 1);
+            } else {
+                state.cards.splice(state.current, 1);
+            }
+        });
+        builder.addCase(DeleteMindMapThunk.rejected, (state, action) => {
+            console.error('Current flashcard failed:', action.error);
+            state.current = -1;
+        })
+    },
 });
 
 export const {

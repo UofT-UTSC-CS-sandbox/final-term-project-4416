@@ -62,7 +62,6 @@ const CreateFlashCard = () => {
   const { flipped } = useSelector(state => state.flashCards);
   const navigate = useNavigate();
 
-
   const [formData, setFormData] = useState({
     frontTitle: "",
     frontContent: "",
@@ -93,11 +92,16 @@ const CreateFlashCard = () => {
     const formErrors = validateForm();
     console.log("formErrors", formErrors);
     console.log(formData);
-    try {
-      dispatch(createFlashCard(formData));
-      const response = await axios.post("http://localhost:5000/api/createFlashCard", formData, {withCredentials: true});
-    } catch (err) {
-      console.log(err);
+    if (Object.keys(formErrors).length === 0) {
+      try {
+        notifySuccess("Successfully Created");
+        dispatch(createFlashCard(formData));
+        const response = await axios.post("http://localhost:5000/api/createFlashCard", formData, {withCredentials: true});
+      } catch (err) {
+        console.log(err);
+      }
+    }else{
+      setErrors(formErrors);
     }
   }
 
@@ -109,7 +113,8 @@ const CreateFlashCard = () => {
 
   return (
     <Grid item xs={10} sm={8} md={6} xl={4}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e)=>{handleSubmit(e);
+      }}>
         <Flip isFlipped={flipped} flipDirection="vertical">
           <StyledCard
             key="front"
@@ -134,6 +139,7 @@ const CreateFlashCard = () => {
               title={
                 <TextField
                   fullWidth
+                  multiline
                   label="Front Title"
                   variant="outlined"
                   name="frontTitle"
@@ -185,6 +191,7 @@ const CreateFlashCard = () => {
               title={
                 <TextField
                   fullWidth
+                  multiline
                   label="Back Title"
                   variant="outlined"
                   name="backTitle"

@@ -74,7 +74,7 @@ function RoutesWithSidebar() {
                 <Route path="/Flash" element={<FlashCardList />} />
                 <Route path="/create-new-flashcard" element={<CreateFlashCard />} />
                 <Route path="/Mind" element={<MindMapList />} />
-                {/*<Route path="/MindMapWindow" element={<MindMapWindow />} />*/}
+                <Route path="/MindMapWindow" element={<MindMapWindow />} />
                 <Route path="create-new-mind-map" element={<MindMap/>}/>
               </Routes>
             </div>

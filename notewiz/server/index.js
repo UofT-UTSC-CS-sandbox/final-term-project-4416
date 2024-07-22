@@ -7,6 +7,7 @@ const cors = require('cors');
 const UserModel = require('./models/User')
 const NoteModel = require('./models/Note')
 const FlashModel = require('./models/FlashCard')
+const MapModel = require('./models/MindMap')
 const session = require('express-session')
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
@@ -277,6 +278,9 @@ app.post('/Note_Summarize', async (req, res) => {
     }
 });
 
+// Flash Card
+
+
 app.get('/api/fetchFlashCardSet', async (req, res) => {
     const username = req.session.user.username;
     try{
@@ -339,6 +343,63 @@ app.post('/api/createFlashCard', async (req, res) => {
         console.log(err)
     }
 });
+
+
+// Mind Map
+app.get('/api/fetchMindMapSet', async (req, res) => {
+    const username = req.session.user.username;
+    try{
+        if (!req.session.user.username || !req.session.user) {
+            return res.send([]);
+        }
+        const maps = await MapModel.find({owner: username});
+        if(maps){
+            //console.log(cards);
+            res.status(200).send(maps);
+        }
+    }catch (e) {
+        console.log("Error fetching MindMapSet");
+        console.log(e);
+    }
+});
+
+app.post('/api/createMindMap', async (req, res) => {
+
+    // console.log(req.body);
+    const username = req.session.user.username;
+    try{
+        const id = await MapModel.countDocuments({owner: username});
+        const newFlashCard = await MapModel.create({owner: username, id: id}); // not enough
+    }catch(err){
+        console.log(err)
+    }
+});
+
+app.post('/api/deleteMindMap', async (req, res) => {
+    try {
+        const id = req.body.id;
+        const username = req.session.user.username;
+        const count = await MapModel.countDocuments({ owner: username });
+        // console.log(`deleting id: ${id}, and number of card before : ${count}`);
+
+        const MindMapToDelete = await MapModel.findOne({ owner: username, id: id });
+        if(MindMapToDelete){
+            const deleteOperation = await MapModel.deleteOne({ owner: username, id: id });
+            if (id !== (count - 1)) {
+                await FlashModel.updateMany(
+                    { owner: username, id: { $gt: id } },
+                    { $inc: { id: -1 } }
+                );
+            }
+        }
+        res.status(200).send({ message: 'MindMap deleted successfully' });
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({ message: 'Error deleting MindMap' });
+    }
+});
+
+
 
 app.listen(5000, ()=>{
     console.log('port connected at 5000');

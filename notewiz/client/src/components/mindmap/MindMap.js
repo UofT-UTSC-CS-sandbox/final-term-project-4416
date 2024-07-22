@@ -27,8 +27,7 @@ const MindMap = () => {
     instance.install(NodeMenu);
     instance.init(MindElixir.new("new topic"));
     m.current = instance;
-  }
-  )
+  });
   const handleSave = () =>{
     console.log("save");
     console.log(instance.getData());
@@ -39,11 +38,11 @@ const MindMap = () => {
       }
     ));
     console.log(maps);
-    alert("保存成功");
-    navigate('/mind-map-list');
+    alert("Successfully Created");
+    // navigate('/Mind');
   }
   const handleQuit = () => {
-    navigate('/mind-map-list');
+    navigate('/Mind');
   }
 
   return (

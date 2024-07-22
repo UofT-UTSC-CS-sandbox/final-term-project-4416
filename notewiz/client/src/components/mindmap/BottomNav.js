@@ -43,7 +43,7 @@ export default function SimpleBottomNavigation({ prevCard, nextCard }) {
             onClick={prevCard}
           />
           <BottomNavigationAction
-            label="New Card"
+            label="New MindMap"
             icon={<AddIcon />}
             onClick={() => navigate("/create-new-mind-map")}
           />
