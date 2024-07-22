@@ -12,7 +12,7 @@
     min-height: 700px;
     height: auto;
     @import url('@radix-ui/colors/tomato-dark.css');
-@import url('@radix-ui/colors/mauve-dark.css');
+    @import url('@radix-ui/colors/mauve-dark.css');
 }
 
 
@@ -66,30 +66,91 @@
     background: var(--basePageBg);
 }
 
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-}
-
-.prose {
-    font-family: "Inter", sans-serif;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    text-align: center;
-}
 
 .prose strong {
     font-weight: 1000;
+}
+
+._iconButton_yms4a_456{
+    color: black;
+}
+#dark ._iconButton_yms4a_456:hover{
+    background-color: gray;
+}
+
+._codeMirrorToolbar_yms4a_408{
+    border-radius: 10px;
+    color: black;
+}
+
+._codeMirrorToolbar_yms4a_408:hover{
+    background-color: white;
+    border-radius: 10px;
+}
+
+#dark ._codeMirrorToolbar_yms4a_408 {
+    background-color: #495057;
+    color: white;
+}
+._iconButton_yms4a_456:hover{
+    background-color: #f0f0f0;
+}
+
+#dark ._sandPackWrapper_yms4a_400 ._codeMirrorToolbar_yms4a_408 {
+    background-color: white;
+}
+
+
+._toolbarButtonSelectTrigger_yms4a_306:hover {
+    background-color: #f0f0f0;
+    color: black;
+}
+
+#dark ._toolbarButtonSelectTrigger_yms4a_306 {
+    background-color: gray;
+    color: white;
+}
+
+._selectTrigger_yms4a_307:hover {
+    background-color: #f0f0f0;
+    color: black;
+}
+
+#dark ._selectTrigger_yms4a_307 {
+    background-color: gray;
+    color: white;
+}
+
+#dark .cm-scroller{
+    background-color: #495057;
+    color: #f8f8f8;
+}
+
+#dark .cm-gutters{
+    background-color: #495057;
+    color: #f8f8f8;
+}
+#dark ._selectDropdownArrow_yms4a_373{
+    background-color: #495057;
+    color: white;
+}
+#dark .cm-activeLine {
+    color: white;
+}
+
+#dark .cm-activeLineGutter {
+    background-color: gray;
+    color: white;
+}
+#dark .cm-editor {
+    background-color: #495057;
+    color: white;
+}
+#dark .NoteButtons {
+    color: white;
+    border: 1px solid white;
+}
+#dark .NoteButtons:hover {
+    background-color: #333;
+    border-color: white;
 }

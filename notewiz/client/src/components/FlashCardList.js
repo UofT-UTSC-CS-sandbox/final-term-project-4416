@@ -1,20 +1,42 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Divider, Typography, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { deleteFlashCard } from './FlashCardSlice';
+import { DeleteFlashCardThunk, fetchFlashCardSetThunk} from './FlashCardSlice';
 import FlashCardDialog from './FlashCardDialog';
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { Box, Fab } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const FlashCardList = () => {
+
   const flashCards = useSelector((state) => state.flashCards.cards);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selectedCard, setSelectedCard] = useState(null);
 
-  const handleDelete = (id) => {
-    dispatch(deleteFlashCard(id));
-  };
+    const fetchNode = async ()=>{
+        try{
+            await dispatch(fetchFlashCardSetThunk());
+        }catch (e) {
+            console.log(e)
+        }
+    }
+    useEffect( () => {
+        fetchNode();
+    }, [dispatch]);
+
+    async function handleDelete(id){
+        try{
+            await dispatch(DeleteFlashCardThunk(id));
+            const response = await axios.post("http://localhost:5000/api/deleteFlashCard", {id},{withCredentials: true});
+            await fetchNode();
+
+        }catch (e) {
+            console.log(e)
+        }
+    }
 
   const handleItemClick = (card) => {
     setSelectedCard(card);
@@ -30,24 +52,21 @@ const FlashCardList = () => {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
-        FlashCard List
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleAddNewFlashCard}
-        style={{ position: 'absolute', top: 10, right: 10 }}
-      >
-        Add New Flash Card
-      </Button>
+        <Box sx={{ display: 'flex', alignItems: 'center', '& > :not(style)': { m: 1 } }}>
+            <Typography variant="h4" gutterBottom>
+                FlashCard List
+            </Typography>
+            <Fab size="small" aria-label="add" onClick={handleAddNewFlashCard} className='AddIcon'>
+                <AddCircleOutlineIcon />
+            </Fab>
+        </Box>
       <List>
         {flashCards.map((card) => (
           <React.Fragment key={card.id}>
-            <ListItem button onClick={() => handleItemClick(card)}>
+            <ListItem onClick={() => handleItemClick(card)}>
               <ListItemText
-                primary={card.front.title}
-                secondary={card.front.content}
+                  primary={card.front?.title || ''}
+                  secondary={card.front?.content || ''}
               />
               <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(card.id)}>

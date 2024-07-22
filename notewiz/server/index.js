@@ -6,6 +6,7 @@ const showdown  = require('showdown')
 const cors = require('cors');
 const UserModel = require('./models/User')
 const NoteModel = require('./models/Note')
+const FlashModel = require('./models/FlashCard')
 const session = require('express-session')
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
@@ -13,8 +14,6 @@ const bodyParser = require('body-parser');
 const app = express();
 const openai = new OpenAI({apiKey: process.env.OPENAI_API_KEY,});
 
-app.locals.LoginUser = null;
-app.locals.note = "Hello world";
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -65,11 +64,6 @@ app.post('/', async (req, res)=>{
                 req.session.user = { username: existingUser.username,
                      password: existingUser.password,
                      preferName: existingUser.preferName};
-
-                app.locals.LoginUser = { username: existingUser.username,
-                    password: existingUser.password,
-                    preferName: existingUser.preferName
-                }
                 res.status(200).json({ message: 'Login successfully'});
                 // console.log("session data:", req.session.user);
             }else{
@@ -113,23 +107,11 @@ app.post('/signup', async (req, res)=>{
 
 app.get('/Profile', (req, res)=>{
     try{
-        // if(req.session.user){
-        //     res.status(200).json({
-        //         name: req.session.user.preferName,
-        //         pass: req.session.user.password,
-        //         defaultName: req.session.user.username
-        //     })
-        // }else{
-        //     console.log("else part");
-        //     console.log("session data:", req.session.user);
-        //     return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
-        // }
-        if(app.locals.LoginUser){
-
+        if(req.session.user){
             res.status(200).json({
-                name: app.locals.LoginUser.preferName,
-                pass: app.locals.LoginUser.password,
-                defaultName: app.locals.LoginUser.username
+                name: req.session.user.preferName,
+                pass: req.session.user.password,
+                defaultName: req.session.user.username
             })
         }else{
             return res.status(401).json({ name: "Unauthorized User" , pass: "Unauthorized Password"});
@@ -147,7 +129,8 @@ app.post('/Profile',async (req, res)=>{
     if (!username || username.trim() === '' || !password) {
         return res.status(400).json({ message: 'Prefer name and password cannot be empty' });
     }
-    const name = app.locals.LoginUser.username;
+    // const name = app.locals.LoginUser.username;
+    const name = req.session.user.username;
 
     try {
         // Check if the user already exists
@@ -156,7 +139,7 @@ app.post('/Profile',async (req, res)=>{
 
         if (existingUser) {
             const hashedPassword = await bcrypt.hash(password, 10);
-            app.locals.LoginUser = { username: existingUser.username,
+            req.session.user = { username: existingUser.username,
                 password: hashedPassword,
                 preferName: username
             }
@@ -282,6 +265,69 @@ app.post('/Note_Summarize', async (req, res) => {
     } catch (error) {
         console.log("Error: ", error.response ? error.response.data : error.message);
         res.status(500).json({ error: 'Failed to summarize notes' });
+    }
+});
+
+app.get('/api/fetchFlashCardSet', async (req, res) => {
+    const username = req.session.user.username;
+    try{
+        if (!req.session.user.username || !req.session.user) {
+            return res.send([]);
+        }
+        const cards = await FlashModel.find({owner: username});
+        if(cards){
+            //console.log(cards);
+            res.status(200).send(cards);
+        }
+    }catch (e) {
+        console.log("Error fetching FlashCardSet");
+        console.log(e);
+    }
+});
+
+app.post('/api/deleteFlashCard', async (req, res) => {
+    try {
+        const id = req.body.id;
+        const username = req.session.user.username;
+        const count = await FlashModel.countDocuments({ owner: username });
+        // console.log(`deleting id: ${id}, and number of card before : ${count}`);
+
+        const flashCardToDelete = await FlashModel.findOne({ owner: username, id: id });
+        if(flashCardToDelete){
+            const deleteOperation = await FlashModel.deleteOne({ owner: username, id: id });
+            if (id !== (count - 1)) {
+                await FlashModel.updateMany(
+                    { owner: username, id: { $gt: id } },
+                    { $inc: { id: -1 } }
+                );
+            }
+        }
+        res.status(200).send({ message: 'FlashCard deleted successfully' });
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({ message: 'Error deleting FlashCard' });
+    }
+});
+
+
+app.post('/api/createFlashCard', async (req, res) => {
+
+    // console.log(req.body);
+    const username = req.session.user.username;
+    try{
+        const id = await FlashModel.countDocuments({owner: username});
+        const newFlashCard = await FlashModel.create({owner: username, id: id,
+            front:{
+                title: req.body.frontTitle,
+                content: req.body.frontContent,
+            },
+            back:{
+                title: req.body.backTitle,
+                content: req.body.backContent,
+            }
+        });
+    }catch(err){
+        console.log(err)
     }
 });
 
