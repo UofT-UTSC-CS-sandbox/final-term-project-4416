@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {deleteMindMap, DeleteMindMapThunk, fetchMindMapSetThunk} from './MindMapSlice';
-import FlashCardDialog from './MindMapDialog';
+import MindMapDialog from './MindMapDialog';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -95,7 +95,7 @@ const MindMapList = () => {
       </List>
       {selectedCard && (
         <div>
-          <FlashCardDialog
+          <MindMapDialog
             open={Boolean(selectedCard)}
             onClose={handleCloseDialog}
             current_id={selectedCard.id}

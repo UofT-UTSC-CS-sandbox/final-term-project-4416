@@ -143,6 +143,7 @@ function CreateNote() {
   }
   const [editorContent, setEditorContent] = useState(localStorage.getItem("userNote"));
   const [loadingSummary, setloding] = useState(false);
+  const [loadingConvert, setloadingConvert] = useState(false);
   const [title, setTitle] = useState('');
   const { noteid } = useParams();
 
@@ -227,6 +228,7 @@ function CreateNote() {
             console.log(e);
         }finally {
             setloding(false);
+            notifySuccess("Successfully Summarize the Note");
         }
 
     };
@@ -250,17 +252,21 @@ function CreateNote() {
 
     async function handleConvert() {
         try {
+            setloadingConvert(true);
             const notes = {editorContent};
             let response = await axios.post(
                 "http://localhost:5000/api/note-to-flashcard",
                 {note: notes, title: title},
                 {withCredentials: true}
             );
-            console.log(response.data);
-            alert("You can check the result in flash cards");
+            //notifySuccess("Successfully Convert to Flash Card");
+            //alert("You can check the result in flash cards");
         } catch (error) {
             console.error("Error during conversion:", error);
             alert("An error occurred during conversion. Please try again.");
+        }finally {
+            setloadingConvert(false);
+            notifySuccess("Successfully Convert to Flash Card");
         }
     }
 
@@ -372,7 +378,10 @@ function CreateNote() {
           </Box>
           {loadingSummary && (
               <LoadingProcess Generate='Summary'/>
-          )}
+          )};
+          {loadingConvert && (
+              <LoadingProcess Generate='Flash Card'/>
+          )};
       </div>
   );
 }

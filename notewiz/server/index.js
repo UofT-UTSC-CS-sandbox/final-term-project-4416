@@ -459,7 +459,7 @@ app.post('/api/deleteMindMap', async (req, res) => {
             if (id !== (count - 1)) {
                 await MapModel.updateMany(
                     { owner: username, id: { $gt: id } },
-                    { $inc: { id: -1 } }
+                    { $inc: { id: -1, 'content.id': -1 } }
                 );
             }
         }
@@ -486,11 +486,11 @@ app.post('/api/note-to-flashcard', async (req, res) => {
             messages: [
                 { role: 'system', content: 'You are a professional note analyser that helps people with reviewing on' +
                         ' their note, you do not output anything other than json formatted string'
-                        +'Given the following note, please output a series of question/answer set that helps user with reviewing the note. The output should be in json format. The output has 2 field, question and answer. You should not output anything other than the json string. Do not include json string in a markdown codeblock. Do not include \\" in your response. Do use double quote for string.'},
+                        +'Given the following note, please output two question/answer set that helps user with reviewing the note. The output should be in json format. The output has 2 field, question and answer. You should not output anything other than the json string. Do not include json string in a markdown codeblock. Do not include \\" in your response. Do use double quote for string.'},
                 { role: 'user', content: `${notes}` }
             ],
             max_tokens: 4096,
-            temperature: 0.3,
+            temperature: 0.2,
             top_p: 0.9,
             frequency_penalty: 0.5,
             presence_penalty: 0.5,
@@ -523,7 +523,7 @@ app.post('/api/note-to-flashcard', async (req, res) => {
                 .catch(err => console.error('Error saving flash card:', err));
         });
 
-        res.status(200);
+        res.status(200).json({message: 'Successfully Generate Flash Card'});
     } catch (error) {
         console.log("Error: ", error.response ? error.response.data : error.message);
         res.status(500).json({ error: 'Convert to flashcard failed' });

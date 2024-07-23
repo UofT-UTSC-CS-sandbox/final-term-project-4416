@@ -41,8 +41,8 @@ const MindMapDialog = ({ open, onClose, current_id }) => {
       <DialogTitle>MindMap</DialogTitle>
       <DialogContent>
         <div>
-          <MindMapWindow data={map} />
-          </div>
+          <MindMapWindow input={map.content} />
+        </div>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
