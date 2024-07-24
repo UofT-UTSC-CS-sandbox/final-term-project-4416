@@ -530,6 +530,30 @@ app.post('/api/note-to-flashcard', async (req, res) => {
     }
 });
 
+app.post('/MindMap/AutoSave', async (req, res) => {
+    const username = req.session.user.username;
+    const update = req.body;
+    console.log(req.body);
+    try {
+        // Find the document
+        const document = await MapModel.findOne({ owner: username, id: update.id });
+
+        if (document) {
+            // Update the document
+            const updateOperation = await MapModel.updateOne({id: update.id, owner: username},
+                {$set: {content: update.content}});
+            res.status(200).send('Update successful');
+        } else {
+            console.log('Document not found');
+            res.status(404).send('Document not found');
+        }
+    } catch (err) {
+        console.log('Error during update operation:', err);
+        res.status(500).send('Internal server error');
+    }
+});
+
+
 
 app.listen(5000, ()=>{
     console.log('port connected at 5000');

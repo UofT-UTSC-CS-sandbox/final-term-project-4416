@@ -56,6 +56,7 @@ const MindMapList = () => {
 
   const handleCloseDialog = () => {
     setSelectedCard(null);
+    fetchMindMap();
   };
 
   const handleAddNewMindMap = () => {

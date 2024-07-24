@@ -247,7 +247,7 @@ function CreateNote() {
         <Button key={0} onClick={(e)=>{handleSave(e); notifySuccess("Successfully Save")}} className='NoteButtons'>Save</Button>,
         <Button key={1} onClick={handleSubmit} className='NoteButtons'>Summarize</Button>,
         <Button key={2} onClick={handleShare} className='NoteButtons'>Share</Button>,
-        <Button key={3} onClick={handleConvert} className='NoteButtons'>convert</Button>
+        <Button key={3} onClick={handleConvert} className='NoteButtons'>Q&A Generator</Button>
     ];
 
     async function handleConvert() {
@@ -378,10 +378,10 @@ function CreateNote() {
           </Box>
           {loadingSummary && (
               <LoadingProcess Generate='Summary'/>
-          )};
+          )}
           {loadingConvert && (
               <LoadingProcess Generate='Flash Card'/>
-          )};
+          )}
       </div>
   );
 }

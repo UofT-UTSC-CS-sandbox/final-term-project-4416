@@ -3,6 +3,7 @@ import MindElixir from "mind-elixir";
 import NodeMenu from "@mind-elixir/node-menu";
 import "@mind-elixir/node-menu/dist/style.css";
 import '@mdxeditor/editor/style.css';
+import axios from "axios";
 
 const MindMapWindow = (input) => {
   const m = useRef();
@@ -24,10 +25,9 @@ const MindMapWindow = (input) => {
     }
     return copy;
   };
-
+  const initialData = deepCopy(input);
 
   useEffect(() => {
-    const initialData = deepCopy(input);
     instance = new MindElixir({
       el: "#map",// bind an element
       direction: MindElixir.LEFT,
@@ -38,14 +38,26 @@ const MindMapWindow = (input) => {
       keypress: true // default true
     });
     instance.install(NodeMenu);
-    instance.init(initialData.input);
+    instance.init(initialData.input.content);
     m.current = instance;
-  },[]);
+  });
+
+  async function autoSave (e){
+    e.preventDefault();
+    const newMap = {id: initialData.input.id, content: {...instance.getData()}};
+    console.log(newMap);
+    const response = axios.post("http://localhost:5000/MindMap/AutoSave", newMap,{withCredentials: true});
+  }
 
   return (
-      <div id="map" style={{ height: "300px", width: "800px" }}>
+      <div>
+        <div id="map" style={{height: "300px", width: "800px"}}/>
+        <div>
+          <button onClick={autoSave}>Save</button>
+        </div>
       </div>
-  );
+  )
+      ;
 };
 
 
