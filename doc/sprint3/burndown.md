@@ -10,7 +10,7 @@ The burndown chart indicates the progress of the sprint in terms of Issue count 
 1. **Initial Phase (July 8th - July 16th):**  Our team maintained a steady pace and effectively identified new issues, ensuring all necessary work was accounted for early in the sprint.
 2. **Mid-Sprint Phase (July 17th - July 20th):**  Significant progress was made, demonstrating the team's ability to resolve issues efficiently and work towards the sprint goal.
 3. **Final Phase (July 20st - July 21rd):**  Our team showcased remarkable productivity by completing almost all issues ahead of the planned end date.
-## Velocity Sprint 3
+## Velocity Sprint 3 
 - The burndown chart for Sprint 3 showed fluctuations due to the addition of new issues mid-sprint.
 - The team managed to complete all issues by the end of the sprint, maintaining effective velocity.
 ## Comparison of Velocity
