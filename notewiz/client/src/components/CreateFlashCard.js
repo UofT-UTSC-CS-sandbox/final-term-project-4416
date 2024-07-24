@@ -18,6 +18,8 @@ import {
 import { styled } from "@mui/material/styles";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from '@mui/icons-material/Cancel';
+import axios from "axios";
+import {notifySuccess} from "./ToastNotification";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   "& .MuiCardHeader-root": {
@@ -71,11 +73,11 @@ const CreateFlashCard = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.frontContent || formData.frontContent.length < 3) {
-      newErrors.frontContent = "You must write at least 1 word";
+    if (!formData.frontContent || formData.frontContent.length < 1) {
+      newErrors.frontContent = "You must write at least 1 word at Front Content";
     }
-    if (!formData.backContent || formData.backContent.length < 3) {
-      newErrors.backContent = "You must write at least 1 word";
+    if (!formData.backContent || formData.backContent.length < 1) {
+      newErrors.backContent = "You must write at least 1 word at Back Content";
     }
     return newErrors;
   };
@@ -85,16 +87,23 @@ const CreateFlashCard = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  async function handleSubmit (e) {
     e.preventDefault();
     const formErrors = validateForm();
     console.log("formErrors", formErrors);
+    console.log(formData);
     if (Object.keys(formErrors).length === 0) {
-      dispatch(createFlashCard(formData));
-    } else {
+      try {
+        notifySuccess("Successfully Created");
+        dispatch(createFlashCard(formData));
+        const response = await axios.post("http://localhost:5000/api/createFlashCard", formData, {withCredentials: true});
+      } catch (err) {
+        console.log(err);
+      }
+    }else{
       setErrors(formErrors);
     }
-  };
+  }
 
   const handleCancel = () => {
     navigate('/Flash');
@@ -104,7 +113,8 @@ const CreateFlashCard = () => {
 
   return (
     <Grid item xs={10} sm={8} md={6} xl={4}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e)=>{handleSubmit(e);
+      }}>
         <Flip isFlipped={flipped} flipDirection="vertical">
           <StyledCard
             key="front"
@@ -129,6 +139,7 @@ const CreateFlashCard = () => {
               title={
                 <TextField
                   fullWidth
+                  multiline
                   label="Front Title"
                   variant="outlined"
                   name="frontTitle"
@@ -175,11 +186,12 @@ const CreateFlashCard = () => {
                 >
                     <CancelIcon />
                   </IconButton>
-                </>              
+                </>
               }
               title={
                 <TextField
                   fullWidth
+                  multiline
                   label="Back Title"
                   variant="outlined"
                   name="backTitle"
