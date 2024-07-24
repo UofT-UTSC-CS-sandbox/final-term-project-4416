@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import SimpleBottomNavigation from './BottomNav';
 import {deleteMindMap, nextMindMap, prevMindMap } from './MindMapSlice';
 import MindMapWindow from './MindMapWindow';
+import axios from "axios";
 
 
 const MindMapDialog = ({ open, onClose, current_id }) => {
@@ -19,10 +20,10 @@ const MindMapDialog = ({ open, onClose, current_id }) => {
     setCurrentCardId(current_id);
   }, [current_id]);
 
-  const handleDelete = () => {
-    dispatch(deleteMindMap(currentCardId));
+  async function autoSave (e){
     onClose();
-  };
+  }
+
 
   const handleNextCard = () => {
     dispatch(nextMindMap());
@@ -38,14 +39,14 @@ const MindMapDialog = ({ open, onClose, current_id }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>MindMap</DialogTitle>
+      <DialogTitle>{map.content.nodeData.topic}</DialogTitle>
       <DialogContent>
         <div>
-          <MindMapWindow data={map} />
-          </div>
+          <MindMapWindow input={map} />
+        </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Close</Button>
+        <Button onClick={autoSave}>Close</Button>
       </DialogActions>
       <SimpleBottomNavigation nextCard={handleNextCard} prevCard={handlePrevCard} />
     </Dialog>

@@ -11,7 +11,7 @@ import {notifySuccess} from "../ToastNotification";
 
 import axios from "axios";
 
-const MindMap = () => {
+const MindMap = (input) => {
   const m = useRef();
   const maps = useSelector((state) => state.mindMaps.maps);
   const dispatch = useDispatch();
@@ -33,6 +33,7 @@ const MindMap = () => {
       instance.init(MindElixir.new("new topic"));
     }else{
       instance.init(data);
+      console.log("Data: ", data)
       instance.refresh(data);
     }
 
