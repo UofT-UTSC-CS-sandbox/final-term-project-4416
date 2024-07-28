@@ -46,7 +46,7 @@ const MindMapWindow = (input) => {
     e.preventDefault();
     const newMap = {id: initialData.input.id, content: {...instance.getData()}};
     console.log(newMap);
-    const response = axios.post("http://localhost:5000/MindMap/AutoSave", newMap,{withCredentials: true});
+    const response = axios.post("http://localhost:8000/MindMap/AutoSave", newMap,{withCredentials: true});
   }
 
   return (
