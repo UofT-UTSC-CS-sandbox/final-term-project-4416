@@ -154,3 +154,12 @@
     background-color: #333;
     border-color: white;
 }
+
+#light .NoteButtons {
+    color: black;
+    border: 1px solid black;
+}
+#light .NoteButtons:hover {
+    background-color: lightgrey;
+    border-color: black;
+}

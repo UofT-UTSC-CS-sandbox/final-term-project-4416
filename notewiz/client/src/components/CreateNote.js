@@ -174,7 +174,7 @@ function CreateNote() {
         if (noteid === undefined) return
         async function fetchNote(id) {
             try{
-                return await axios.post("http://localhost:8000/api/fetchNote", {id: id}, {withCredentials: true});
+                return await axios.post("http://localhost:5000/api/fetchNote", {id: id}, {withCredentials: true});
             } catch (err) {
                 if (axios.isCancel(err)) {
                     console.log('Request canceled:', err.message);
@@ -211,7 +211,7 @@ function CreateNote() {
     const handleSave = async (e)=>{
         e.preventDefault();
         const note = { 'title': title, 'content': editorContent };
-        const response = await axios.post("http://localhost:8000/api/createNotes", note, {withCredentials: true})
+        const response = await axios.post("http://localhost:5000/api/createNotes", note, {withCredentials: true})
     }
 
     const handleSubmit = async (e) => {
@@ -219,7 +219,7 @@ function CreateNote() {
         try{
             setloding(true);
             const notes = {editorContent};
-            const response = await axios.post("http://localhost:8000/Note_Summarize", notes, {withCredentials: true});
+            const response = await axios.post("http://localhost:5000/Note_Summarize", notes, {withCredentials: true});
             console.log(response.data.summary);
             const resultRendering = response.data.summary + localStorage.getItem('userNote');
             setEditorContent(resultRendering);
@@ -255,7 +255,7 @@ function CreateNote() {
             setloadingConvert(true);
             const notes = {editorContent};
             let response = await axios.post(
-                "http://localhost:8000/api/note-to-flashcard",
+                "http://localhost:5000/api/note-to-flashcard",
                 {note: notes, title: title},
                 {withCredentials: true}
             );

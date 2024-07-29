@@ -4,8 +4,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import useCanvasBackground from '../canvas';
 import '../publicNoteDisplay.css'
-import {notifySuccess, notifyError} from "..    /ToastNotification";
-import NoteDisplay from "../NoteDisplay";
+
 
 function Login(props) {
     const [username, setUsername] = useState('');
@@ -31,7 +30,7 @@ function Login(props) {
         }
 
         try {
-            const response = await axios.post("http://localhost:8000/", {username, password}, {withCredentials: true});
+            const response = await axios.post("http://localhost:5000/", {username, password}, {withCredentials: true});
             setMessage(response.data.message);
             if (response.data.message.includes('successfully')) {
                 navigate('/Note');

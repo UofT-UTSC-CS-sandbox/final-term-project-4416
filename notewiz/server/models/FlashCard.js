@@ -14,7 +14,7 @@ const FlashSchema = new mongoose.Schema({
         content: { type: String, required: true },
     },
     back:{
-        title: { type: String, required: true },
+        title: { type: String},
         content: { type: String, required: true },
     }
 })

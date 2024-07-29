@@ -12,7 +12,7 @@ function CommentSystem({noteId}) {
 
     const fetchComments = async () => {
         try {
-            const response = await axios.post('http://localhost:8000/api/getComments', {noteId});
+            const response = await axios.post('http://localhost:5000/api/getComments', {noteId});
             if (Array.isArray(response.data)) {
                 setComments(response.data);
             } else {
@@ -36,7 +36,7 @@ function CommentSystem({noteId}) {
         e.preventDefault();
         if (newComment.trim()) {
             try {
-                const response = await axios.post('http://localhost:8000/api/addComment', {
+                const response = await axios.post('http://localhost:5000/api/addComment', {
                     noteId,
                     content: newComment
                 }, {withCredentials: true});
@@ -55,7 +55,7 @@ function CommentSystem({noteId}) {
 
     const handleDeleteComment = async (commentId) => {
         try {
-            const response = await axios.post('http://localhost:8000/api/deleteComment', {
+            const response = await axios.post('http://localhost:5000/api/deleteComment', {
                 noteId,
                 commentId
             }, {withCredentials: true});

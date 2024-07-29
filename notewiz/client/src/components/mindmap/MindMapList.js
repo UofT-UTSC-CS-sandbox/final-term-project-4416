@@ -39,7 +39,7 @@ const MindMapList = () => {
     async function handleDelete(id){
         try{
             await dispatch(DeleteMindMapThunk(id));
-            const response = await axios.post("http://localhost:8000/api/deleteMindMap", {id},{withCredentials: true});
+            const response = await axios.post("http://localhost:5000/api/deleteMindMap", {id},{withCredentials: true});
             await fetchMindMap();
 
         }catch (e) {

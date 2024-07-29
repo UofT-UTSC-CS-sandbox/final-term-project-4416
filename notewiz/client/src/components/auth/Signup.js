@@ -4,7 +4,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import axios from "axios";
 import useCanvasBackground from '../canvas';
 import '../publicNoteDisplay.css'
-import NoteDisplay from "../NoteDisplay";
+
 
 
 function Signup(props) {
@@ -43,7 +43,7 @@ function Signup(props) {
         }
 
         try {
-            const response = await axios.post("http://localhost:8000/signup", {username, password, ConfirmPassword});
+            const response = await axios.post("http://localhost:5000/signup", {username, password, ConfirmPassword});
             setMessage(response.data.message);
             if (response.data.message.includes('already')) {
                 console.log("user exist");
