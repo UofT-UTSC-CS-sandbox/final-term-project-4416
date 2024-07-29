@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import NoteDisplay from './NoteDisplay';
 import { useParams } from 'react-router-dom';
 import useCanvasBackground from './canvas';
+import './publicNoteDisplay.css';
 
 function PublicNoteDisplay() {
     const { id } = useParams();
@@ -10,18 +11,10 @@ function PublicNoteDisplay() {
     useCanvasBackground(canvasRef);
 
     return (
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div className="relative-container">
             <canvas
                 ref={canvasRef}
-                style={{
-                    position: 'fixed',
-                    left: 0,
-                    top: 0,
-                    width: '100%',
-                    height: '100%',
-                    zIndex: -1,
-                    background: 'black',
-                }}
+                className="canvas-background"
             ></canvas>
             <NoteDisplay nid={id} />
         </div>

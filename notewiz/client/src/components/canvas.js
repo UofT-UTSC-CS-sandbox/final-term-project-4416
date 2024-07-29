@@ -44,7 +44,7 @@ class Point {
         }
         this.ctx.beginPath();
         this.ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
-        this.ctx.fillStyle = 'rgb(200,200,200)';
+        this.ctx.fillStyle = 'rgb(52,42,42)';
         this.ctx.fill();
         this.lastDrawTime = Date.now();
     }
@@ -74,7 +74,7 @@ class Graph {
                 this.ctx.moveTo(p1.x, p1.y);
                 this.ctx.lineTo(p2.x, p2.y);
                 this.ctx.closePath();
-                this.ctx.strokeStyle = `rgba(200, 200, 200, ${1 - d / this.maxDis})`;
+                this.ctx.strokeStyle = `rgba(52, 42, 42, ${1 - d / this.maxDis})`;
                 this.ctx.stroke();
             }
         }
