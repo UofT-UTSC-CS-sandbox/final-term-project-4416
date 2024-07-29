@@ -5,6 +5,9 @@ import './editorStyles.css';
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import MessageSharedNote from "./MessageSharedNote";
+import { ToastContainer, toast, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
     AdmonitionDirectiveDescriptor,
     BlockTypeSelect,
@@ -237,8 +240,21 @@ function CreateNote() {
         if (!noteid) {
             alert("Please save the note first!");
         } else {
-            let shareableLink = `http://localhost:3000/shared-note/${noteid}`;
-            alert(`Your shareable link is: ${shareableLink}`);
+
+
+            const options = {
+                autoClose: 60000,
+                hideProgressBar: true,
+                position: "top-center",
+                pauseOnHover: true,
+                progress: 0.2,
+                closeOnClick: false,
+                draggable: false,
+                type: "info"
+                // and so on ...
+            };
+
+            toast(<MessageSharedNote noteId={noteid} />, options);
         }
     }
 

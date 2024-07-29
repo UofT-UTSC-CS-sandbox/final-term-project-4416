@@ -27,7 +27,7 @@ const NoteSchema = new mongoose.Schema({
     },
     public: {
         type: Boolean,
-        default: true
+        default: false
     },
     owner: {
         type: String,
