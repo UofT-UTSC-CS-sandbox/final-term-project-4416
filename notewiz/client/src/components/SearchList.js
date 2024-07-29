@@ -1,7 +1,7 @@
 // src/components/SearchList.js
 
 import React from 'react';
-import Card from './flashcard/Card';
+import Card from './Card';
 
 function SearchList({ filteredNotes }) {
     const filtered = filteredNotes.map(note => <Card key={note._id} note={note} />);

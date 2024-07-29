@@ -92,7 +92,7 @@ const MindMap = () => {
     }else{
       notifySuccess("Successfully Created");
       const editMap = {id: initialMap.content.id, ...instance.getData()};
-      const response = axios.post("http://localhost:5000/MindMap/AutoSave", editMap,{withCredentials: true});
+      const response = await axios.post("http://localhost:5000/MindMap/AutoSave", editMap,{withCredentials: true});
     }
 
   }

@@ -10,6 +10,10 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true // Makes the password field required
+    },
+    preferName: {
+        type: String,
+        default: ""
     }
 })
 

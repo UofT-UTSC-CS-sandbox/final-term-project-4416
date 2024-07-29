@@ -2,6 +2,8 @@ import React, { useState , useEffect}from "react";
 import "./Profile.css"
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 function Profile({logout}){
 
@@ -98,13 +100,21 @@ function Profile({logout}){
                         />
                     </div>
                     <div className="buttonInProfile">
-                        <button type="button" id = "button1"onClick={handleSubmit}>Save changes</button>
-                        <button type="button" id="button2" onClick={handleLogout}>Log out</button>
+                        {/*<button type="button" id = "button1"onClick={handleSubmit}>Save changes</button>*/}
+                        {/*<button type="button" id="button2" onClick={handleLogout}>Log out</button>*/}
+                        <Box sx={{
+                            display: 'flex',
+                            alignItems: 'flex-end'
+                        }}>
+                            <Button variant="outlined" onClick={handleSubmit} className='NoteButtons'
+                                    sx={{ marginRight: 2 , fontSize: '1.25rem', padding: '12px 24px'}}>Save</Button>
+                            <Button variant="outlined" onClick={handleLogout} className='NoteButtons'
+                                    sx={{ fontSize: '1.25rem', padding: '12px 24px'}}>Log out</Button>
+                        </Box>
                         <div style={{ color: message.startsWith('Successfully') ? 'green' : 'red' }}>
                             {message}
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>

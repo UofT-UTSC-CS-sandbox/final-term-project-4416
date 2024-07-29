@@ -50,7 +50,7 @@ const MindMapWindow = (input) => {
   async function autoSave (e){
     e.preventDefault();
     const newMap = {id: initialData.input.id, ...instance.getData()};
-    const response = axios.post("http://localhost:5000/MindMap/AutoSave", newMap,{withCredentials: true});
+    const response = await axios.post("http://localhost:5000/MindMap/AutoSave", newMap,{withCredentials: true});
   }
 
   async function jump (e) {
@@ -75,7 +75,7 @@ const MindMapWindow = (input) => {
           alignItems: 'flex-end'
         }}>
           <Button variant="outlined" onClick={(e)=>{jump(e)}} className='NoteButtons' sx={{ marginRight: 2 }}>Edit</Button>
-          <Button variant="outlined" onClick={(e)=>{autoSave(e)}} className='NoteButtons'>Save</Button>
+          <Button variant="outlined" onClick={(e)=>{autoSave(e); notifySuccess("Successfully Created");}} className='NoteButtons'>Save</Button>
         </Box>
       </div>
   )

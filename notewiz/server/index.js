@@ -99,11 +99,12 @@ app.post('/signup', async (req, res)=>{
     }
 })
 
-app.get('/Profile', (req, res)=>{
+app.get('/Profile', async (req, res)=>{
     try{
         if(req.session.user){
+            const user = await UserModel.findOne({ username: req.session.user.username })
             res.status(200).json({
-                name: req.session.user.preferName,
+                name: user.preferName,
                 pass: req.session.user.password,
                 defaultName: req.session.user.username
             })

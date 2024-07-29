@@ -76,7 +76,7 @@ const CreateFlashCard = () => {
     if (!formData.frontContent || formData.frontContent.length < 1) {
       newErrors.frontContent = "You must write at least 1 word at Front Content";
     }
-    if (!formData.backContent || formData.backContent.length < 1) {
+    if (formData.backContent.length < 1) {
       newErrors.backContent = "You must write at least 1 word at Back Content";
     }
     return newErrors;
