@@ -16,14 +16,10 @@ const MindMapDialog = ({ open, onClose, current_id }) => {
   const mindMaps = useSelector((state) => state.mindMaps.maps);
   const map = mindMaps[currentCardId];
 
+
   useEffect(() => {
     setCurrentCardId(current_id);
   }, [current_id]);
-
-  async function autoSave (e){
-    onClose();
-  }
-
 
   const handleNextCard = () => {
     dispatch(nextMindMap());
@@ -42,12 +38,9 @@ const MindMapDialog = ({ open, onClose, current_id }) => {
       <DialogTitle>{map.content.nodeData.topic}</DialogTitle>
       <DialogContent>
         <div>
-          <MindMapWindow input={map} />
+          <MindMapWindow input={map}/>
         </div>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={autoSave}>Close</Button>
-      </DialogActions>
       <SimpleBottomNavigation nextCard={handleNextCard} prevCard={handlePrevCard} />
     </Dialog>
   );

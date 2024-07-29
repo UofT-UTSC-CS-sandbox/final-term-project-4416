@@ -1,6 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import './CommentSystem.css'; // Import the CSS file
+import './CommentSystem.css';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import './fontAwesomeConfig';
+import {notifySuccess, notifyError} from "./ToastNotification";
 
 function CommentSystem({noteId}) {
     const [comments, setComments] = useState([]);
@@ -39,10 +42,12 @@ function CommentSystem({noteId}) {
                 }, {withCredentials: true});
                 setComments([...comments, response.data.comment]);
                 setNewComment('');
-                setMessage('Comment added successfully');
+                // setMessage('Comment added successfully');
+                notifySuccess('Comment added successfully');
                 fetchComments();
             } catch (error) {
-                setMessage('Failed to add comment');
+                // setMessage('Failed to add comment');
+                notifyError('Failed to add comment');
                 console.error("Error adding comment", error);
             }
         }
@@ -55,9 +60,11 @@ function CommentSystem({noteId}) {
                 commentId
             }, {withCredentials: true});
             setComments(comments.filter(comment => comment._id !== commentId));
-            setMessage('Comment deleted successfully');
+            // setMessage('Comment deleted successfully');
+            notifySuccess('Comment deleted successfully');
         } catch (error) {
-            setMessage('Failed to delete comment');
+            // setMessage('Failed to delete comment');
+            notifyError('Failed to delete comment');
             console.error("Error deleting comment", error);
         }
     };
@@ -65,7 +72,7 @@ function CommentSystem({noteId}) {
     return (
         <div className="comment-system">
             <h3>Comments</h3>
-            {message && <div className="message">{message}</div>}
+            {/*{message && <div className="message">{message}</div>}*/}
             <form onSubmit={handleCommentSubmit}>
                 <input
                     type="text"
@@ -76,15 +83,17 @@ function CommentSystem({noteId}) {
                 <button type="submit" className="submit-button">Submit</button>
             </form>
 
-            <ul>
+            <ul className="comment-bar">
                 {comments
                     .slice()
                     .reverse()
                     .map((comment, index) => (
-                        <li key={index}>
-                            <strong>{comment.username}</strong>: {comment.content}
+                        <li key={index} className="comment">
+                            <li className="comment-detail">
+                                <strong className="Strong">{comment.username} :</strong>{comment.content}
+                            </li>
                             <button onClick={() => handleDeleteComment(comment._id)} className="delete-button">
-                                <i className="fa fa-trash" aria-hidden="true"></i>
+                                <FontAwesomeIcon icon="trash"/>
                             </button>
                         </li>
                     ))}

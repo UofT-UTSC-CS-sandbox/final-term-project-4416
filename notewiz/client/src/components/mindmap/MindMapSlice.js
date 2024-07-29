@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import {DeleteFlashCardThunk} from "../FlashCardSlice";
+import {DeleteFlashCardThunk} from "../flashcard/FlashCardSlice";
 
 async function fetchMindMapSet() {
     let response;
