@@ -190,6 +190,19 @@ app.post('/api/createNotes', async (req, res)=>{
 
 })
 
+app.patch('/api/Notes/:noteId/setPublicity', async (req, res) => {
+    try {
+        console.log(req.body);
+        let updatedPublicity = req.body.public;
+        let query = {_id: req.params.noteId};
+        let newValue = { $set: {public: updatedPublicity}};
+        let response = await NoteModel.findOneAndUpdate(query, newValue, {});
+        console.log(response);
+        res.status(200).json({ message: 'Note publicity updated successfully' });
+    } catch (err) {
+        return res.status(500).json({message: 'Error changing publicity', error: err});
+    }
+})
 
 app.post('/api/fetchNote', async (req, res) => {
     console.log("fetching note: " + req.body.id);
