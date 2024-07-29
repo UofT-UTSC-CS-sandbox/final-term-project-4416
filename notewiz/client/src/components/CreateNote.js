@@ -214,7 +214,14 @@ function CreateNote() {
     const handleSave = async (e)=>{
         e.preventDefault();
         const note = { 'title': title, 'content': editorContent };
-        const response = await axios.post("http://localhost:5000/api/createNotes", note, {withCredentials: true})
+
+        let response
+        if(noteid !== undefined) {
+            response = await axios.patch(`http://localhost:5000/api/Notes/${noteid}`, note, {withCredentials: true});
+        }
+        else{
+            response = await axios.post("http://localhost:5000/api/Notes", note, {withCredentials: true})
+        }
     }
 
     const handleSubmit = async (e) => {
