@@ -216,7 +216,7 @@ function CreateNote() {
         const note = { 'title': title, 'content': editorContent };
 
         let response
-        if(noteid !== null) {
+        if(noteid !== undefined) {
             response = await axios.patch(`http://localhost:5000/api/Notes/${noteid}`, note, {withCredentials: true});
         }
         else{

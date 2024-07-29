@@ -182,10 +182,10 @@ app.post('/api/Notes', async (req, res)=>{
         //console.log(req.body);
         let newNote = req.body;
         newNote.owner = req.session.user.username;
-        await NoteModel.create(newNote);
-        return res.status(200);
+        let response = await NoteModel.create(newNote);
+        return res.status(200).send(response);
     } catch (err) {
-        return res.status(500);
+        return res.status(500).send(err);
     }
 
 })
