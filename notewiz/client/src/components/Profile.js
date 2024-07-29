@@ -19,7 +19,7 @@ function Profile({logout}){
     useEffect(()=>{
         const fetchData = async()=>{
             try{
-                const response = await axios.get('http://localhost:5000/Profile',{withCredentials: true});
+                const response = await axios.get('http://localhost:8000/Profile',{withCredentials: true});
                 setOUsername(response.data.name);
                 setOPassword(response.data.pass);
                 if(!response.data.name){
@@ -58,7 +58,7 @@ function Profile({logout}){
         }
 
         try {
-            const response = await axios.post("http://localhost:5000/Profile", { username, password },{withCredentials: true});
+            const response = await axios.post("http://localhost:8000/Profile", { username, password },{withCredentials: true});
             setMessage(response.data.message);
             if (response.data.message.includes('updated')) {
                 setMessage("Successfully updated prefer name and password");

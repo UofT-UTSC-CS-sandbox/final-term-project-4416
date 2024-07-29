@@ -51,7 +51,7 @@ const MindMap = (input) => {
               id:maps.length,
               ...instance.getData()
             }));
-        const response = await axios.post("http://localhost:5000/api/createMindMap", newMap, {withCredentials: true});
+        const response = await axios.post("http://localhost:8000/api/createMindMap", newMap, {withCredentials: true});
       } catch (err) {
         console.log(err);
       }

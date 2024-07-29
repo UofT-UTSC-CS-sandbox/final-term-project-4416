@@ -16,6 +16,19 @@ export const notifySuccess = (message) => {
         transition: Bounce,
     });
 };
+export const notifyError = (message) => {
+    toast.error(message, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+    });
+};
 
 const ToastNotification = () => (
     <ToastContainer

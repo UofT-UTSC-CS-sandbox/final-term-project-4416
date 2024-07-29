@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import './NoteBrowser.css'
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 function NoteBrowser(props) {
     const navigate = useNavigate();
@@ -12,7 +14,7 @@ function NoteBrowser(props) {
 
     async function retrieveNotes() {
         try {
-            const response = await axios.post("http://localhost:5000/browser", {a: "get notes"}, {withCredentials: true});
+            const response = await axios.post("http://localhost:8000/browser", {a: "get notes"}, {withCredentials: true});
             setNotes(response.data.data);
         } catch (err) {
             console.error(err);
@@ -21,7 +23,7 @@ function NoteBrowser(props) {
 
     async function searchNotes() {
         try {
-            const response = await axios.post("http://localhost:5000/api/searchNotes", { term: searchTerm }, {withCredentials: true});
+            const response = await axios.post("http://localhost:8000/api/searchNotes", { term: searchTerm }, {withCredentials: true});
             setNotes(response.data.data);
         } catch (err) {
             console.error(err);
@@ -53,7 +55,7 @@ function NoteBrowser(props) {
 
     async function deleteSelectedNotes() {
         try {
-            await axios.post("http://localhost:5000/deleteNotes", Array.from(selectedNotes), {withCredentials: true});
+            await axios.post("http://localhost:8000/deleteNotes", Array.from(selectedNotes), {withCredentials: true});
             setSelectedNotes(new Set());
             retrieveNotes();
         } catch (err) {
@@ -64,26 +66,30 @@ function NoteBrowser(props) {
     return (
         <div className="NoteBrowser">
             <h1>Notes</h1>
-            <form onSubmit={(e) => {
-                e.preventDefault();
-                searchNotes();
-            }}>
-                <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search notes"
-                />
-                <button type="submit" style={{width: "120px", fontSize: 'small'}}>Search</button>
-            </form>
-            <button onClick={() => setDeleteMode(!deleteMode)}>
-                {deleteMode ? "Cancel" : "Delete Notes"}
-            </button>
-            {deleteMode && (
-                <button onClick={deleteSelectedNotes}>
-                    Delete Selected Notes
+
+            <div className="BrowserButtonGroup">
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    searchNotes();
+                }}>
+                    <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search notes"
+                    />
+                    <button type="submit">Search</button>
+                </form>
+                <button onClick={() => setDeleteMode(!deleteMode)}>
+                    {deleteMode ? "Cancel" : "Delete Notes"}
                 </button>
-            )}
+                {deleteMode && (
+                    <button id={"deleteBtm"} onClick={deleteSelectedNotes}>
+                        Confirm
+                    </button>
+                )}
+            </div>
+
             <div className="grid-container">
                 {notes.map(note => (
                     <div
