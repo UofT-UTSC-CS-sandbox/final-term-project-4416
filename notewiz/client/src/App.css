@@ -75,3 +75,7 @@ html, body {
   background-color: #495057;
 }
 
+#dark .mind-elixir-toolbar {
+  color: black;
+}
+

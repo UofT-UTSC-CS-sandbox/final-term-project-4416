@@ -19,7 +19,7 @@ import { styled } from "@mui/material/styles";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from '@mui/icons-material/Cancel';
 import axios from "axios";
-import {notifySuccess} from "./ToastNotification";
+import {notifySuccess} from "../ToastNotification";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   "& .MuiCardHeader-root": {

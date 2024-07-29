@@ -178,7 +178,7 @@ app.post('/deleteNotes', async (req, res) => {
 
 app.post('/api/createNotes', async (req, res)=>{
     try {
-        console.log(req.body);
+        //console.log(req.body);
         let newNote = req.body;
         newNote.owner = req.session.user.username;
         await NoteModel.create(newNote);
@@ -434,6 +434,22 @@ app.get('/api/fetchMindMapSet', async (req, res) => {
     }
 });
 
+app.get('/api/fetchMindMapById/:id', async (req, res) => {
+    const {id} = req.params;
+
+    try{
+        const map = await MapModel.findById(id);
+
+        if(map){
+            //console.log(cards);
+            res.status(200).send(map);
+        }
+    }catch (e) {
+        console.log("Error fetching MindMap");
+        console.log(e);
+    }
+});
+
 app.post('/api/createMindMap', async (req, res) => {
 
     // console.log(req.body);
@@ -533,7 +549,7 @@ app.post('/api/note-to-flashcard', async (req, res) => {
 app.post('/MindMap/AutoSave', async (req, res) => {
     const username = req.session.user.username;
     const update = req.body;
-    console.log(req.body);
+    //console.log(req.body);
     try {
         // Find the document
         const document = await MapModel.findOne({ owner: username, id: update.id });
@@ -541,7 +557,7 @@ app.post('/MindMap/AutoSave', async (req, res) => {
         if (document) {
             // Update the document
             const updateOperation = await MapModel.updateOne({id: update.id, owner: username},
-                {$set: {content: update.content}});
+                {$set: {owner: username, id: update.id, content: update}});
             res.status(200).send('Update successful');
         } else {
             console.log('Document not found');
