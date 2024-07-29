@@ -30,7 +30,7 @@ const FlashCardList = () => {
     async function handleDelete(id){
         try{
             await dispatch(DeleteFlashCardThunk(id));
-            const response = await axios.post("http://localhost:5000/api/deleteFlashCard", {id},{withCredentials: true});
+            const response = await axios.post("http://localhost:8000/api/deleteFlashCard", {id},{withCredentials: true});
             await fetchNode();
 
         }catch (e) {

@@ -54,31 +54,36 @@
     background-color: #333;
 }
 
-.comment-system ul {
+.comment-bar {
     list-style: none;
     padding: 0;
     margin: 0 0 20px 0;
 }
 
-.comment-system li {
+.comment {
     display: flex;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     padding: 10px;
     margin-bottom: 10px;
     border-bottom: 1px solid #ddd;
 }
 
-.comment-system li strong {
+.comment-detail {
+    flex: 3;
+}
+
+.Strong {
     display: block;
-    font-weight: 600;
+    /*font-weight: 600;*/
     margin-bottom: 5px;
-    color: #007BFF;
+    color: black;
 }
 
 .delete-button {
+    flex: 1;
     background: none;
     border: none;
-    color: #ff0000; /* 设置图标颜色 */
+    color: dimgrey;
     cursor: pointer;
     padding: 0;
     margin: 0;
@@ -90,6 +95,6 @@
 }
 
 .delete-button:hover {
-    color: #cc0000;
+    color: whitesmoke;
 }
 
