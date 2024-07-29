@@ -96,7 +96,7 @@ const CreateFlashCard = () => {
       try {
         notifySuccess("Successfully Created");
         dispatch(createFlashCard(formData));
-        const response = await axios.post("http://localhost:8000/api/createFlashCard", formData, {withCredentials: true});
+        const response = await axios.post("http://localhost:5000/api/createFlashCard", formData, {withCredentials: true});
       } catch (err) {
         console.log(err);
       }

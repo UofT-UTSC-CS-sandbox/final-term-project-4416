@@ -24,7 +24,7 @@ function Login(props) {
       }
 
       try {
-        const response = await axios.post("http://localhost:8000/", { username, password}, {withCredentials: true});
+        const response = await axios.post("http://localhost:5000/", { username, password}, {withCredentials: true});
         setMessage(response.data.message);
         if (response.data.message.includes('successfully')) {
           navigate('/Note');

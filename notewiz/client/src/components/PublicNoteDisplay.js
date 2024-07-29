@@ -1,28 +1,13 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import NoteDisplay from './NoteDisplay';
 import { useParams } from 'react-router-dom';
-import useCanvasBackground from './canvas';
+import CommentSystem from './CommentSystem'; 
 
 function PublicNoteDisplay() {
-    const { id } = useParams();
-    const canvasRef = useRef(null);
-
-    useCanvasBackground(canvasRef);
+    const { id } = useParams(); 
 
     return (
-        <div style={{ position: 'relative', zIndex: 1 }}>
-            <canvas
-                ref={canvasRef}
-                style={{
-                    position: 'fixed',
-                    left: 0,
-                    top: 0,
-                    width: '100%',
-                    height: '100%',
-                    zIndex: -1,
-                    background: 'black',
-                }}
-            ></canvas>
+        <div>
             <NoteDisplay nid={id} />
         </div>
     );

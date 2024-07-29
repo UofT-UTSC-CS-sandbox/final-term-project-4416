@@ -4,7 +4,7 @@ import {DeleteFlashCardThunk} from "../FlashCardSlice";
 
 async function fetchMindMapSet() {
     let response;
-    response = await axios.get("http://localhost:8000/api/fetchMindMapSet", {withCredentials: true});
+    response = await axios.get("http://localhost:5000/api/fetchMindMapSet", {withCredentials: true});
     return response.data;
 }
 
