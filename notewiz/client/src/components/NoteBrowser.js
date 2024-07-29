@@ -55,26 +55,30 @@ function NoteBrowser(props) {
     return (
         <div className="NoteBrowser">
             <h1>Notes</h1>
-            <form onSubmit={(e) => {
-                e.preventDefault();
-                searchNotes();
-            }}>
-                <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search notes"
-                />
-                <button type="submit" style={{width: "120px", fontSize: 'small'}}>Search</button>
-            </form>
-            <button onClick={() => setDeleteMode(!deleteMode)}>
-                {deleteMode ? "Cancel" : "Delete Notes"}
-            </button>
-            {deleteMode && (
-                <button onClick={deleteSelectedNotes}>
-                    Delete Selected Notes
+
+            <div className="BrowserButtonGroup">
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    searchNotes();
+                }}>
+                    <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search notes"
+                    />
+                    <button type="submit">Search</button>
+                </form>
+                <button onClick={() => setDeleteMode(!deleteMode)}>
+                    {deleteMode ? "Cancel" : "Delete Notes"}
                 </button>
-            )}
+                {deleteMode && (
+                    <button id={"deleteBtm"} onClick={deleteSelectedNotes}>
+                        Confirm
+                    </button>
+                )}
+            </div>
+
             <div className="grid-container">
                 {notes.map(note => (
                     <div

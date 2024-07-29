@@ -6,6 +6,9 @@
 }
 
 .grid-item {
+    border: #555555 solid 1px;
+    margin: 1rem;
+    padding: 0.5rem;
     transition: transform 0.3s ease;
     width: 30ch;
     width: 180px;
@@ -27,4 +30,37 @@
 
 .grid-item.selected {
     background-color: #ffdddd; /* light red */
+}
+
+.BrowserButtonGroup button {
+    border-radius: 0;
+    width: 30%;
+    font-size: medium;
+    transform-style: flat;
+    transition: transform 0.3s ease;
+}
+
+.NoteBrowser form {
+    flex: content;
+}
+
+.NoteBrowser input {
+    width: clamp(120px, 50vw, 420px);
+    height: 2.5rem;
+    padding: 0 1.25rem;
+    border: 1px solid gray;
+    border-radius: 2px;
+    margin: 0.625rem auto;
+    transition: all 250ms;
+    @media (min-width: 768px) {
+        width: clamp(120px, 35vw, 420px);
+    }
+}
+
+.BrowserButtonGroup {
+    display: flex;
+}
+
+#deleteBtm {
+    background-color: #333333;
 }
