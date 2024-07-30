@@ -204,7 +204,7 @@ app.patch('/api/Notes/:noteId', async (req, res)=>{
     }
 })
 
-app.patch('/api/Notes/:noteId/setPublicity', async (req, res) => {
+app.patch('/api/Notes/:noteId/publicity', async (req, res) => {
     try {
         console.log(req.body);
         let updatedPublicity = req.body.public;
@@ -215,6 +215,15 @@ app.patch('/api/Notes/:noteId/setPublicity', async (req, res) => {
         res.status(200).json({ message: 'Note publicity updated successfully' });
     } catch (err) {
         return res.status(500).json({message: 'Error changing publicity', error: err});
+    }
+})
+
+app.get('/api/Notes/:noteId/publicity', async (req, res) => {
+    try {
+        let response = await NoteModel.findById(req.params.noteId);
+        res.status(200).json();
+    } catch (err) {
+        return res.status(500).json({message: 'Error fetching publicity', error: err});
     }
 })
 
