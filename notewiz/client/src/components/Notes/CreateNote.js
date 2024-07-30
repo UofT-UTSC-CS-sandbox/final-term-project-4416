@@ -268,8 +268,14 @@ function CreateNote() {
     const buttons = [
         <Button key={0} onClick={(e)=>{handleSave(e); notifySuccess("Successfully Save")}} className='NoteButtons'>Save</Button>,
         <Button key={1} onClick={handleSubmit} className='NoteButtons'>Summarize</Button>,
-        <Button key={2} onClick={handleShare} className='NoteButtons'>Share</Button>,
-        <Button key={3} onClick={handleConvert} className='NoteButtons'>Q&A Generator</Button>
+        <Button key={2} onClick={handleConvert} className='NoteButtons'>Q&A Generator</Button>,
+        <Button key={3} onClick={handleShare} className='NoteButtons'>Share</Button>
+    ];
+
+    const buttons2 = [
+        <Button key={0} onClick={(e)=>{handleSave(e); notifySuccess("Successfully Save")}} className='NoteButtons'>Save</Button>,
+        <Button key={1} onClick={handleSubmit} className='NoteButtons'>Summarize</Button>,
+        <Button key={2} onClick={handleConvert} className='NoteButtons'>Q&A Generator</Button>
     ];
 
     async function handleConvert() {
@@ -395,7 +401,7 @@ function CreateNote() {
               flexDirection: 'column',
           }}>
               <ButtonGroup size="large" aria-label="Small button group">
-                  {buttons}
+                  {noteid ? buttons : buttons2}
               </ButtonGroup>
           </Box>
           {loadingSummary && (
