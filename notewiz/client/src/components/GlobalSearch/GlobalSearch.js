@@ -16,7 +16,7 @@ function GlobalSearch() {
     useEffect(() => {
         async function retrieveNotes() {
             try {
-                const response = await axios.post("http://localhost:5000/GlobalSearch", {withCredentials: true});
+                const response = await axios.post("http://localhost:8000/GlobalSearch", {withCredentials: true});
                 setDetails(response.data.data);
             } catch (error) {
                 console.error('Error fetching data:', error);

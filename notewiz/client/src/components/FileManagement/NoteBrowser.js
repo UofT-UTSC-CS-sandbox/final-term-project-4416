@@ -12,7 +12,7 @@ function NoteBrowser(props) {
 
     async function retrieveNotes() {
         try {
-            const response = await axios.post("http://localhost:5000/browser", {a: "get notes"}, {withCredentials: true});
+            const response = await axios.post("http://localhost:8000/browser", {a: "get notes"}, {withCredentials: true});
             setNotes(response.data.data);
         } catch (err) {
             console.error(err);
@@ -21,7 +21,7 @@ function NoteBrowser(props) {
 
     async function searchNotes() {
         try {
-            const response = await axios.post("http://localhost:5000/api/searchNotes", { term: searchTerm }, {withCredentials: true});
+            const response = await axios.post("http://localhost:8000/api/searchNotes", { term: searchTerm }, {withCredentials: true});
             setNotes(response.data.data);
         } catch (err) {
             console.error(err);
@@ -44,7 +44,7 @@ function NoteBrowser(props) {
 
     async function deleteSelectedNotes() {
         try {
-            await axios.post("http://localhost:5000/deleteNotes", Array.from(selectedNotes), {withCredentials: true});
+            await axios.post("http://localhost:8000/deleteNotes", Array.from(selectedNotes), {withCredentials: true});
             setSelectedNotes(new Set());
             retrieveNotes();
         } catch (err) {

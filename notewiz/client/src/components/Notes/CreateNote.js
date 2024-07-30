@@ -177,7 +177,7 @@ function CreateNote() {
         if (noteid === undefined) return
         async function fetchNote(id) {
             try{
-                return await axios.post("http://localhost:5000/api/fetchNote", {id: id}, {withCredentials: true});
+                return await axios.post("http://localhost:8000/api/fetchNote", {id: id}, {withCredentials: true});
             } catch (err) {
                 if (axios.isCancel(err)) {
                     console.log('Request canceled:', err.message);
@@ -217,10 +217,10 @@ function CreateNote() {
 
         let response
         if(noteid !== undefined) {
-            response = await axios.patch(`http://localhost:5000/api/Notes/${noteid}`, note, {withCredentials: true});
+            response = await axios.patch(`http://localhost:8000/api/Notes/${noteid}`, note, {withCredentials: true});
         }
         else{
-            response = await axios.post("http://localhost:5000/api/Notes", note, {withCredentials: true})
+            response = await axios.post("http://localhost:8000/api/Notes", note, {withCredentials: true})
         }
     }
 
@@ -229,7 +229,7 @@ function CreateNote() {
         try{
             setloding(true);
             const notes = {editorContent};
-            const response = await axios.post("http://localhost:5000/Note_Summarize", notes, {withCredentials: true});
+            const response = await axios.post("http://localhost:8000/Note_Summarize", notes, {withCredentials: true});
             const resultRendering = response.data.summary + localStorage.getItem('userNote');
             setEditorContent(resultRendering);
             mdxEditorRef.current.setMarkdown(resultRendering);
@@ -277,7 +277,7 @@ function CreateNote() {
             setloadingConvert(true);
             const notes = {editorContent};
             let response = await axios.post(
-                "http://localhost:5000/api/note-to-flashcard",
+                "http://localhost:8000/api/note-to-flashcard",
                 {note: notes, title: title},
                 {withCredentials: true}
             );

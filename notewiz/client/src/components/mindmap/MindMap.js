@@ -30,7 +30,7 @@ const MindMap = () => {
     async function fetchMapById() {
       if (id) {
         try {
-          const response = await axios.get(`http://localhost:5000/api/fetchMindMapById/${id}`, { withCredentials: true });
+          const response = await axios.get(`http://localhost:8000/api/fetchMindMapById/${id}`, { withCredentials: true });
           setInitialMap(response.data);
           setLoading(false); // Set loading to false once data is fetched
         } catch (error) {
@@ -85,14 +85,14 @@ const MindMap = () => {
               id:maps.length,
               ...instance.getData()
             }));
-        const response = await axios.post("http://localhost:5000/api/createMindMap", newMap, {withCredentials: true});
+        const response = await axios.post("http://localhost:8000/api/createMindMap", newMap, {withCredentials: true});
       } catch (err) {
         console.log(err);
       }
     }else{
       notifySuccess("Successfully Created");
       const editMap = {id: initialMap.content.id, ...instance.getData()};
-      const response = await axios.post("http://localhost:5000/MindMap/AutoSave", editMap,{withCredentials: true});
+      const response = await axios.post("http://localhost:8000/MindMap/AutoSave", editMap,{withCredentials: true});
     }
 
   }

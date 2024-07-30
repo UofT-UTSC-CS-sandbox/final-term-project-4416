@@ -8,7 +8,7 @@ const MessageSharedNote = ({noteId}) => {
 
     useEffect(() => {
         async function fetchPublicity() {
-            const response = await axios.get(`http://localhost:5000/api/Notes/${noteId}/publicity`);
+            const response = await axios.get(`http://localhost:8000/api/Notes/${noteId}/publicity`);
             return response.data;
         }
 
@@ -21,7 +21,7 @@ const MessageSharedNote = ({noteId}) => {
         const isChecked = event.target.checked;
         setPublicity(isChecked);
         try {
-            const response = await axios.patch(`http://localhost:5000/api/Notes/${noteId}/publicity`, { public: isChecked });
+            const response = await axios.patch(`http://localhost:8000/api/Notes/${noteId}/publicity`, { public: isChecked });
         } catch (error) {
             console.log('Error updating note publicity:', error);
         }
