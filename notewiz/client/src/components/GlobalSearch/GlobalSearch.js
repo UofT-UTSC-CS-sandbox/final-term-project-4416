@@ -1,7 +1,7 @@
 // src/components/GlobalSearch.js
 
 import React, { useState, useEffect } from 'react';
-import initialDetails from '../data/initialDetails';
+import initialDetails from '../../data/initialDetails';
 import Scroll from './Scroll';
 import SearchList from './SearchList';
 import axios from 'axios'

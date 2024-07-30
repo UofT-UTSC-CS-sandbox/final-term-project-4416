@@ -49,7 +49,7 @@ import {
 import axios from "axios";
 import {red} from "@mui/material/colors";
 import LoadingProcess from "./LoadingProcess";
-import { notifySuccess } from "./ToastNotification";
+import { notifySuccess } from "../ToastNotification";
 
 
 // If you need something more flexible, implement a custom directive editor.
@@ -230,7 +230,6 @@ function CreateNote() {
             setloding(true);
             const notes = {editorContent};
             const response = await axios.post("http://localhost:5000/Note_Summarize", notes, {withCredentials: true});
-            console.log(response.data.summary);
             const resultRendering = response.data.summary + localStorage.getItem('userNote');
             setEditorContent(resultRendering);
             mdxEditorRef.current.setMarkdown(resultRendering);

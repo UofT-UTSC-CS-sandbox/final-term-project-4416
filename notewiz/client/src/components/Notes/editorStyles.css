@@ -1,5 +1,5 @@
-@import url('@radix-ui/colors/tomato-dark.css');
-@import url('@radix-ui/colors/mauve-dark.css');
+@import url('../../../node_modules/@radix-ui/colors/tomato-dark.css');
+@import url('../../../node_modules/@radix-ui/colors/mauve-dark.css');
 
 .App {
     border: 2px solid #ccc;
@@ -11,8 +11,8 @@
     width: auto;
     min-height: 700px;
     height: auto;
-    @import url('@radix-ui/colors/tomato-dark.css');
-    @import url('@radix-ui/colors/mauve-dark.css');
+    @import url('../../../node_modules/@radix-ui/colors/tomato-dark.css');
+    @import url('../../../node_modules/@radix-ui/colors/mauve-dark.css');
 }
 
 

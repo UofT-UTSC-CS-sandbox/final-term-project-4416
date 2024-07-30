@@ -75,7 +75,7 @@ const MindMapWindow = (input) => {
           alignItems: 'flex-end'
         }}>
           <Button variant="outlined" onClick={(e)=>{jump(e)}} className='NoteButtons' sx={{ marginRight: 2 }}>Edit</Button>
-          <Button variant="outlined" onClick={(e)=>{autoSave(e); notifySuccess("Successfully Created");}} className='NoteButtons'>Save</Button>
+          <Button variant="outlined" onClick={(e)=>{autoSave(e); notifySuccess("Successfully Save");}} className='NoteButtons'>Save</Button>
         </Box>
       </div>
   )

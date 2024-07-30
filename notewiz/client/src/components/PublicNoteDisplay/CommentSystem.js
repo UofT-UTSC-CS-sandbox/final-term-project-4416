@@ -3,7 +3,7 @@ import axios from 'axios';
 import './CommentSystem.css';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import './fontAwesomeConfig';
-import {notifySuccess, notifyError} from "./ToastNotification";
+import {notifySuccess, notifyError} from "../ToastNotification";
 
 function CommentSystem({noteId}) {
     const [comments, setComments] = useState([]);
