@@ -221,7 +221,7 @@ app.patch('/api/Notes/:noteId/publicity', async (req, res) => {
 app.get('/api/Notes/:noteId/publicity', async (req, res) => {
     try {
         let response = await NoteModel.findById(req.params.noteId);
-        res.status(200).json();
+        res.status(200).send(response.public);
     } catch (err) {
         return res.status(500).json({message: 'Error fetching publicity', error: err});
     }
