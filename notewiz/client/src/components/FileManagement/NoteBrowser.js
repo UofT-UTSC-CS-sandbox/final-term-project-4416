@@ -28,6 +28,15 @@ function NoteBrowser(props) {
         }
     }
 
+    async function searchNotes() {
+        try {
+            const response = await axios.post("http://localhost:5000/api/searchNotes", { term: searchTerm });
+            setNotes(response.data.data);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     useEffect(() => {
         retrieveNotes();
     }, []); // Empty dependency array means this effect runs once when the component mounts.

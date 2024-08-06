@@ -12,7 +12,7 @@
 - **Task I:** Mind-map interface development (depends on Task B)
 - **Task J:** Mind-map backend development (depends on Task B)
 - **Task K:** Creating and deleting functionality for mind-map (depends on Task I and Task J)
-
+ 
 ## Network Diagram
 ![Network Diagram](./network_diagram.png)
 
