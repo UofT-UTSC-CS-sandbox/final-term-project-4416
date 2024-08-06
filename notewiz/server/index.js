@@ -99,11 +99,12 @@ app.post('/signup', async (req, res)=>{
     }
 })
 
-app.get('/Profile', (req, res)=>{
+app.get('/Profile', async (req, res)=>{
     try{
         if(req.session.user){
+            const user = await UserModel.findOne({ username: req.session.user.username })
             res.status(200).json({
-                name: req.session.user.preferName,
+                name: user.preferName,
                 pass: req.session.user.password,
                 defaultName: req.session.user.username
             })
@@ -176,19 +177,55 @@ app.post('/deleteNotes', async (req, res) => {
     }
 });
 
-app.post('/api/createNotes', async (req, res)=>{
+app.post('/api/Notes', async (req, res)=>{
     try {
-        console.log(req.body);
+        //console.log(req.body);
         let newNote = req.body;
         newNote.owner = req.session.user.username;
-        await NoteModel.create(newNote);
-        return res.status(200);
+        let response = await NoteModel.create(newNote);
+        return res.status(200).send(response);
     } catch (err) {
-        return res.status(500);
+        return res.status(500).send(err);
     }
 
 })
 
+app.patch('/api/Notes/:noteId', async (req, res)=>{
+    try {
+        console.log(req.body);
+        let updatedNote = req.body;
+        let query = {_id: req.params.noteId};
+        let newValue = { $set: {content: updatedNote.content, title: updatedNote.title}};
+        let response = await NoteModel.findOneAndUpdate(query, newValue, {});
+        console.log(response);
+        res.status(200).json({ message: 'Note updated successfully' });
+    } catch (err) {
+        return res.status(500).json({message: 'Error deleting notes', error: err});
+    }
+})
+
+app.patch('/api/Notes/:noteId/publicity', async (req, res) => {
+    try {
+        console.log(req.body);
+        let updatedPublicity = req.body.public;
+        let query = {_id: req.params.noteId};
+        let newValue = { $set: {public: updatedPublicity}};
+        let response = await NoteModel.findOneAndUpdate(query, newValue, {});
+        console.log(response);
+        res.status(200).json({ message: 'Note publicity updated successfully' });
+    } catch (err) {
+        return res.status(500).json({message: 'Error changing publicity', error: err});
+    }
+})
+
+app.get('/api/Notes/:noteId/publicity', async (req, res) => {
+    try {
+        let response = await NoteModel.findById(req.params.noteId);
+        res.status(200).send(response.public);
+    } catch (err) {
+        return res.status(500).json({message: 'Error fetching publicity', error: err});
+    }
+})
 
 app.post('/api/fetchNote', async (req, res) => {
     console.log("fetching note: " + req.body.id);
@@ -434,6 +471,22 @@ app.get('/api/fetchMindMapSet', async (req, res) => {
     }
 });
 
+app.get('/api/fetchMindMapById/:id', async (req, res) => {
+    const {id} = req.params;
+
+    try{
+        const map = await MapModel.findById(id);
+
+        if(map){
+            //console.log(cards);
+            res.status(200).send(map);
+        }
+    }catch (e) {
+        console.log("Error fetching MindMap");
+        console.log(e);
+    }
+});
+
 app.post('/api/createMindMap', async (req, res) => {
 
     // console.log(req.body);
@@ -533,7 +586,7 @@ app.post('/api/note-to-flashcard', async (req, res) => {
 app.post('/MindMap/AutoSave', async (req, res) => {
     const username = req.session.user.username;
     const update = req.body;
-    console.log(req.body);
+    //console.log(req.body);
     try {
         // Find the document
         const document = await MapModel.findOne({ owner: username, id: update.id });
@@ -541,7 +594,7 @@ app.post('/MindMap/AutoSave', async (req, res) => {
         if (document) {
             // Update the document
             const updateOperation = await MapModel.updateOne({id: update.id, owner: username},
-                {$set: {content: update.content}});
+                {$set: {owner: username, id: update.id, content: update}});
             res.status(200).send('Update successful');
         } else {
             console.log('Document not found');

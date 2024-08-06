@@ -57,7 +57,7 @@ html, body {
   color: #d3d3d3;
 }
 
-._linkDialogAnchor_yms4a_586 {
+._linkDialogAnchor_uazmk_586 {
   top: 50% !important;
   left: 50% !important;
   width: auto !important;
@@ -65,6 +65,7 @@ html, body {
   transform: translate(-50%, -50%) !important;
   position: fixed !important;
 }
+
 
 
 #dark .Global{
@@ -75,3 +76,19 @@ html, body {
   background-color: #495057;
 }
 
+#dark .mind-elixir-toolbar {
+  color: black;
+}
+
+button {
+  width: 55%;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  border: 2px solid black;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: Courier, monospace;
+  font-size: 30px;
+}

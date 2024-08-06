@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import './App.css';
-import CreateNote from './components/CreateNote';
-import Login from './components/auth/Login';
-import Signup from './components/auth/Signup';
+import CreateNote from './components/Notes/CreateNote';
+import Login from './components/Auth/Login';
+import Signup from './components/Auth/Signup';
 import Sidebar from './components/Sidebar';
-import Profile from './components/Profile';
-import NoteBrowser from './components/NoteBrowser';
-import { FlashCardsView } from './components/FlashCardsView';
-import FlashCardList from './components/FlashCardList';
-import CreateFlashCard from './components/CreateFlashCard';
-import PublicNoteDisplay from "./components/PublicNoteDisplay";
+import Profile from './components/Auth/Profile';
+import NoteBrowser from './components/FileManagement/NoteBrowser';
+import { FlashCardsView } from './components/flashcard/FlashCardsView';
+import FlashCardList from './components/flashcard/FlashCardList';
+import CreateFlashCard from './components/flashcard/CreateFlashCard';
+import PublicNoteDisplay from "./components/PublicNoteDisplay/PublicNoteDisplay";
 import ToastNotification from './components/ToastNotification';
-import GlobalSearch from "./components/GlobalSearch";
+import GlobalSearch from "./components/GlobalSearch/GlobalSearch";
 import MindMapList from "./components/mindmap/MindMapList";
 import MindMapWindow from "./components/mindmap/MindMapWindow";
 import MindMap from "./components/mindmap/MindMap";
@@ -30,8 +30,8 @@ function App() {
 
 function RoutesWithSidebar() {
   const location = useLocation(); // Get the current location
-  const sidebarPaths = ['/GlobalSearch', '/Note', '/Profile', '/browser', "/flashcards", "/Flash", "/create-new-flashcard","/Mind"];
-  const showSidebar = sidebarPaths.includes(location.pathname) || /^\/Note\/.*$/; // Determine whether to show the sidebar
+  const sidebarPaths = ['/GlobalSearch', '/Note', '/Profile', '/browser', "/flashcards", "/Flash", "/create-new-flashcard","/Mind","/create-new-mind-map"];
+  const showSidebar = sidebarPaths.includes(location.pathname) || /^\/Note\/.*$/ || /^\/create-new-mind-map\/.*$/; // Determine whether to show the sidebar
 
   const [sidebarVisable, setVisbility] = useState(false);
   const handleSideBarVisability = (data) => {
@@ -75,12 +75,12 @@ function RoutesWithSidebar() {
                 <Route path="/create-new-flashcard" element={<CreateFlashCard />} />
                 <Route path="/Mind" element={<MindMapList />} />
                 <Route path="/MindMapWindow" element={<MindMapWindow />} />
-                <Route path="create-new-mind-map" element={<MindMap/>}/>
+                <Route path="/create-new-mind-map" element={<MindMap/>}/>
+                <Route path='/create-new-mind-map/:id' element={<MindMap />}></Route>
               </Routes>
             </div>
           </div>
         </div>)}
-
     </div>
   );
 }
