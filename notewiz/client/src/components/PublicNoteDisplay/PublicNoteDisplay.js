@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 import NoteDisplay from './NoteDisplay';
 import { useParams } from 'react-router-dom';
-import useCanvasBackground from '../Canvas/canvas';
-import './publicNoteDisplay.css';
+import useCanvasBackground from '../Canvas/Canvas';
+import './PublicNoteDisplay.css';
 
 function PublicNoteDisplay() {
     const { id } = useParams();

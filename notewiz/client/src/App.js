@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import './App.css';
 import CreateNote from './components/Notes/CreateNote';
-import Login from './components/auth/Login';
-import Signup from './components/auth/Signup';
+import Login from './components/Auth/Login';
+import Signup from './components/Auth/Signup';
 import Sidebar from './components/Sidebar';
-import Profile from './components/auth/Profile';
+import Profile from './components/Auth/Profile';
 import NoteBrowser from './components/FileManagement/NoteBrowser';
 import { FlashCardsView } from './components/flashcard/FlashCardsView';
 import FlashCardList from './components/flashcard/FlashCardList';
@@ -81,7 +81,6 @@ function RoutesWithSidebar() {
             </div>
           </div>
         </div>)}
-
     </div>
   );
 }

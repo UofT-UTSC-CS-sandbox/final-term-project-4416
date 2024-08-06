@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useParams} from "react-router-dom";
 import '@mdxeditor/editor/style.css';
-import './editorStyles.css';
+import './EditorStyles.css';
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import ButtonGroup from "@mui/material/ButtonGroup";

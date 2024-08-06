@@ -2,8 +2,8 @@ import React, {useRef, useState} from "react";
 import "./Login.css"
 import {Link, useNavigate} from 'react-router-dom';
 import axios from 'axios'
-import useCanvasBackground from '../Canvas/canvas';
-import '../PublicNoteDisplay/publicNoteDisplay.css'
+import useCanvasBackground from '../Canvas/Canvas';
+import '../PublicNoteDisplay/PublicNoteDisplay.css'
 
 
 function Login(props) {
