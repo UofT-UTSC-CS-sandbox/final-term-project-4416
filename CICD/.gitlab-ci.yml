@@ -1,0 +1,50 @@
+stages:
+  - test
+  - build
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+
+image:
+  name: docker/compose:latest
+
+services:
+  - docker:dind
+
+before_script:
+  - docker version
+  - docker-compose version
+
+#Test Stage
+test:
+  stage: test
+  script: 
+    - echo "testing with npm test"
+    # npm test
+
+#Build Stage
+
+build:
+  stage: build
+  script:
+    - echo "Building the client and server Docker images..."
+    - docker-compose build
+    - echo "Deploying to Docker Hub..."
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker push $DOCKER_USERNAME/notewiz_client:latest
+    - docker push $DOCKER_USERNAME/notewiz_server:latest
+
+build_with_dependencies:
+  stage: build
+  script:
+    - echo "Building the client Docker image with dependencies..."
+    - docker build -t $DOCKER_USERNAME/notewiz_client_dependencies:$CI_COMMIT_REF_NAME ./notewiz/client
+    - echo "Building the server Docker image with dependencies..."
+    - docker build -t $DOCKER_USERNAME/notewiz_server_dependencies:$CI_COMMIT_REF_NAME ./notewiz/server
+    - echo "Deploying to Docker Hub..."
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker push $DOCKER_USERNAME/notewiz_client_dependencies:$CI_COMMIT_REF_NAME
+    - docker push $DOCKER_USERNAME/notewiz_server_dependencies:$CI_COMMIT_REF_NAME
+ 
