@@ -1,0 +1,100 @@
+/* CommentSystem.css */
+
+.comment-system {
+    width: 80%;
+    /*max-width: 800px;*/
+    margin: 0 auto;
+    padding: 20px;
+    /*border: 1px solid #ddd;*/
+    /*border-radius: 8px;*/
+    /*background-color: #f9f9f9;*/
+    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
+}
+
+.comment-system h3 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.comment-system form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    /*height: 200px;*/
+}
+
+.comment-system input[type="text"],
+.submit-button {
+    height: 40px;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.comment-system input[type="text"] {
+    flex: 3;
+    border: 1px solid #ddd;
+}
+
+.submit-button {
+    flex: 1;
+    border: none;
+    background-color: black;
+    color: whitesmoke;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.submit-button:hover {
+    background-color: #333;
+}
+
+.comment-bar {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.comment {
+    display: flex;
+    /*justify-content: space-between;*/
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.comment-detail {
+    flex: 3;
+}
+
+.Strong {
+    display: block;
+    /*font-weight: 600;*/
+    margin-bottom: 5px;
+    color: black;
+}
+
+.delete-button {
+    flex: 1;
+    background: none;
+    border: none;
+    color: dimgrey;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    font-size: 16px; /* 调整图标大小 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease;
+}
+
+.delete-button:hover {
+    color: whitesmoke;
+}
+

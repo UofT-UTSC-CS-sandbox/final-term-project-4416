@@ -1,0 +1,11 @@
+#button1{
+  width: 35%;
+}
+#button2{
+  margin-left: 20px;
+  width: 25%;
+}
+
+button:hover {
+  background-color: #333;
+}

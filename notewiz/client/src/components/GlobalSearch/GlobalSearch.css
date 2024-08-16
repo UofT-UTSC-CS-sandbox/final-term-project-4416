@@ -1,0 +1,57 @@
+/* styles.css */
+
+.Global {
+    background-color: #f0f0f0;
+}
+
+.main-content {
+    text-align: center;
+    
+    margin: 0;
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+.note-section {
+    font-family: 'Garamond', serif;
+}
+
+.header {
+    color: black;
+    font-family: 'Georgia', serif;
+    margin: 0;
+    transition: transform 0.2s;
+}
+
+#dark .header{
+    color: white;
+    font-family: 'Georgia', serif;
+    margin: 0;
+    transition: transform 0.2s;
+  }
+
+.header:hover {
+    transform: scale(1.05);
+}
+
+.title {
+    font-size: 2rem;
+}
+
+.search-container {
+    padding: 1rem;
+}
+
+.search-input {
+    padding: 1rem;
+    border-bottom: 1px solid black;
+    border-radius: 0.5rem;
+    transition: transform 0.2s;
+    background-color: #d3d3d3;
+    margin: 1rem;
+}
+
+.search-input:hover {
+    transform: scale(1.05);
+    border: none;
+}

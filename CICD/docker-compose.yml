@@ -1,0 +1,12 @@
+version: '3'
+services:
+  client:
+    image: notcheer/notewiz_client
+    build: ./notewiz/client
+    ports:
+      - "3000:3000"
+  server:
+    image: notcheer/notewiz_server
+    build: ./notewiz/server
+    ports:
+      - "5000:5000"

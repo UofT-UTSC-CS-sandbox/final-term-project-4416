@@ -1,0 +1,94 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.Apps {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}
+
+
+.app-container {
+  display: flex;
+}
+.app-container.dark {
+  display: flex;
+  background-color: #495057;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 180px; /* Fixed width for sidebar */
+  flex-shrink: 0;
+}
+
+.content {
+  flex-grow: 1;
+  margin-left: 10px;
+  margin-top: 80px;
+
+  max-width: calc(100% - 10px);
+  overflow-x: auto;
+  padding: 10px; /* Padding around the note content */
+  transition: margin-left 0.3s ease;
+}
+
+
+.content.hidden{
+  margin-left: -110px;
+}
+
+#light .Profile {
+  background-color: #f4f2f2;
+}
+
+#dark{
+  background-color: #495057;
+  color: #f8f8f8;
+}
+
+#dark .App{
+  background-color: #495057;
+}
+
+#dark .MuiListItemText-secondary{
+  color: #d3d3d3;
+}
+
+._linkDialogAnchor_uazmk_586 {
+  top: 50% !important;
+  left: 50% !important;
+  width: auto !important;
+  height: 44px !important;
+  transform: translate(-50%, -50%) !important;
+  position: fixed !important;
+}
+
+
+
+#dark .Global{
+  background-color: #495057;
+}
+
+#dark .scroll-container{
+  background-color: #495057;
+}
+
+#dark .mind-elixir-toolbar {
+  color: black;
+}
+
+button {
+  width: 55%;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  border: 2px solid black;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: Courier, monospace;
+  font-size: 30px;
+}
